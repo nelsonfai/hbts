@@ -17,15 +17,16 @@ import AsyncStorageService from "../../services/asyncStorage";
 import { API_BASE_URL } from "../../appConstants";
 import { useRefresh } from "../../context/refreshContext";
 import { COLORS } from "../../constants";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import richTextStyle from "../../styles/richtextStyle";
 const handleHead = ({ tintColor }) => (
-  <Text style={{ color: tintColor }}>H1</Text>
+  <Text style={{ color: tintColor }}>Hh</Text>
 );
 const handleHead2 = ({ tintColor }) => (
   <Text style={{ color: tintColor }}>H2</Text>
 );
 
 const App = () => {
+  const richText = React.useRef();
   const params = useLocalSearchParams();
   const [change, setChange] = useState(false);
   const [initialText, setInitialText] = useState("");
@@ -33,16 +34,10 @@ const App = () => {
   const [title, setTitle] = useState(""); 
   const {refresh,setRefresh} = useRefresh();
 
-  const richText = React.useRef();
 
-  useEffect(() => {
-    if (params.id) {
-      fetchInitialText();
-    }
-  }, [params.id]);
-
-
-
+  const setHtml = () => {
+    fetchInitialText()
+   }
   const fetchInitialText = async () => {
     try {
       const token = await AsyncStorageService.getItem("token");
@@ -59,8 +54,8 @@ const App = () => {
       if (response.ok) {
         const data = await response.json();
         setInitialText(data.body);
-		setTitle(data.title)
-		richText.current.setContentHTML(data.body);
+		    setTitle(data.title)
+          richText.current.setContentHTML(data.body);
         setChange(false); // Set change to false initially
       } else {
         const errorData = await response.json();
@@ -90,7 +85,6 @@ const App = () => {
     };
   }, []);
 
-
   const handleDonePress = async (richText, initialText) => {
     try {
       const token = await AsyncStorageService.getItem("token");
@@ -111,9 +105,11 @@ const App = () => {
       const response = await fetch(apiUrl, requestOptions);
 
       if (response.ok) {
-		router.replace("/notes");
-		setChange(false)
-		setRefresh({ refreshHabits: false, refreshList: false, refreshSummary: false,refreshNotes:true });
+    		setChange(false)
+        richText.current.blurContentEditor();
+
+
+		    setRefresh({ refreshHabits: false, refreshList: false, refreshSummary: false,refreshNotes:true });
 
       } else {
         const errorData = await response.json();
@@ -144,34 +140,20 @@ const App = () => {
           headerTintColor: "black",
         }}
       />
-      {isKeyboardVisible && (
-        <RichToolbar
-          style={styles.toolbarContainer}
-          editor={richText}
-          iconTint="#312921"
-          actions={[
-            actions.undo,
-            actions.setBold,
-            actions.insertBulletsList,
-            actions.insertOrderedList,
-            actions.insertLink,
-            actions.setItalic,
-            actions.setUnderline,
-            actions.heading1,
-            actions.heading2,
-          ]}
-        />
-      )}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <KeyboardAvoidingView
+      
+      <ScrollView 
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+      style={{flex:1,position:'relative'}}
+      >
+      <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
         >
 
-		  <View style={{flexDirection:'row',alignItems:'flex-start',padding:10,gap:5,marginTop: isKeyboardVisible ? 50 : 10,}}>
-		  <Icon name="bookmark" size={22} color={'black'} />
+		  <View style={{padding:10,gap:5}}>
 		  <TextInput
-		  	numberOfLines={5}
+        multiline={true}
             style={[styles.titleInput]}
             placeholder="Enter title..."
             value={title}
@@ -181,42 +163,76 @@ const App = () => {
           />
 			</View>
 
-          <RichEditor
+    <RichEditor
+    editorInitializedCallback={setHtml}
+    useContainer={true}
+
 			editorStyle={{
 				color: 'black',
-				padding:'50px',
 				caretColor:'black',
-				backgroundColor:COLORS.lightWhite
+				backgroundColor:COLORS.lightWhite,
+        backgroundColor:'red',
+        cssText: richTextStyle, 
+        flex:1    
 			  }}
-            caretColor="red"
+
+        contentCSSText={true}
             ref={richText}
+            
             onChange={(descriptionText) => {
               setChange(true);
             }}
             placeholder={"Body ..."} 
           />
-        </KeyboardAvoidingView>
+ </KeyboardAvoidingView>
       </ScrollView>
+      <RichToolbar
+          style={styles.toolbarContainer}
+          editor={richText}
+          iconTint="#312921"
+          actions={[
+            actions.undo,
+            actions.setBold,
+            actions.setItalic,
+            actions.setUnderline,
+            actions.checkboxList,
+            actions.insertBulletsList,
+            actions.insertOrderedList,
+            actions.insertLink,
+            actions.heading1,
+            actions.heading2,
+          ]
+        }
+        iconMap={{ [actions.heading1]: handleHead, [actions.heading2]: handleHead2 }}
+
+        />
+     
+
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   toolbarContainer: {
-    position: "absolute",
     backgroundColor: "whitesmoke",
-    top: 0,
+    position: "absolute",
+    bottom: 0,
     left: 0,
     right: 0,
     zIndex: 1,
+    padding:10,
+    marginEnd:10
   },
-  richEditor: {
-flex:1  },
+
   titleInput:{
 	fontSize:22,
-	fontWeight:500,
-	flex:1
+	fontWeight:500, 
+  flex:1,
+  backgroundColor:'whitesmoke',
+  padding:5,
+  borderRadius:5
   }
+
 });
 
 export default App;

@@ -66,10 +66,8 @@ useEffect(() => {
       if (!response.ok) {
         throw new Error('Failed to logout');
       }
-      console.log('Before ',token)
 
       await AsyncStorageService.removeItem('token');
-      console.log('after ',token)
       
       router.replace('/');
     } catch (error) {

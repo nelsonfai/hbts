@@ -6,21 +6,21 @@ import { COLORS, SIZES } from '../../constants';
 const slides = [
   {
     key: 'slide1',
-    title: 'Hello there step One',
+    title: 'Shared List',
     image: require('./images/couple.png'),
-    text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, At vero eos et accusam et',
+    text: 'Simplify your to-dos and stay in sync with your partner through shared lists for seamless collaboration',
   },
   {
     key: 'slide2',
-    title: 'Step Two',
+    title: 'Habits',
     image: require('./images/list.jpg'),
-    text: 'Lorem sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et',
+    text: 'Cultivate shared habits and goals, reinforcing accountability and wellness in your relationship',
   },
   {
-    key: 'slide3',
+    key: 'Notes',
     title: 'Step Three',
     image: require('./images/diary.jpg'),
-    text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor',
+    text: 'Enhance communication and create a shared digital space for notes, fostering intimacy and connection between you and your partner.',
   },
 ];
 
@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
     marginBottom: 10,
     marginTop: 30,
+    fontWeight:'bold',
   },
   TextBlock: {
     textAlign: 'center',

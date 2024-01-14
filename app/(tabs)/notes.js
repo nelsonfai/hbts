@@ -13,7 +13,6 @@ import {
 import AsyncStorageService from "../../services/asyncStorage";
 import { API_BASE_URL } from "../../appConstants";
 import { COLORS } from "../../constants";
-import ProfileImage from "../../components/common/Image";
 import { useUser } from "../../context/userContext";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useRouter, Stack } from "expo-router";
@@ -21,6 +20,8 @@ import { useRefresh } from "../../context/refreshContext";
 import { useFocusEffect } from "expo-router";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { useSwipeable } from "../../context/swipeableContext";
+import MyHabitIcon from "../../components/Habits/habitIcon";
+
 const NoteListItem = ({ note, user, details, onDelete ,swipeableRefs}) => {
   const formattedDate = new Date(note.date).toLocaleDateString();
 
@@ -188,7 +189,7 @@ const App = () => {
           headerRight: () => (
             <TouchableOpacity onPress={() => router.push("/notes/write")}>
               <View style={{ marginRight: 10, marginBottom: 7 }}>
-                {/* Add your icon here */}
+                <MyHabitIcon size={35} iconName={'plus-circle-outline'} color={'grey'}/>
               </View>
             </TouchableOpacity>
           ),
@@ -260,8 +261,6 @@ const styles = StyleSheet.create({
     borderRadius:15,
     marginBottom:5,
     marginLeft: 10,
-
-
   },
 
 });

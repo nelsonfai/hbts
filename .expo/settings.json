@@ -1,0 +1,10 @@
+{
+  "hostType": "tunnel",
+  "lanType": "ip",
+  "dev": true,
+  "minify": false,
+  "urlRandomness": "ur-ghx",
+  "https": false,
+  "scheme": null,
+  "devClient": false
+}
