@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "920247663232",
+    "project_id": "couplehabits-f01c7",
+    "storage_bucket": "couplehabits-f01c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920247663232:android:0316da5fd25855caff4465",
+        "android_client_info": {
+          "package_name": "com.fai.couplehabits"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDn8QzjgpQgFteO3Ski8fYaKGrtyziIdrU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

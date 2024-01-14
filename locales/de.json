@@ -1,0 +1,245 @@
+{
+  "common": {
+    "error": "Fehler"
+  },
+  "home": {
+    "title": "Zuhause",
+    "greetings": "Wie geht es Ihnen heute?",
+    "hello": "Hallo",
+    "welcome": "Willkommen in meiner App",
+    "shareListTitle": "Geteilte Liste",
+    "premiumText": "Schalten Sie Premium-Funktionen frei und optimieren Sie Ihr Erlebnis!",
+    "premiumButton": "Jetzt Premium testen",
+    "todayActivity": "Heutige Gewohnheitszusammenfassung",
+    "habitSummary": {
+        "habitDone": "Erledigt!",
+        "invitePartner": "+ Partner einladen",
+        "partner": "Partner"
+
+    },
+    "listSummary": {
+        "listDone": "Liste erledigt",
+        "due": "Listen überfällig",
+        "listCount": "Anzahl der Listen"
+    }
+}
+,
+  "listDetails": {
+    "completed": "Abgeschlossen",
+    "dueBy":"Due by",
+    "forms": {
+      "confirmDelete": "Löschen bestätigen",
+      "deleteText": "Möchten Sie diese Liste wirklich löschen?",
+      "cancelButton": "Abbrechen",
+      "deleteButton": "Löschen",
+      "updateButton": "Aktualisieren",
+      "noDeletePermission": "Sie haben keine Berechtigung zum Löschen dieser Liste!",
+      "editPlaceholder": "Listenelement bearbeiten",
+      "addPlaceholder": "Listenelement hinzufügen"
+    }
+  }
+,  
+"habits": {
+  "title": "Gewohnheiten",
+  "today":"Heute",
+  "habitNotFound": "Gewohnheit nicht gefunden",
+  "dateFuture": "Das ausgewählte Datum liegt in der Zukunft. Die Gewohnheit kann nicht als erledigt markiert werden.",
+  "deleteHabit": {
+      "confirmDelete": "Löschen bestätigen",
+      "deleteText": "Sind Sie sicher, dass Sie diese Gewohnheit löschen möchten?",
+      "cancelButton": "Abbrechen",
+      "deleteButton": "Löschen"
+  }
+},
+  
+    "editHabit": {
+      "updateTitle": "Gewohnheit aktualisieren",
+      "addTitle": "Gewohnheit erstellen",
+      "startDate": "Startdatum",
+      "endDate": "Enddatum",
+      "reminder": "Erinnerung einstellen (optional)",
+      "frequency": "Frequenz auswählen",
+      "sharepartner": "Mit Partner teilen?",
+      "namePlaceholder": "Gewohnheitsname",
+      "descriptionPlaceholder": "Beschreibung (optional)",
+      "sharepartnerText": "Mit Partner verbinden, um dies zu teilen",
+      "selectDays": "Wochentage auswählen:",
+      "selectName": {
+        "errorNone": "Bitte geben Sie einen Gewohnheitsnamen ein",
+        "errorLimit": "Der Gewohnheitsname sollte 60 Zeichen nicht überschreiten."
+      },
+      "selectColor": {
+        "title": "Farbe auswählen",
+        "error": "Bitte wählen Sie eine Farbe aus"
+      },
+      "selectIcon": {
+        "title": "Symbol auswählen",
+        "error": "Bitte wählen Sie ein Symbol aus"
+      },
+      "description": {
+        "error": "Die Beschreibung sollte 100 Zeichen nicht überschreiten."
+      }
+    
+  },
+  "settings": {
+    "logout": "Ausloggen",
+    "title": "Einstellungen",
+    "selectLanguage": "Sprache auswählen",
+    "close": "Schließen",
+    "accounts": {
+      "sectionTitle": "Konten",
+      "changeEmail": "E-Mail ändern",
+      "changePassword": "Passwort ändern",
+      "editProfile": "Profil bearbeiten",
+      "language": "Sprache",
+      "subscription":"Abonnement"
+    },
+    "notifications": {
+      "sectionTitle": "Benachrichtigungen",
+      "enableNotifications": "Benachrichtigungen aktivieren"
+    },
+    "legal": {
+      "sectionTitle": "Rechtliches",
+      "termsAndConditions": "Nutzungsbedingungen",
+      "requiredLink": "Ein weiterer erforderlicher Link"
+    }
+    
+  },
+    "sharedListModal": {
+      "listName": "Listenname",
+      "description": "Beschreibung (optional)",
+      "shareList": "Liste mit Partner teilen",
+      "clear": "Datum löschen",
+      "datePlaceholder": "JJ-MM-TT (optional)",
+      "createJoinTeam": "Erstellen oder beitreten Sie einem Team, um mit Partnern zu teilen",
+      "createList": "Liste erstellen",
+      "updateList": "Liste aktualisieren",
+      "cancel": "Abbrechen",
+      "listNameRequired": "Listenname ist erforderlich",
+      "listNameLength": "Listenname darf 60 Zeichen nicht überschreiten.",
+      "colorRequired": "Farbauswahl ist erforderlich",
+      "addListError": "Fehler beim Hinzufügen/Teilen der Liste. Bitte versuchen Sie es erneut.",
+      "validationError": {
+        "titleRequired": "Listenname ist erforderlich",
+        "titleLength": "Listenname darf 60 Zeichen nicht überschreiten.",
+        "colorRequired": "Farbauswahl ist erforderlich"
+      }
+
+    },
+    "habitstats": {
+      "invitePartner": "Partner einladen",
+      "monthly": "Monatlich",
+      "thisyear": "Jährlich",
+      "totalDaysCompleted": "Gesamte abgeschlossene Tage",
+      "donePercentage": "Prozentsatz erledigt",
+      "currentStreak": "Aktuelle Serie"
+  },
+  "partnerPairing": {
+    "title": "Partner Pairing",
+    "description": "Die Partnerpaarung ermöglicht einen nahtlosen Datenaustausch. Verbinde dich mit deinem Partner, um Habit-Daten und gemeinsame Listen mühelos zu teilen und zu verfolgen. Verbessere deine Reise, bleibe synchronisiert und erreiche eure Ziele gemeinsam!",
+    "shareInviteCode": {
+      "sectionTitle": "Teile meinen Einladungscode",
+      "myCode": "Mein Code:",
+      "copyButtonText": "Kopieren",
+      "copied":"kopiert"
+    },
+    "unpairTeam": {
+      "buttonText": "Entkoppeln",
+      "alert": {
+        "confirmTitle": "Bestätige das Entkoppeln",
+        "confirmMessage": "Bist du sicher, dass du dein Team entkoppeln möchtest?",
+        "cancelText": "Abbrechen",
+        "unpairText": "Entkoppeln",
+        "successTitle": "Erfolg",
+        "errorTitle": "Fehler",
+        "errorMessage": "Team-Entkopplung fehlgeschlagen. Bitte versuche es erneut."
+      }
+    },
+    "enterPartnerCode": {
+      "sectionTitle": "Partnercode eingeben",
+      "placeholder": "Partnercode",
+      "error": "Du benötigst einen Einladungscode",
+      "success": "Du wurdest dem Team hinzugefügt",
+      "pairButtonText": "Paaren"
+    },
+    "404error": {
+      "alreadyInTeam": "Du bist bereits in einem Team.",
+      "cannotCreateWithYourself": "Du kannst kein Team mit dir selbst erstellen.",
+      "invitedUserAlreadyInTeam": "Der eingeladene Benutzer ist bereits in einem Team.",
+      "teamPairingFailed": "Team-Paarung fehlgeschlagen.",
+      "requireInvite":"Bitte gib einen Einladungscode ein"
+
+    }
+},
+  "subscription": {
+    "title": "Abonnementpakete",
+    "monthlyPackage": {
+      "text": "Monatlich",
+      "details": "9,99 $/Monat"
+    },
+    "yearlyPackage": {
+      "text": "Jährlich",
+      "details": "99,99 $/Jahr",
+      "bestValue": "- Bester Wert -"
+    },
+    "features": [
+      {
+        "title": "Unbegrenzte Gewohnheiten",
+        "description": "Zugriff auf eine unbegrenzte Anzahl von Gewohnheiten für umfassendes Tracking.",
+        "icon": "check-circle"
+      },
+      {
+        "title": "Erweiterte Analyse-Daten",
+        "description": "Erhalten Sie detaillierte Einblicke und Analysen, um Ihren Fortschritt zu verfolgen und zu optimieren.",
+        "icon": "pie-chart"
+      },
+      {
+        "title": "Benutzerdefinierte Themen",
+        "description": "Personalisieren Sie Ihre App mit einer Vielzahl von benutzerdefinierten Themen und Farboptionen.",
+        "icon": "paint-brush"
+      },
+      {
+        "title": "Offline-Zugriff",
+        "description": "Greifen Sie auch ohne aktive Internetverbindung auf Ihre Gewohnheiten und Daten zu.",
+        "icon": "wifi"
+      },
+      {
+        "title": "Prioritätssupport",
+        "description": "Erhalten Sie Prioritätssupport und Unterstützung bei Problemen oder Anfragen.",
+        "icon": "headphones"
+      }
+    ],
+    "subscribeButton": "Premium abonnieren",
+    "partnerText": "Ihr Partner erhält Premium kostenlos"
+  },
+  "changeEmail": {
+    "newEmail": "Neue E-Mail",
+    "emailRequired": "E-Mail ist erforderlich.",
+    "enterEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+    "emailDifferent": "Die neue E-Mail sollte sich von der aktuellen E-Mail unterscheiden.",
+    "emailSuccess": "E-Mail-Änderung erfolgreich",
+    "errorOccured": "Beim Ändern Ihrer E-Mail ist ein Fehler aufgetreten.",
+    "emailnotvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+    "button": "E-Mail ändern",
+    "label": "Neue E-Mail"
+  },
+  "changePassword": {
+    "passwordSuccess": "Passwortänderung erfolgreich",
+    "errorOccured": "Ein Fehler ist beim Ändern Ihres Passworts aufgetreten.",
+    "button": "Passwort ändern",
+    "newLabel": "Neues Passwort",
+    "currentLabel": "Aktuelles Passwort",
+    "fieldRequired": "Feld erforderlich"
+  },
+  "editProfile": {
+    "title": "Profil bearbeiten",
+    "fieldRequired": "Feld erforderlich",
+    "errorOccured": "Beim Speichern Ihres Profils ist ein Fehler aufgetreten.",
+    "label": "Benutzername",
+    "saveProfileButton": "Profil aktualisieren",
+    "updatedProfileButton": "Profil aktualisiert"
+  }
+    
+  
+  }
+  

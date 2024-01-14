@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "web": {
+      "bundler": "metro"
+    },
+    "splash": {
+      "image": "./assets/images/splash2.png",
+      "backgroundColor": "#C5BEF9"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization"
+    ],
+    "name": "couplejournal",
+    "slug": "couplejournal",
+    "orientation": "portrait"
+   },
+   "android": {
+      "package": "com.fai.couplehabits",
+      "googleServicesFile": "./google-services.json"
+    }
+}

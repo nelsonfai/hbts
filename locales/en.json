@@ -1,0 +1,241 @@
+{
+  "common": {
+    "error": "Error"
+  },
+  "home": {
+    "title": "Home",
+    "greetings": "How are you Today?",
+    "hello": "Hello",
+    "welcome": "Welcome to my app",
+    "shareListTitle": "Shared List",
+    "premiumText":"Unlock premium features and supercharge your experience!",
+    "premiumButton":"Try Premium Now",
+    "todayActivity":"Today's Habit Summary",
+    "habitSummary":{
+      "habitDone":"Done!",
+      "invitePartner":"+ Invite Partner",
+      "partner":"Partner"
+    },
+    "listSummary":{
+      "listDone":"List Done",
+      "due":"Lists Past Deadline",
+      "listCount":"Number of Lists"
+    }
+
+  },
+  "listDetails":{
+    "completed":"Completed",
+    "forms":{
+      "confirmDelete":"Confirm Delete",
+      "deleteText":"Are you sure you want to delete this List?",
+      "cancelButton":"Cancel",
+      "deleteButton":"Delete",
+      "updateButton":"Update",
+      "noDeletePermission":"You do not have permission to delete this List!",
+      "editPlaceholder":"Edit list item",
+      "addPlaceholder":"Add list Item "
+    }
+  },
+  "habits": {
+    "title": "Habits",
+    "today":"Today",
+    "habitNotFound": "Habit not found",
+    "dateFuture":"Selected date is in the future. Cannot mark habit as done.",
+    "deleteHabit":{
+      "confirmDelete":"Confirm Delete",
+      "deleteText":"Are you sure you want to delete this habit?",
+      "cancelButton":"Cancel",
+      "deleteButton":"Delete"
+    }
+  },
+  "editHabit":{
+    "updateTitle":" Update Habit",
+    "addTitle":" Create Habit",
+    "startDate":"Start Date",
+    "endDate":"End Date",
+    "reminder":"Set Reminder (optional)",
+    "frequency":"Select frequency",
+    "sharepartner":"Share with Partner?",
+    "namePlaceholder":"Habit name",
+    "descriptionPlaceholder":"Description(optional)",
+    "sharepartnerText":"Pair with partner to share this",
+    "selectDays":"Select Days of the Week:",
+    "selectName":{
+      "errorNone":"Please enter a habit name",
+      "errorLimit":"Habit name should not exceed 60 characters."
+    },
+    "selectColor":{
+      "title":"Select color",
+      "error":"Please select a color"
+    },
+    "selectIcon":{
+      "title":"Choose Icon",
+      "error":"Please select a color"
+    },
+    "description":{
+      "error":"Description should not exceed 100 characters."
+    }
+  },
+  "settings": {
+    "logout": "Logout",
+    "title": "Settings",
+    "selectLanguage":"Select Language",
+    "close":"Close",
+    "accounts": {
+      "sectionTitle": "Accounts",
+      "changeEmail": "Change Email",
+      "changePassword": "Change Password",
+      "editProfile": "Edit Profile",
+      "language": "Language",
+      "subscription":"Subscription"
+
+
+    },
+    "notifications": {
+      "sectionTitle": "Notifications",
+      "enableNotifications": "Enable Notifications"
+    },
+    "legal": {
+      "sectionTitle": "Legal",
+      "termsAndConditions": "Terms and Conditions",
+      "requiredLink": "Another Required Link"
+    }
+
+  },
+  "sharedListModal": {
+    "listName": "List Name",
+    "description": "Description (optional)",
+    "shareList": "Share List With Partner",
+    "clear":"Clear Date",
+    "datePlaceholder":"YY-MM-DD (optional)",
+    "createJoinTeam": "Create or join a team to share with partners",
+    "createList": "Create List",
+    "updateList": "Update List",
+    "cancel": "Cancel",
+    "listNameRequired": "List Name is required",
+    "listNameLength": "List name should not exceed 60 characters.",
+    "colorRequired": "Color selection is required",
+    "addListError": "Error adding/shared list. Please try again.",
+    "validationError": {
+      "titleRequired": "List Name is required",
+      "titleLength": "List name should not exceed 60 characters.",
+      "colorRequired": "Color selection is required"
+    }
+  },
+  "habitstats":{
+    "invitePartner":"Invite Partner",
+    "monthly":"Monthly",
+    "thisyear":"Yearly",
+    "totalDaysCompleted":"Total Days Completed",
+    "donePercentage":"Done Percentage",
+    "currentStreak":"Current Streak"
+  },
+    "partnerPairing": {
+      "title": "Partner Pairing",
+      "description": "Partner Pairing enables seamless data sharing. Connect with your partner to effortlessly share and track Habit data and collaborative lists. Enhance your journey, stay synchronized, and achieve your goals together!",
+      "shareInviteCode": {
+        "sectionTitle": "Share My Invite Code",
+        "myCode": "My Code:",
+        "copyButtonText": "Copy",
+        "copied": "Copied"
+      },
+      "unpairTeam": {
+        "buttonText": "Unpair",
+        "alert": {
+          "confirmTitle": "Confirm Unpairing",
+          "confirmMessage": "Are you sure you want to unpair your team?",
+          "cancelText": "Cancel",
+          "unpairText": "Unpair",
+          "successTitle": "Success",
+          "errorTitle": "Error",
+          "errorMessage": "Team unpairing failed. Please try again."
+        }
+
+      },
+      "enterPartnerCode": {
+        "sectionTitle": "Enter Partner's Code",
+        "placeholder": "Partner Code",
+        "error": "You need an invite code",
+        "success": "You have been added to the team",
+        "pairButtonText": "Pair"
+      },
+      "404error": {
+        "alreadyInTeam": "You are already in a team.",
+        "cannotCreateWithYourself": "Cannot create a team with yourself.",
+        "invitedUserAlreadyInTeam": "The invited user is already in a team.",
+        "teamPairingFailed": "Team pairing failed.",
+        "requireInvite":"Please provide an invitation code"
+      }
+    },
+"subscription":{
+      "title": "Subscription Packages",
+      "monthlyPackage": {
+        "text": "Monthly",
+        "details": "$9.99/month"
+      },
+      "yearlyPackage": {
+        "text": "Yearly",
+        "details": "$99.99/year",
+        "bestValue": "- Best Value -"
+      },
+      "features": [
+        {
+          "title": "Unlimited Habits",
+          "description": "Access to an unlimited number of habits for comprehensive tracking.",
+          "icon": "check-circle"
+        },
+        {
+          "title": "Advanced Analytics Data",
+          "description": "Gain detailed insights and analytics to track and optimize your progress.",
+          "icon": "pie-chart"
+        },
+        {
+          "title": "Custom Themes",
+          "description": "Personalize your app with a variety of custom themes and color options.",
+          "icon": "paint-brush"
+        },
+        {
+          "title": "Offline Access",
+          "description": "Access your habits and data even without an active internet connection.",
+          "icon": "wifi"
+        },
+        {
+          "title": "Priority Support",
+          "description": "Receive priority support and assistance for any issues or inquiries.",
+          "icon": "headphones"
+        }
+      ],
+      "subscribeButton": "Go Premium",
+      "partnerText": "Your partner gets Premium for Free"
+    },  
+    "changeEmail":{
+      "newEmail":"New Email",
+      "emailRequired":"Email is required.",
+      "enterEmail":"Please enter a valid email address.",
+      "emailDifferent":"New email should be different from the current email.",
+      "emailSuccess":"Email change Successful",
+      "errorOccured":"An error occurred while changing your email",
+      "emailnotvalid":"Please enter a valid email address.",
+      "button":"Change Email",
+      "label":"New Email"
+    },
+    "changePassword":{
+      "passwordSuccess":"Password change Successful",
+      "errorOccured":"An error occurred while changing your password",
+      "button":"Change Password",
+      "newLabel":"New Password",
+      "currentLabel":"Current Password",
+      "fieldRequired":"Field Required"
+    },
+    "editProfile":{
+      "title":"Edit Profile",
+      "fieldRequired":"Field Required",
+      "errorOccured":"An error occurred while saving your profile",
+      "label":"Username",
+      "saveProfileButton":"Update Profile",
+      "updatedProfileButton":"Profile Updated"
+    }
+    
+  
+  
+}
