@@ -9,7 +9,7 @@ import {
   Keyboard,
   StyleSheet,
   TextInput,
-  View
+  View,Linking
 } from "react-native";
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import { Stack, router, useLocalSearchParams } from "expo-router";
@@ -18,6 +18,9 @@ import { API_BASE_URL } from "../../appConstants";
 import { useRefresh } from "../../context/refreshContext";
 import { COLORS } from "../../constants";
 import richTextStyle from "../../styles/richtextStyle";
+import Icon from "react-native-vector-icons/FontAwesome";
+import * as Clipboard from 'expo-clipboard';
+
 const handleHead = ({ tintColor }) => (
   <Text style={{ color: tintColor }}>Hh</Text>
 );
@@ -27,16 +30,30 @@ const handleHead2 = ({ tintColor }) => (
 
 const App = () => {
   const richText = React.useRef();
+  const scrollViewRef = React.useRef();
+  
+
   const params = useLocalSearchParams();
   const [change, setChange] = useState(false);
   const [initialText, setInitialText] = useState("");
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [title, setTitle] = useState(""); 
+  const [color, setColor] = useState(params.color);
   const {refresh,setRefresh} = useRefresh();
+  const [scroll,setScroll] = useState(0)
 
+  const setCursor = (cursorPosition) =>{
 
+    if (scrollViewRef.current && cursorPosition && cursorPosition !== scroll) {
+      console.log('cursor change')
+      scrollViewRef.current.scrollTo({ y: cursorPosition, animated: true });
+    }
+    setScroll(cursorPosition)
+  }
   const setHtml = () => {
-    fetchInitialText()
+    if (params.id){
+      fetchInitialText()
+    }
    }
   const fetchInitialText = async () => {
     try {
@@ -55,6 +72,7 @@ const App = () => {
         const data = await response.json();
         setInitialText(data.body);
 		    setTitle(data.title)
+        setColor(data.color)
           richText.current.setContentHTML(data.body);
         setChange(false); // Set change to false initially
       } else {
@@ -65,26 +83,9 @@ const App = () => {
       console.error("Error fetching initial text:", error.message);
     }
   };
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => {
-        setKeyboardVisible(true);
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardVisible(false);
-      }
-    );
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
-
+  const handleLinkPress =async (url) => {
+      await Clipboard.setStringAsync(url);
+  };
   const handleDonePress = async (richText, initialText) => {
     try {
       const token = await AsyncStorageService.getItem("token");
@@ -99,7 +100,7 @@ const App = () => {
           "Content-Type": "application/json",
           Authorization: `Token ${token}`,
         },
-        body: JSON.stringify({title:title, body: newBody }),
+        body: JSON.stringify({title:title, body: newBody,color:color }),
       };
 
       const response = await fetch(apiUrl, requestOptions);
@@ -107,8 +108,6 @@ const App = () => {
       if (response.ok) {
     		setChange(false)
         richText.current.blurContentEditor();
-
-
 		    setRefresh({ refreshHabits: false, refreshList: false, refreshSummary: false,refreshNotes:true });
 
       } else {
@@ -127,109 +126,95 @@ const App = () => {
         options={{
           headerStyle: {},
           headerShadowVisible: true,
-          headerRight: () => (
+                    headerRight: () => (
             <TouchableOpacity onPress={() => handleDonePress(richText, initialText)}>
               {change ? (
-                <Text style={{marginRight: 5,marginBottom:7, fontSize: 18, fontWeight: 600 }}>
+              <Text style={{marginRight: 5,marginBottom:7, fontSize: 18, fontWeight: 600 }}>
                   Save
                 </Text>
               ) : null}
             </TouchableOpacity>
           ),
-          headerTitle: "",
+          headerTitle: '',
           headerTintColor: "black",
         }}
       />
-      
-      <ScrollView 
-      showsVerticalScrollIndicator={false}
-      keyboardShouldPersistTaps="handled"
-      style={{flex:1,position:'relative'}}
-      >
-      <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
-        >
 
-		  <View style={{padding:10,gap:5}}>
-		  <TextInput
-        multiline={true}
-            style={[styles.titleInput]}
-            placeholder="Enter title..."
-            value={title}
-            onChangeText={(text) => 
-				{setChange(true)
-				setTitle(text)}}
-          />
-			</View>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1}}> 
+        <View style={styles.toolbarContainer}>
+                  <RichToolbar
+                    style={{flex:1,backgroundColor:'whitesmoke'}}
+                      editor={richText}
+                      iconTint="grey"
+                      selectedIconTint="#312921"
+                      actions={[
+                        actions.undo,
+                        actions.setBold,
+                        actions.insertBulletsList,
+                        actions.insertOrderedList,
+                        actions.insertLink,
+                        actions.setItalic,
+                        actions.checkboxList,
+                        actions.setUnderline,
+                      ]}
+                    />
+            </View>
+        <ScrollView contentContainerStyle={{flexGrow:1,padding:7,paddingBottom:100,paddingTop:40}}
+        showsVerticalScrollIndicator={false}
+          ref={scrollViewRef}>
 
-    <RichEditor
-    editorInitializedCallback={setHtml}
-    useContainer={true}
+              <View style={{ padding: 15, gap: 5 ,flexDirection:'row',alignItems:'flex-start',backgroundColor:'whitesmoke',marginVertical:10,borderRadius:10,}}>
+                  <TouchableOpacity onPress={ () => setColor('red')}>
+                    <View style={{paddingTop:5}}><Icon name="bookmark" size={23} color={color} /></View>
+                  </TouchableOpacity>
+                    <TextInput
+                      multiline={true}
+                      style={[styles.titleInput]}
+                      placeholder="Enter title..."
+                      value={title}
+                      onChangeText={(text) => {
+                        setChange(true);
+                        setTitle(text);
+                      }}
+                    />
+              </View>
+                  <View>
+                    <RichEditor
+                      editorInitializedCallback={setHtml}
+                      onCursorPosition={setCursor}
+                      style={{flex:1,backgroundColor:'purple'}}
+                        editorStyle={{
+                        color: 'black',
+                        caretColor: 'black',
+                        backgroundColor: COLORS.lightWhite,
+                        cssText: richTextStyle(color),
+                      }}
+                      contentCSSText={true}
+                      ref={richText}
+                      onLink={handleLinkPress}
+                      onChange={(descriptionText) => {
+                        setChange(true);
+                      }}
+                      placeholder={"Body ..."}
+                    />
+                    </View>
+          </ScrollView>
 
-			editorStyle={{
-				color: 'black',
-				caretColor:'black',
-				backgroundColor:COLORS.lightWhite,
-        backgroundColor:'red',
-        cssText: richTextStyle, 
-        flex:1    
-			  }}
-
-        contentCSSText={true}
-            ref={richText}
-            
-            onChange={(descriptionText) => {
-              setChange(true);
-            }}
-            placeholder={"Body ..."} 
-          />
- </KeyboardAvoidingView>
-      </ScrollView>
-      <RichToolbar
-          style={styles.toolbarContainer}
-          editor={richText}
-          iconTint="#312921"
-          actions={[
-            actions.undo,
-            actions.setBold,
-            actions.setItalic,
-            actions.setUnderline,
-            actions.checkboxList,
-            actions.insertBulletsList,
-            actions.insertOrderedList,
-            actions.insertLink,
-            actions.heading1,
-            actions.heading2,
-          ]
-        }
-        iconMap={{ [actions.heading1]: handleHead, [actions.heading2]: handleHead2 }}
-
-        />
-     
-
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   toolbarContainer: {
-    backgroundColor: "whitesmoke",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-    padding:10,
-    marginEnd:10
+    width:'100%',
+    zIndex:1,
+    position:'absolute',
   },
-
   titleInput:{
 	fontSize:22,
 	fontWeight:500, 
   flex:1,
-  backgroundColor:'whitesmoke',
-  padding:5,
   borderRadius:5
   }
 

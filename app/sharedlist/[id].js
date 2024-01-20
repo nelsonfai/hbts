@@ -53,7 +53,6 @@ const ListItemDetailsScreen = () => {
   const fetchListItems = async () => {
     const token = await AsyncStorageService.getItem('token')
     try {
-      // const allListUrl = `${API_BASE_URL}/collaborative-lists/${params.id}/`
       const allListUrl = `${API_BASE_URL}/collaborative-lists/${params.id}/items/`
       const response = await fetch(allListUrl, {
           headers: {
@@ -154,12 +153,9 @@ const ListItemDetailsScreen = () => {
           const response = await fetch(apiUrl, requestOptions);
 
           if (response.ok) {
-            // If the item is deleted successfully, update the local state
             setRefresh({ refreshHabits: false, refreshList: true,refreshSummary:false ,refreshNotes:false});
-
             setListItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
           } else {
-            // Handle errors
             const errorData = await response.json();
             console.error('Error deleting item:', errorData);
           }
@@ -292,7 +288,7 @@ const closeEditModal = () => {
         </View>
         <View style={styles.container}>
           {isLoading ? (
-            <ActivityIndicator size='large' color={COLORS.primary} />
+            <ActivityIndicator size='medium' color={'grey'} />
           ) : error ? (
             <View>
               <Text>Error Loading Data:</Text>

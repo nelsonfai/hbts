@@ -12,21 +12,6 @@ import { useRefresh } from '../../../context/refreshContext';
 import I18nContext from '../../../context/i18nProvider';
 import { API_BASE_URL,colorOptions } from '../../../appConstants';
 import MyHabitIcon from '../../Habits/habitIcon';
-const theme = [
-  'https://i.ibb.co/k50FD1X/1.png',
-
-  'https://i.ibb.co/6bXQR1w/6.png',
-  'https://i.ibb.co/QJGH893/7.png',
-  'https://i.ibb.co/2FZSXWG/8.png',
-  'https://i.ibb.co/Tk95LBm/2.png',
-
-  'https://i.ibb.co/vP1mYxD/9.png',
-  'https://i.ibb.co/56XqSb6/10.png',
-  'https://i.ibb.co/zhZphNR/11.png',
-  'https://i.ibb.co/xhpPFJ0/3.png',
-  'https://i.ibb.co/nkJdW2T/4.png',
-  'https://i.ibb.co/fQrHHB7/5.png',
-];
 
 const SharedLists = () => {
   const { user } = useUser();
@@ -40,6 +25,7 @@ const SharedLists = () => {
   const [selectedColor, setSelectedColor] = useState(colorOptions[0]);
   const [isLongPress, setLongPress] = useState(false);
   const userHasTeam = user.hasTeam;
+  const router = useRouter();
 
   const [newSharedList, setNewSharedList] = useState({
     title: '',
@@ -86,7 +72,6 @@ const SharedLists = () => {
   };
 
   const handleItemPress = (item) => {
-    const router = useRouter();
     router.push({
       pathname: `/sharedlist/id`,
       params: {
@@ -141,8 +126,7 @@ const SharedLists = () => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{i18n.t('home.shareListTitle')}</Text>
         <TouchableOpacity onPress={handleAddButtonClick}>
-          <MyHabitIcon size={30} iconName={'plus-circle-outline'} colorValue={'grey'}/>
-
+          <MyHabitIcon size={30} iconName={'plus-circle-outline'} colorValue={'black'}/>
         </TouchableOpacity>
       </View>
       <View style={styles.cardsContainer}>
@@ -258,12 +242,7 @@ const styles = {
     marginBottom: 5,
     width: 170,
     height: 240,
-    flexDirection: 'column',
-    elevation: 1, // Android elevation for 3D look
-    shadowColor: '#000', // iOS shadow color
-    shadowOffset: { width: 0, height: 2 }, // iOS shadow offset
-    shadowOpacity: 0.1, // iOS shadow opacity
-    
+    flexDirection: 'column',    
   },
 
   cardText: {

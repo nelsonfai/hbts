@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, View,Text,TouchableOpacity,StyleSheet} from "react-native";
+import { SafeAreaView, ScrollView, View,Text,TouchableOpacity,StyleSheet,RefreshControl} from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { COLORS,SIZES} from "../../constants";
 import { useUser } from "../../context/userContext";
@@ -16,7 +16,14 @@ const Home =  () => {
   const router = useRouter();
   const {i18n} = useContext(I18nContext)
   const [showSubscriptionModal,setShowSubscriptionModal] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = () => {
 
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000); 
+  };
 const goToSettings = () => {
     router.push('settings');
   };
@@ -55,14 +62,17 @@ const onPressSubscribe = () => {
           headerTitle: '',
         }}/> 
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }>
       <View style={styles.container}>
       <Welcome  user={user}   />
 
       {!user.premium ? (
     <View style={styles.subscriptionContainer}>
     <Text style={styles.subscriptionText}>
-{i18n.t('home.premiumText')}
+    {i18n.t('home.premiumText')}
         </Text>
         <TouchableOpacity onPress={onPressSubscribe} style={styles.subscribeButton}>
         <Icon name="star" size={25} color={'#ffdb83'} /> 
@@ -70,9 +80,9 @@ const onPressSubscribe = () => {
             {i18n.t('home.premiumButton')}
           </Text>
         </TouchableOpacity>
-</View>
-    ) : null}
-      <SharedLists user_id ={user.id}/> 
+    </View>) : null}
+      <SharedLists key={refreshing ? 'refreshed' : 'not-refreshed'} user_id={user.id} />
+
 </View>
   
       </ScrollView>
@@ -94,24 +104,21 @@ const styles = StyleSheet.create({
   },
   createListButton: {
     alignItems: 'center',
-    backgroundColor: '#DDDDDD',
     padding: 10,
     marginBottom: 16,
   },
   subscriptionContainer: {
-marginTop: 16,
-    padding: 16,
-    backgroundColor: '#f0f0f0',
-    backgroundColor:'#efedfd',
-    borderRadius: 8,
-      },
+        marginTop: 16,
+          },
   subscriptionText: {
     fontSize: 16,
 marginBottom: 8,
-    textAlign:"center"
+    textAlign:"center",    display:'none'
+
   },
   subscribeButton: {
     backgroundColor: 'black',
+    backgroundColor:"#B0A7F7",
     padding: 10,
     borderRadius: 8,
     flexDirection:'row',
@@ -121,6 +128,8 @@ marginBottom: 8,
   },
   subscribeButtonText: {
     color: '#FFF',
+    color:'black',
+
     fontSize: 16,
   },
 });

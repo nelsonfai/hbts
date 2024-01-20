@@ -207,7 +207,7 @@ const YourCarouselComponent = ({  user }) => {
 
 
   const renderItem = ({ item }) => (
-    <View style={[styles.item, {  backgroundColor: '#efedfd' }]}>
+    <View style={[styles.item, { backgroundColor:'#efedfd', }]}>
     
       {React.cloneElement(item.component, { user, summaryData ,i18n})} 
     </View>

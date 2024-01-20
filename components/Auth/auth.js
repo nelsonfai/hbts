@@ -25,10 +25,16 @@ export default function Auth({ authType, authTitle }) {
   const [passwordError, setPasswordError] = useState('');
   const [authError, setAuthError] = useState('');
 
-  const gotoProfile = () => {
-    return router.push('/profile');
-  };
 
+  const gotoProfile = () => {
+    return router.replace({
+      pathname: '/profile',
+      params: {
+        create: true
+      }
+
+    });   
+  };
   const validateFields = () => {
     let isValid = true;
 

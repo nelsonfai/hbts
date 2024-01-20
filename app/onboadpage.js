@@ -21,6 +21,9 @@ const gotoLogin = () => {
       <View style={styles.container}>
         <Stack.Screen
           options={{
+            headerRight:() =>{ 
+              ''
+            },
             headerShadowVisible: false,
             headerTitle: '',
           }}

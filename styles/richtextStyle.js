@@ -1,18 +1,22 @@
-const richTextStyle = `
+// styles/richtextStyle.js
 
-a{
+const richTextStyle = (color) => `
+  a {
     text-decoration: none;
-    color:'black' !important
-}
-h1{
+    color: ${color} !important;
+  }
+
+  h1 {
     font-size: 18 !important;
-}
-h2{
+  }
+
+  h2 {
     font-size: 16 !important;
-}
-input[type="checkbox"] {
-    accent-color: #34495e;
-}
+  }
+
+  input[type="checkbox"] {
+    accent-color: ${color} !important;
+  }
 `;
 
-export default richTextStyle
+export default richTextStyle;

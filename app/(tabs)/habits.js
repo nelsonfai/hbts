@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback,useContext } from "react";
-import { SafeAreaView, ScrollView, View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import { SafeAreaView, ScrollView, View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator,RefreshControl } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { COLORS } from "../../constants";
 import AsyncStorageService from "../../services/asyncStorage";
@@ -33,6 +33,7 @@ const Habits = () => {
   const currentDate = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(currentDate);
   const [dateText, setDateText] = useState(i18n.t('habits.today'));
+  const [refreshing, setRefreshing] = useState(false);
 
 
   const fetchHabits = async () => {
@@ -66,6 +67,14 @@ const Habits = () => {
   useEffect(() => {
     fetchHabits();
   }, [date]);
+
+
+  const onRefresh = useCallback(() => {
+    // Trigger your refresh logic here
+    // For example, you can refetch habits data
+    fetchHabits();
+  }, [date]); // Make sure to include any dependencies needed for the refresh logic
+
 
   useFocusEffect(
     useCallback(() => {
@@ -108,7 +117,6 @@ const Habits = () => {
   };
 
   const UpdateHabit = (habit) => {
-    const router = useRouter();
     currentSwipeable(habit.habit.id)
 
     let hasReminderVal;
@@ -165,7 +173,10 @@ const Habits = () => {
               );
 
               if (!response.ok) {
-                throw new Error("Failed to delete habit");
+                const errorData = await response.json();
+                if ( errorData.error === "Permission denied"){
+                  Alert.alert('Permision Denied')
+                }
               }
 
               // Refresh habits after deletion
@@ -177,6 +188,7 @@ const Habits = () => {
       );
     } catch (error) {
       console.error("Error deleting habit:", error.message);
+
     }
   };
 
@@ -243,6 +255,7 @@ const Habits = () => {
             <TouchableOpacity style={{ marginRight: 10,marginBottom:7 }} 
             onPress={user.premium ? AddHabit : () => setSubscribeModal(true)}>
               <MyHabitIcon size={35} iconName={'plus-circle-outline'} color={'grey'}/>
+
             </TouchableOpacity>
           ),
           headerTitle: '',
@@ -252,17 +265,20 @@ const Habits = () => {
         <CalendarStrip
           showMonth	={false}
           startingDate={date}
-          selectedDate={currentDate}
+          selectedDate={date}
           onDateSelected={handleDateSelected}
           style={{ height: 60,padding:10 }}
           calendarAnimation={{ type: 'sequence', duration: 20 }}
-          scrollable={true}
+          scrollable={false}
           daySelectionAnimation={{ type: 'background', highlightColor	: 'black' }}
           highlightDateNumberStyle={{color: 'white'}}
           highlightDateNameStyle={{color: 'white'}}
         />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }>
         {loading ? (
           <View style={{ flex: 1, justifyContent: "center", alignItems: 'center' }}>
             <ActivityIndicator size="medium" color="grey" />

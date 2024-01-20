@@ -48,7 +48,6 @@ const HabitStats = ({ route }) => {
           throw new Error("Failed to fetch habit statistics");
         }
         const data = await response.json();
-        console.log(data)
 
         setPartner1Stats(data.partner1);
         setPartner2Stats(data.partner2);

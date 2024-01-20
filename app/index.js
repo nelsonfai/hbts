@@ -7,6 +7,7 @@ import { router,Stack } from "expo-router";
 import { useFocusEffect } from '@react-navigation/native';
 import { useNotificationService } from "../services/notificationServices";
 import { API_BASE_URL } from "../appConstants";
+import { createIconSetFromFontello } from "react-native-vector-icons";
 
 const SplashScreen = () => (
   <SafeAreaView style={{ flex: 1, backgroundColor:'white' }}>
@@ -58,9 +59,10 @@ const IndexPage = () => {
             }
 
             const data = await response.json();
+            console.log('userdata',data)
             const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id,lang,premium} = data;
             
-            setUser({ id, email, name, profile_pic, team_invite_code, hasTeam, team_id,lang,premium,notify:expo_token});
+            setUser({ id, email, name: name || '', profile_pic, team_invite_code, hasTeam, team_id,lang,premium,notify:expo_token});
             setRefresh({ refreshHabits, refreshList,refreshSummary,refreshNotes });
 
             router.replace("/home");
