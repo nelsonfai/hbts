@@ -17,7 +17,6 @@ export function useNotificationService() {
 
   useEffect(() => {
     let notificationListener;
-
     const setupNotificationService = async () => {
       const token = await registerForPushNotificationsAsync();
       if (token) {

@@ -1,19 +1,23 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
-import {icons,images} from '../constants'
+import { View, Text, StyleSheet } from "react-native";
+import { icons, images } from '../constants';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const EmptyNotesPage = ({title,image}) => {
-    let source;
-    if (image === 'list') {
-      source = images.list; // Use images.list from your constants
-    } else {
-      source = images.diary; // Use images.diary from your constants
-    }
+const EmptyNotesPage = ({ title, image }) => {
+  let SvgComponent;
+  if (image === 'list') {
+    SvgComponent = images.list; // Use images.list from your constants
+  } else {
+    SvgComponent = images.habit; // Use images.diary from your constants
+  }
+
+
   return (
     <View style={styles.container}>
-      <Image source={source} style={styles.image} />
-
+      <View style={styles.image}>
+        {/* Use the SvgComponent variable here */}
+        {SvgComponent && <SvgComponent />}
+      </View>
       <Text style={styles.message}>No {title}s found</Text>
       <Text style={styles.subMessage}>Start by adding a new {title}</Text>
     </View>
@@ -24,15 +28,12 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff", 
-    height:'100%',
-
-
+    backgroundColor: "#fff",
+    height: '100%',
   },
   image: {
     width: 100, // Adjust the width as needed
     height: 100, // Adjust the height as needed
-    resizeMode: "contain", // Adjust the resizeMode as needed
     marginBottom: 20,
   },
   message: {

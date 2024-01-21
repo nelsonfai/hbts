@@ -10,25 +10,20 @@ const Index = () => {
 const router = useRouter()
 
 const gotoSignup = () => {
-  router.push('(auth)/signup');
+  router.replace('(auth)/signup');
 };
-const gotoLogin = () => {
-  router.push('(auth)/login');
+const gotoLogin = () => {+
+  router.replace('(auth)/login');
 };
-
     return (
       <View style={styles.container}>
         <Stack.Screen
           options={{
-            headerRight:() =>{ 
-              ''
-            },
             headerShadowVisible: false,
             headerTitle: '',
           }}
         />
         <View style={styles.carousel}>
-
           <OnboardingScreen />
           </View>
 

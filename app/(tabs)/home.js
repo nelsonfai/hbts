@@ -13,7 +13,6 @@ import NetInfo from '@react-native-community/netinfo';
 import NetworkStatus from "../../components/NetworkStatus";
 
 const Home =  () => {
-
   const {user} = useUser()
   const router = useRouter();
   const {i18n} = useContext(I18nContext)
@@ -82,8 +81,7 @@ return (
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }>
       <View style={styles.container}>
-      <Welcome  user={user}   />
-
+      <Welcome  user={user} />
       {!user.premium ? (
     <View style={styles.subscriptionContainer}>
     <Text style={styles.subscriptionText}>
@@ -130,7 +128,7 @@ const styles = StyleSheet.create({
           },
   subscriptionText: {
     fontSize: 16,
-marginBottom: 8,
+  marginBottom: 8,
     textAlign:"center", 
 
   },
@@ -145,7 +143,6 @@ marginBottom: 8,
   },
   subscribeButtonText: {
     color: '#FFF',
-
     fontSize: 16,
   },
 });

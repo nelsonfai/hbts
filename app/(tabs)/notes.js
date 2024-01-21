@@ -306,7 +306,8 @@ const NotesScreen = () => {
       {network ? (
         <View style={{ marginTop: 10, padding: 5 }}>
         {notes.length === 0 ? (
-            <EmptyNotesPage title={'note'} image={'diary'}/>       
+
+            <EmptyNotesPage title={'note'} image={'list'}/>       
         ) : (
           <FlatList
             data={notes}

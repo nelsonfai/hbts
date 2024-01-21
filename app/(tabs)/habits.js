@@ -277,7 +277,7 @@ const Habits = () => {
       </View>
       <View style={{ flex: 1 }}>
   {habits.length === 0 ? (
-    <EmptyNotesPage title={'habit'} image={'list'} />
+    <EmptyNotesPage title={'habit'} image={'habit'} />
   ) : (
     <ScrollView
       showsVerticalScrollIndicator={false}

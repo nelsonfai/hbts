@@ -23,8 +23,8 @@ const Layout = () => {
           <RefreshProvider>
             <SummaryProvider>
               <SwipeableProvider>
-                <Stack initialRouteName="home">
-                  <Stack.Screen
+                <Stack initialRouteName="index">
+                <Stack.Screen
                     options={{
                       headerShadowVisible: true,
                       headerShown: false,

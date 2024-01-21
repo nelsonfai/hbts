@@ -4,15 +4,18 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorageService from '../../services/asyncStorage';
 import { useRefresh } from '../../context/refreshContext';
 import { API_BASE_URL } from '../../appConstants';
-const SearchComponent = ({ updateList, color, sharedListId,placeholderText }) => {
+
+const SearchComponent = ({ updateList, color, sharedListId,placeholderText,network }) => {
   const {setRefresh} = useRefresh()
   const [searchText, setSearchText] = useState('');
   const handleSearch = async () => {
+    if (!network){
+      return 
+    }
     try {
       if (!searchText.trim()) {
         return;
       }
-
       const token = await AsyncStorageService.getItem('token');
       const apiUrl = `${API_BASE_URL}/items/`;
   
