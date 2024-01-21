@@ -14,7 +14,7 @@ import SubscriptionModal from "../../components/subscription/SubcritionModal";
 import MyHabitIcon from "../../components/Habits/habitIcon";
 import I18nContext from "../../context/i18nProvider";
 import { API_BASE_URL } from "../../appConstants";
-
+import EmptyNotesPage from "../../components/emptyPage";
 const Habits = () => {
   const { user } = useUser();
   const {i18n,locale} = useContext(I18nContext)
@@ -275,98 +275,103 @@ const Habits = () => {
           highlightDateNameStyle={{color: 'white'}}
         />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }>
-        {loading ? (
-          <View style={{ flex: 1, justifyContent: "center", alignItems: 'center' }}>
-            <ActivityIndicator size="medium" color="grey" />
-          </View>
-        ) : (
-          
-            habits.map((habit, index) => (
-              <Swipeable
-                key={habit.id}
-                ref={(ref) => swipeableRefs[habit.id] = ref} 
-                onSwipeableWillOpen={() => {
-                  handleSwipeOpen(habit.id)
-                }}
-                renderRightActions={() => (
-                  <View style={{ flexDirection: 'row' }}>
-                                              <TouchableOpacity
-                            onPress={() => handleMarkAsDone(habit.id)}>
-                            <View style={styles.swipeButton}>
-                              {!habit.done ? (
-                                <Icon name="check" size={20} color={'grey'} />
-                              ) : (
-                                <Icon name="times" size={20} color={'grey'} />
-                              )}
-                            </View>
-                          </TouchableOpacity>
-
-                          <TouchableOpacity
-                            onPress={() => handleDelete(habit.id)}>
-                            <View style={styles.swipeButton}>
-                              <Icon name="trash" size={25} color={'grey'} />
-                            </View>
-                          </TouchableOpacity>
-
-                          <TouchableOpacity
-                            onPress={() => UpdateHabit({ habit })}>
-                            <View style={styles.swipeButton}>
-                              <Icon name="edit" size={24} color='grey' />
-                            </View>
-                          </TouchableOpacity>
-                                          </View>
-                )}
-                //onSwipeableWillOpen={() => handleSwipeOpen(habit.id, index)}
-
-              >
+      <View style={{ flex: 1 }}>
+  {habits.length === 0 ? (
+    <EmptyNotesPage title={'habit'} image={'list'} />
+  ) : (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+    >
+      {loading ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: 'center' }}>
+          <ActivityIndicator size="medium" color="grey" />
+        </View>
+      ) : (
+        habits.map((habit, index) => (
+          <Swipeable
+            key={habit.id}
+            ref={(ref) => swipeableRefs[habit.id] = ref}
+            onSwipeableWillOpen={() => {
+              handleSwipeOpen(habit.id)
+            }}
+            renderRightActions={() => (
+              <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity
-                  style={[styles.habitItem, { backgroundColor: habit.done ? habit.color : 'whitesmoke', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }]}
-                  onPress={() => {
-                    router.push({
-                      pathname: '/habitstats',
-                      params: {
-                        habitId: habit.id,
-                        name: habit.name || '',
-                        color: habit.color || '',
-                      },
-                    });
-                  }}>
-                  <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: 'row', gap: 7, alignItems: 'flex-start' }}>
-                      <MyHabitIcon iconName={habit.icon} size={25} />
-                      <View>
-                        <Text style={styles.habitName}>{habit.name}</Text>
-                        <Text style={styles.habitDescription}>{habit.description.toLowerCase()}</Text>
-                        <Text style={{fontWeight:300}}> {habit.partner_done_count} | {habit.partner_count}</Text>
-                      </View>
+                  onPress={() => handleMarkAsDone(habit.id)}>
+                  <View style={styles.swipeButton}>
+                    {!habit.done ? (
+                      <Icon name="check" size={20} color={'grey'} />
+                    ) : (
+                      <Icon name="times" size={20} color={'grey'} />
+                    )}
                   </View>
-                  
-                </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 3, }}>
-                    <Text style={{ fontSize: 14 }}>
-                    {habit.streak}
-                  </Text>
-                    <Icon name="fire" size={11} color={'red'} />
-                  </View>
-
                 </TouchableOpacity>
-              </Swipeable>
-            ))
-        )}
-        <SubscriptionModal isVisible={subscribeModal} onClose={()=> setSubscribeModal(false)}/>
-      </ScrollView>
+
+                <TouchableOpacity
+                  onPress={() => handleDelete(habit.id)}>
+                  <View style={styles.swipeButton}>
+                    <Icon name="trash" size={25} color={'grey'} />
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => UpdateHabit({ habit })}>
+                  <View style={styles.swipeButton}>
+                    <Icon name="edit" size={24} color='grey' />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+          >
+            <TouchableOpacity
+              style={[styles.habitItem, { backgroundColor: habit.done ? habit.color : 'whitesmoke', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }]}
+              onPress={() => {
+                router.push({
+                  pathname: '/habitstats',
+                  params: {
+                    habitId: habit.id,
+                    name: habit.name || '',
+                    color: habit.color || '',
+                  },
+                });
+              }}>
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', gap: 7, alignItems: 'flex-start' }}>
+                  <MyHabitIcon iconName={habit.icon} size={25} />
+                  <View>
+                    <Text style={styles.habitName}>{habit.name}</Text>
+                    <Text style={styles.habitDescription}>{habit.description.toLowerCase()}</Text>
+                    <Text style={{fontWeight:300}}> {habit.partner_done_count} | {habit.partner_count}</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 3, }}>
+                <Text style={{ fontSize: 14 }}>
+                  {habit.streak}
+                </Text>
+                <Icon name="fire" size={11} color={'red'} />
+              </View>
+            </TouchableOpacity>
+          </Swipeable>
+        ))
+      )}
+    </ScrollView>
+  )}
+
+  <SubscriptionModal isVisible={subscribeModal} onClose={() => setSubscribeModal(false)} />
+</View>
+
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 12,
-    marginTop: 10,
+    padding: 10,
+    marginTop: 5,
+ 
   },
   habitItem: {
     borderRadius: 10,

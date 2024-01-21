@@ -25,7 +25,6 @@ export default function Auth({ authType, authTitle }) {
   const [passwordError, setPasswordError] = useState('');
   const [authError, setAuthError] = useState('');
 
-
   const gotoProfile = () => {
     return router.replace({
       pathname: '/profile',
@@ -72,6 +71,8 @@ export default function Auth({ authType, authTitle }) {
     setLoading(true);
     const logINUrl = `${API_BASE_URL}/login/`;
     try {
+      expo_token = await AsyncStorageService.getItem('expo_token')
+      console.log('Auth',expo_token)
       const response = await fetch(logINUrl, {
         method: 'POST',
         headers: {
@@ -80,7 +81,8 @@ export default function Auth({ authType, authTitle }) {
         body: JSON.stringify({
           email: email,
           password: password,
-          expo_token:existingStatus
+          expo_token: expo_token
+
 
         }),
       });
@@ -110,6 +112,9 @@ async function signUpWithEmail() {
     const signupUrl = `${API_BASE_URL}/signup/`;
 
     try {
+      expo_token = await AsyncStorageService.getItem('expo_token')
+      console.log('Auth sign up',expo_token)
+
       const response = await fetch(signupUrl, {
         method: 'POST',
         headers: {
@@ -118,7 +123,7 @@ async function signUpWithEmail() {
         body: JSON.stringify({
           email: email,
           password: password,
-          expo_token:existingStatus
+          expo_token: expo_token
         }),
       });
 

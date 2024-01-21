@@ -2,7 +2,6 @@ import { Tabs, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { Text } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
-import { NavigationContainer } from '@react-navigation/native';
 import I18nContext from "../../context/i18nProvider";
 import { useContext } from "react";
 const Layout = () => {

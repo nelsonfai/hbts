@@ -7,7 +7,6 @@ import { router,Stack } from "expo-router";
 import { useFocusEffect } from '@react-navigation/native';
 import { useNotificationService } from "../services/notificationServices";
 import { API_BASE_URL } from "../appConstants";
-import { createIconSetFromFontello } from "react-native-vector-icons";
 
 const SplashScreen = () => (
   <SafeAreaView style={{ flex: 1, backgroundColor:'white' }}>
@@ -31,7 +30,7 @@ const IndexPage = () => {
   const [loading, setLoading] = useState(true);
   const expo_token = useNotificationService();
 
-
+  console.log('expo token',expo_token)
   useFocusEffect(
     React.useCallback(() => {
       const fetchData = async () => {
@@ -57,7 +56,6 @@ const IndexPage = () => {
 
               throw new Error('Failed to fetch user profile');
             }
-
             const data = await response.json();
             console.log('userdata',data)
             const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id,lang,premium} = data;
@@ -72,6 +70,7 @@ const IndexPage = () => {
 
           setLoading(false);
         } catch (error) {
+          router.replace("/onboadpage");
           console.error('Error fetching user profile:', error.message);
           setLoading(false);
         }

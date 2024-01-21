@@ -9,7 +9,8 @@ import {
   Keyboard,
   StyleSheet,
   TextInput,
-  View,Linking
+  View,
+  Alert,
 } from "react-native";
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import { Stack, router, useLocalSearchParams } from "expo-router";
@@ -20,6 +21,9 @@ import { COLORS } from "../../constants";
 import richTextStyle from "../../styles/richtextStyle";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as Clipboard from 'expo-clipboard';
+import NetworkStatus from "../../components/NetworkStatus";
+import NetInfo from '@react-native-community/netinfo';
+
 
 const handleHead = ({ tintColor }) => (
   <Text style={{ color: tintColor }}>Hh</Text>
@@ -36,12 +40,17 @@ const App = () => {
   const params = useLocalSearchParams();
   const [change, setChange] = useState(false);
   const [initialText, setInitialText] = useState("");
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  const [title, setTitle] = useState(""); 
-  const [color, setColor] = useState(params.color);
+  const [title, setTitle] = useState(params.title || ''); 
+  const [color, setColor] = useState(params.color || 'black');
   const {refresh,setRefresh} = useRefresh();
   const [scroll,setScroll] = useState(0)
+  const [network,setNetWork] = useState(true)
 
+  const networkCheck =() => {
+    NetInfo.fetch().then(state => {
+      setNetWork(state.isConnected)
+    });
+  };
   const setCursor = (cursorPosition) =>{
 
     if (scrollViewRef.current && cursorPosition && cursorPosition !== scroll) {
@@ -51,43 +60,54 @@ const App = () => {
     setScroll(cursorPosition)
   }
   const setHtml = () => {
+    networkCheck()
     if (params.id){
       fetchInitialText()
     }
    }
-  const fetchInitialText = async () => {
-    try {
-      const token = await AsyncStorageService.getItem("token");
-      const apiUrl = `${API_BASE_URL}/notes/${params.id}/`;
 
-      const requestOptions = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${token}`,
-        },
-      };
-      const response = await fetch(apiUrl, requestOptions);
-      if (response.ok) {
-        const data = await response.json();
-        setInitialText(data.body);
-		    setTitle(data.title)
-        setColor(data.color)
-          richText.current.setContentHTML(data.body);
-        setChange(false); // Set change to false initially
-      } else {
-        const errorData = await response.json();
-        console.error("Error fetching initial text:", errorData);
-      }
-    } catch (error) {
-      console.error("Error fetching initial text:", error.message);
-    }
-  };
+   const fetchInitialText = async () => {
+    if(network){ try {
+       const token = await AsyncStorageService.getItem("token");
+       const apiUrl = `${API_BASE_URL}/notes/${params.id}/`;
+ 
+       const requestOptions = {
+         method: "GET",
+         headers: {
+           "Content-Type": "application/json",
+           Authorization: `Token ${token}`,
+         },
+       };
+       const response = await fetch(apiUrl, requestOptions);
+       if (response.ok) {
+         const data = await response.json();
+         setInitialText(data.body);
+         setTitle(data.title)
+         setColor(data.color)
+         richText.current.setContentHTML(data.body);
+         setChange(false); // Set change to false initially
+       } else {
+         const errorData = await response.json();
+         console.error("Error fetching initial text:", errorData);
+       }
+     } catch (error) {
+      //console.error("Error fetching initial text:", error.message);
+    }}
+ }
+
+
+
   const handleLinkPress =async (url) => {
       await Clipboard.setStringAsync(url);
   };
   const handleDonePress = async (richText, initialText) => {
     try {
+      NetInfo.fetch().then(state => {
+        if(!state.isConnected){
+          return Alert.alert('You are Currently Offline')
+        }
+      });
+
       const token = await AsyncStorageService.getItem("token");
       const newBody = await richText.current.getContentHtml();
       const apiUrl = params.id
@@ -115,7 +135,7 @@ const App = () => {
         console.error("Error updating/add text:", errorData);
       }
     } catch (error) {
-      console.error("Error updating/add text:", error.message);
+      //console.error("Error updating/add text:", error.message);
     }
     Keyboard.dismiss();
   };
@@ -141,24 +161,26 @@ const App = () => {
       />
 
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1}}> 
+        {network && (
         <View style={styles.toolbarContainer}>
-                  <RichToolbar
-                    style={{flex:1,backgroundColor:'whitesmoke'}}
-                      editor={richText}
-                      iconTint="grey"
-                      selectedIconTint="#312921"
-                      actions={[
-                        actions.undo,
-                        actions.setBold,
-                        actions.insertBulletsList,
-                        actions.insertOrderedList,
-                        actions.insertLink,
-                        actions.setItalic,
-                        actions.checkboxList,
-                        actions.setUnderline,
-                      ]}
-                    />
-            </View>
+          <RichToolbar
+            style={{ flex: 1, backgroundColor: 'whitesmoke' }}
+            editor={richText}
+            iconTint="grey"
+            selectedIconTint="#312921"
+            actions={[
+              actions.undo,
+              actions.setBold,
+              actions.insertBulletsList,
+              actions.insertOrderedList,
+              actions.insertLink,
+              actions.setItalic,
+              actions.checkboxList,
+              actions.setUnderline,
+            ]}
+          />
+        </View>
+      )}
         <ScrollView contentContainerStyle={{flexGrow:1,padding:7,paddingBottom:100,paddingTop:40}}
         showsVerticalScrollIndicator={false}
           ref={scrollViewRef}>
@@ -178,11 +200,11 @@ const App = () => {
                       }}
                     />
               </View>
-                  <View>
+          {  network ? ( <View>
                     <RichEditor
                       editorInitializedCallback={setHtml}
                       onCursorPosition={setCursor}
-                      style={{flex:1,backgroundColor:'purple'}}
+                      style={{flex:1}}
                         editorStyle={{
                         color: 'black',
                         caretColor: 'black',
@@ -197,7 +219,7 @@ const App = () => {
                       }}
                       placeholder={"Body ..."}
                     />
-                    </View>
+                    </View>):(<NetworkStatus onRefresh={setHtml}/>)}
           </ScrollView>
 
       </KeyboardAvoidingView>

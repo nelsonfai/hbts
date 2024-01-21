@@ -68,6 +68,7 @@ useEffect(() => {
       }
 
       await AsyncStorageService.removeItem('token');
+      await AsyncStorageService.removeItem('expo_token');
       setUser({
         id: null,
         email: '',
@@ -165,7 +166,7 @@ useEffect(() => {
 
         </View>
     {/* Subscription Section */}
-      <View style={{ marginTop: 20, paddingHorizontal: 10, fontSize: 14 }}>
+      <View style={{ marginTop: 20, paddingHorizontal: 10, fontSize: 14 ,display:'none'}}>
         <Text style={styles.sectionTitle}>{i18n.t('settings.subscription.sectionTitle')}</Text>
 
         {/* Display User Information */}

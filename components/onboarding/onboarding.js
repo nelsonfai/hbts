@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, Image } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { COLORS, SIZES } from '../../constants';
+import { router } from "expo-router";
 
 const slides = [
   {
@@ -24,7 +25,7 @@ const slides = [
   },
 ];
 
-const OnboardingScreen = ({ navigation }) => {
+const OnboardingScreen = () => {
   const buttonLabel = (label) => {
     return(
       <View style={{
@@ -51,6 +52,7 @@ const OnboardingScreen = ({ navigation }) => {
   const onDone = () => {
     // Handle the action when the user is done with the onboarding
     navigation.navigate('./home'); // Replace 'Home' with your target screen
+
   };
 
   return (

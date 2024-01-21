@@ -2,7 +2,6 @@
 
 const richTextStyle = (color) => `
   a {
-    text-decoration: none;
     color: ${color} !important;
   }
 

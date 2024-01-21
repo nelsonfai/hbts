@@ -70,12 +70,10 @@ const HabitSummary = ({user, summaryData,i18n })=>{
             </View>
 
             <View>
-              <View style={{}}>
-                <ProfileImage
-                width={65}
-                height={65}
-                name={i18n.t('home.habitSummary.partner')}
-              />
+              <View style={{flexDirection:'row',justifyContent:'center'}}> 
+            <View style={{height:60,width:60,borderRadius:30,backgroundColor:'whitesmoke',margin:'auto'}}>
+    
+              </View>
               </View>
               <View>
                 <TouchableOpacity onPress={ () => {router.push('partnershare')}}> 

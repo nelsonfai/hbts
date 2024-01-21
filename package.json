@@ -56,7 +56,8 @@
     "react-native-webview": "13.2.2",
     "react-native-webview-bridge-updated": "^1.1.1",
     "react-native-zss-rich-text-editor": "^1.1.0",
-    "victory-native": "^36.7.0"
+    "victory-native": "^36.7.0",
+    "@react-native-community/netinfo": "9.3.10"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

@@ -6,17 +6,20 @@ import ProfileImage from "../../components/common/Image";
 import {Welcome} from "../../components";
 import SharedLists from "../../components/home/popular/SharedList";
 import I18nContext from "../../context/i18nProvider";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SubscriptionModal from "../../components/subscription/SubcritionModal";
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import NetInfo from '@react-native-community/netinfo';
+import NetworkStatus from "../../components/NetworkStatus";
 
 const Home =  () => {
+
   const {user} = useUser()
   const router = useRouter();
   const {i18n} = useContext(I18nContext)
   const [showSubscriptionModal,setShowSubscriptionModal] = useState(false)
   const [refreshing, setRefreshing] = useState(false);
+  const [network, setNetWork] = useState(true);
   const onRefresh = () => {
 
     setRefreshing(true);
@@ -30,7 +33,19 @@ const goToSettings = () => {
 const onPressSubscribe = () => { 
   setShowSubscriptionModal(true)
 }
-  return (
+
+const unsubscribe = NetInfo.addEventListener(state => {
+  console.log('called')
+  NetInfo.fetch().then(state => {
+    setNetWork(state.isConnected)
+  });
+});
+
+useEffect(() => {
+  unsubscribe()
+}, []);
+
+return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
       <Stack.Screen
         options={{
@@ -62,7 +77,7 @@ const onPressSubscribe = () => {
           headerTitle: '',
         }}/> 
 
-      <ScrollView showsVerticalScrollIndicator={false}
+{ network ? (<ScrollView showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }>
@@ -72,7 +87,7 @@ const onPressSubscribe = () => {
       {!user.premium ? (
     <View style={styles.subscriptionContainer}>
     <Text style={styles.subscriptionText}>
-    {i18n.t('home.premiumText')}
+        {i18n.t('home.premiumText')}
         </Text>
         <TouchableOpacity onPress={onPressSubscribe} style={styles.subscribeButton}>
         <Icon name="star" size={25} color={'#ffdb83'} /> 
@@ -83,9 +98,9 @@ const onPressSubscribe = () => {
     </View>) : null}
       <SharedLists key={refreshing ? 'refreshed' : 'not-refreshed'} user_id={user.id} />
 
-</View>
+      </View>
   
-      </ScrollView>
+      </ScrollView>) :<NetworkStatus/>}
       <SubscriptionModal isVisible={showSubscriptionModal} onClose={() => setShowSubscriptionModal(false)}/>
     </SafeAreaView>
   );
@@ -109,16 +124,18 @@ const styles = StyleSheet.create({
   },
   subscriptionContainer: {
         marginTop: 16,
+        backgroundColor:'whitesmoke',
+        padding:15,
+        borderRadius:10
           },
   subscriptionText: {
     fontSize: 16,
 marginBottom: 8,
-    textAlign:"center",    display:'none'
+    textAlign:"center", 
 
   },
   subscribeButton: {
     backgroundColor: 'black',
-    backgroundColor:"#B0A7F7",
     padding: 10,
     borderRadius: 8,
     flexDirection:'row',
@@ -128,7 +145,6 @@ marginBottom: 8,
   },
   subscribeButtonText: {
     color: '#FFF',
-    color:'black',
 
     fontSize: 16,
   },

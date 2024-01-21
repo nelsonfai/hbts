@@ -4,7 +4,6 @@ import { Redirect,Stack,useRouter } from "expo-router";
 import { ScreenHeaderBtn } from "../components";
 import OnboardingScreen from '../components/onboarding/onboarding';
 const { height } = Dimensions.get('window');
-import { useUser, setUser } from '../context/userContext';
 
 
 const Index = () => {

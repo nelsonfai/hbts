@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
+import AsyncStorageService from './asyncStorage';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -19,9 +20,10 @@ export function useNotificationService() {
 
     const setupNotificationService = async () => {
       const token = await registerForPushNotificationsAsync();
-      console.log('My token', token);
       if (token) {
         setExpoPushToken(token);
+        await AsyncStorageService.setItem('expo_token',token);
+
       }
 
       // Add a listener to handle incoming notifications

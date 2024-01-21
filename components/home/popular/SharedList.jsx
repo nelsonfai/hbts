@@ -59,7 +59,7 @@ const SharedLists = () => {
         },
       });
       const data = await response.json();
-      setData(data);
+        setData(data);
       setIsLoading(false);
     } catch (error) {
       setError(error.message);
@@ -140,8 +140,7 @@ const SharedLists = () => {
             renderItem={({ item, index }) => (
               <View >
                 <TouchableOpacity
-                  onPress={() => handleItemPress(item)}
-                  onLongPress={() => handleLongPress(item)}
+                  onPress={() => {handleItemPress(item)}}
                   delayLongPress={2000}>
                   <ImageBackground
                     //source={{ uri: theme[index]}} 
@@ -184,13 +183,7 @@ const SharedLists = () => {
                   {item.title}
                 </Text>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                  <Text style={styles.cardText}>
-                    {' '}
-                    {item.done_item_count ?? 0} | {item.listitem_count ?? 0}
-                  </Text>
-                  <Icon name="check" size={14} style={{ color: 'grey' }} />
-                </View>
+
               </View>
             )}
             horizontal
@@ -230,6 +223,8 @@ const styles = {
   },
   cardsContainer: {
     marginBottom: 10,
+    height: 300,
+    
   },
   card: {
     backgroundColor: COLORS.white,
@@ -253,6 +248,7 @@ const styles = {
     fontSize: 16,
     paddingTop: 3,
     width: 170,
+    color:'grey'
   },
   cardUser: {
     flexDirection: 'row',
@@ -261,5 +257,4 @@ const styles = {
     alignItems: 'center',
   },
 };
-
 export default SharedLists;
