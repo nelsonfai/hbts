@@ -29,7 +29,7 @@ const Layout = () => {
         } else if (route.name === 'profile') {
           iconName = focused ? 'user' : 'user';
         } else if (route.name === 'partnershare') {
-          iconName = focused ? 'users' : 'users';
+          iconName = focused ? 'heart' : 'heart';
         } else if (route.name === 'habits') {
           iconName = focused ? 'list-ul' : 'list-ul';
         } else if (route.name === '(habits)/AddHabit') {
@@ -63,9 +63,7 @@ const Layout = () => {
         />
       <Tabs.Screen name="partnershare"
         options={{
-          title:'Us',
-          href: null,
-
+          title:'Pairing',
                 }} />
               <Tabs.Screen name="settings"
             options={{

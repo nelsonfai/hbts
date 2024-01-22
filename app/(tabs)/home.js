@@ -48,18 +48,14 @@ return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
       <Stack.Screen
         options={{
+          headerShown:false,
           headerStyle: { 
           },
           headerShadowVisible: true,
           headerLeft: () =>(           
-             <View style={{ padding: 15,marginBottom:10}}> 
-            <ProfileImage
-              mainImageUri={'https://i.ibb.co/N1TKLQn/Untitled-design-11-1.png'}
-              width={35}
-              height={35}
-              name={user.name}
-              handlePress={goToSettings}
-            />
+             <View style={{ padding: 15,marginBottom:10,padding:0,marginLeft:10}}> 
+
+            <Text style={{fontSize:22,fontWeight:500}}> Habts Us</Text>
           </View>)
           ,
           headerRight: () =>  (
@@ -80,6 +76,7 @@ return (
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }>
+
       <View style={styles.container}>
       <Welcome  user={user} />
       {!user.premium ? (
@@ -122,13 +119,15 @@ const styles = StyleSheet.create({
   },
   subscriptionContainer: {
         marginTop: 16,
-        backgroundColor:'whitesmoke',
         padding:15,
-        borderRadius:10
+        borderRadius:10,
+        backgroundColor:'#efedfd',
+        backgroundColor:'#f5f4fd'
+
           },
   subscriptionText: {
     fontSize: 16,
-  marginBottom: 8,
+  marginBottom: 10,
     textAlign:"center", 
 
   },

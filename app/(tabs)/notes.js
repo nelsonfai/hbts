@@ -122,7 +122,7 @@ const NoteListItem = ({ note, onDelete, onEdit, onDetails, swipeableRefs }) => {
       }}
     >
       <TouchableOpacity onPress={onDetails}>
-        <View style={styles.notesItem}>
+        <View style={[styles.notesItem,{backgroundColor:`${note.color}`}]}>
           <Text style={styles.title} numberOfLines={1}>
             {note.title}
           </Text>
@@ -130,21 +130,14 @@ const NoteListItem = ({ note, onDelete, onEdit, onDetails, swipeableRefs }) => {
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <View style={styles.dateContainer}>
-              <Icon name="calendar" size={18} color={"grey"} />
+              <Icon name="calendar" size={16} color={"black"} />
               <Text style={styles.date}>{formattedDate}</Text>
             </View>
             <View style={styles.dateContainer}>
               {!note.team ? (
-                <Icon name="lock" size={18} color={"grey"} />
+                <Icon name="lock" size={16} color={"black"} />
               ) : null}
-              <View
-                style={{
-                  width: 15,
-                  height: 15,
-                  borderRadius: 8,
-                  backgroundColor: note.color,
-                }}
-              ></View>
+
             </View>
           </View>
         </View>
@@ -305,7 +298,7 @@ const NotesScreen = () => {
       />
       {network ? (
         <View style={{ marginTop: 10, padding: 5 }}>
-        {notes.length === 0 ? (
+        {notes.length === 0 && !loading  ? (
 
             <EmptyNotesPage title={'note'} image={'list'}/>       
         ) : (
@@ -369,7 +362,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
   date: {
-    color: "grey",
+    color: "black",
   },
   imageContainer: {
     flexDirection: "row",

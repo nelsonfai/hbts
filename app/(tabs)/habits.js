@@ -15,6 +15,9 @@ import MyHabitIcon from "../../components/Habits/habitIcon";
 import I18nContext from "../../context/i18nProvider";
 import { API_BASE_URL } from "../../appConstants";
 import EmptyNotesPage from "../../components/emptyPage";
+import NetworkStatus from "../../components/NetworkStatus";
+import NetInfo from "@react-native-community/netinfo";
+
 const Habits = () => {
   const { user } = useUser();
   const {i18n,locale} = useContext(I18nContext)
@@ -35,8 +38,19 @@ const Habits = () => {
   const [dateText, setDateText] = useState(i18n.t('habits.today'));
   const [refreshing, setRefreshing] = useState(false);
 
+  const [network, SetNetWork] = useState(true);
 
+  const networkCheck = () => {
+    NetInfo.fetch().then((state) => {
+      SetNetWork(state.isConnected);
+    });
+  };
   const fetchHabits = async () => {
+    networkCheck()
+    if (!network){
+      setLoading(false)
+      return
+    }
     try {
       const token = await AsyncStorageService.getItem("token");
       const response = await fetch(`${API_BASE_URL}/habits/`, {
@@ -58,7 +72,7 @@ const Habits = () => {
       const data = await response.json();
       setHabits(data.habits);
     } catch (error) {
-      console.error("Error fetching habits:", error.message);
+      //console.error("Error fetching habits:", error.message);
     } finally {
       setLoading(false);
     }
@@ -102,7 +116,6 @@ const Habits = () => {
 };
 
   function formatDate(inputDate) {
-
     const options = { month: 'short', year: 'numeric' };
     const translateDate = new Date(inputDate).toLocaleDateString(locale, options);
   }
@@ -112,7 +125,6 @@ const Habits = () => {
       params: {
         mood: 'create'
       }
-
     });
   };
 
@@ -276,7 +288,7 @@ const Habits = () => {
         />
       </View>
       <View style={{ flex: 1 }}>
-  {habits.length === 0 ? (
+  {habits.length === 0 && !loading ? (
     <EmptyNotesPage title={'habit'} image={'habit'} />
   ) : (
     <ScrollView
@@ -326,7 +338,7 @@ const Habits = () => {
             )}
           >
             <TouchableOpacity
-              style={[styles.habitItem, { backgroundColor: habit.done ? habit.color : 'whitesmoke', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }]}
+              style={[styles.habitItem, { backgroundColor: habit.done ? habit.color :'whitesmoke', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }]}
               onPress={() => {
                 router.push({
                   pathname: '/habitstats',

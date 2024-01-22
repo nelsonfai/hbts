@@ -1,11 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import {icons}from '../constants';
+import { images } from '../constants';
 const NetworkStatus = ({ onRefresh }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={icons.noWifi} style={styles.image} />
+      <View style={styles.image}>
+      <images.noWifi />
+
+        </View>
       <Text style={styles.text}>You are currently offline</Text>
       <TouchableOpacity onPress={onRefresh} style={styles.refreshButton}>
         <Text style={styles.refreshButtonText}>Refresh</Text>

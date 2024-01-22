@@ -16,16 +16,16 @@ import { icons, SIZES } from "../../../constants";
 import CarouselComponent from "../../carousel/carousel";
 import YourCarouselComponent from "../../carousel/carousel";
 import I18nContext from "../../../context/i18nProvider";
-
 const Welcome = ({user,summary}) => {
   const router = useRouter();
   const {i18n} = useContext(I18nContext)
   return (
     <View style={{flex:1}}>
-      <View >
+      <View style={{marginTop:20}}>
         <Text style={{fontSize:20}} >{i18n.t('home.hello')} {user.name} ! </Text>
         <Text style={{fontSize:24,fontWeight:'500'}} >{i18n.t('home.greetings')} </Text>
       </View>
+
       <YourCarouselComponent   user ={user}  summary={summary}/>
     </View>
 

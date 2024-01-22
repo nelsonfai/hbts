@@ -46,11 +46,10 @@ const SubscriptionModal = ({ isVisible, onClose }) => {
           showsVerticalScrollIndicator={false}>
           <View style={styles.modalContent}>
             <View style={styles.imageContainer}>
-              <ImageBackground
-                source={images.holdhands}
-                resizeMode='cover'
-                style={styles.image}> 
-              </ImageBackground>
+
+              <View style={styles.image}> 
+              <images.holdingHands />
+              </View>
             </View>
 
             <Text style={styles.title}>{i18n.t('subscription.title')}</Text>
@@ -134,8 +133,8 @@ const styles = StyleSheet.create({
     marginTop:20
   },
   image: {
-    width: 250,
-    height: 250,
+    width: 270,
+    height: 270,
     resizeMode: 'cover',
     marginBottom: 20,
   },

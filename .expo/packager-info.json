@@ -1,9 +1,9 @@
 {
-  "expoServerPort": 19000,
-  "packagerPort": 19000,
-  "expoServerNgrokUrl": "https://ur-ghx.anonymous.hbts.exp.direct",
-  "packagerNgrokUrl": "https://ur-ghx.anonymous.hbts.exp.direct",
-  "ngrokPid": 41836,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "packagerPid": null,
   "webpackServerPort": null
 }

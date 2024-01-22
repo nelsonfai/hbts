@@ -96,30 +96,19 @@ const SharedLists = () => {
     setShowAddModal(true);
   };
 
-  const handleLongPress = (item) => {
-    setLongPress(true);
-  };
+  function calculatePercentage(done, total) {
+    const doneValue = done || 0;
+    const totalValue = total || 0;
+  
+    if (totalValue === 0) {
+      return 0;
+    }
+  
+    const percentage = (doneValue / totalValue) * 100;
+  
+    return parseFloat(percentage.toFixed(2));
+  }
 
-  const handleDeletePress = (item) => {
-    Alert.alert(
-      'Confirm Delete',
-      'Are you sure you want to delete this item?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Delete',
-          onPress: () => {
-            setLongPress(false);
-          },
-          style: 'destructive',
-        },
-      ],
-      { cancelable: false }
-    );
-  };
 
   return (
     <View style={styles.container}>
@@ -153,37 +142,36 @@ const SharedLists = () => {
                     >
                     <View
                       style={{
-                        padding: 10,
-                        width: 50,
+                        padding: 0,
+                        width:50,
                         height: 50,
                         backgroundColor: 'white',
-
-                        borderRadius: 25,
+                        borderRadius: 30,
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}
                     >
-                      {item.has_team ? (
-                        <View style={styles.cardUser}>
-                          <Text>{item.member1_name.charAt(0).toUpperCase()}</Text>
-                          <Text>|</Text>
-                          <Text>{item.member2_name.charAt(0).toUpperCase()}</Text>
-                        </View>
-                      ) : (
-                        <View style={styles.cardUser}>
-                          <Icon name="lock" size={18} style={{ color: 'grey' }} />
-                        </View>
-                      )}
+                     <Text style={{color:item.color,fontWeight:700}}>{calculatePercentage(item.done_item_count,item.listitem_count)}%</Text>
                     </View>
                   </ImageBackground>
 
                 </TouchableOpacity>
-                <Text style={styles.cardTitle} numberOfLines={1}>
-                  {' '}
-                  {item.title}
-                </Text>
-
-
+                <Text style={styles.cardTitle} numberOfLines={1}>{' '}{item.title}</Text>
+                <View style={{padding:5,backgroundColor:'whitesmoke',borderRadius:10,width:80,marginTop:5}}>
+                {item.has_team ? (
+                        <View style={{flexDirection:'row',gap:5}} >
+                          <Icon name="link" size={15} style={{ color: 'grey' }} />
+                          <Text style={{fontSize:12}}>{item.member1_name.charAt(0).toUpperCase()}</Text>
+                          <Text style={{fontSize:12}}>|</Text>
+                          <Text style={{fontSize:12}}>{item.member2_name.charAt(0).toUpperCase()}</Text>
+                        </View>
+                      ) : (
+                        <View style={{flexDirection:'row',gap:5}} >
+                          <Icon name="lock" size={14} style={{ color: 'grey' }} />
+                          <Text style={{fontSize:12}}>Private</Text>
+                        </View>
+                      )} 
+                    </View>
               </View>
             )}
             horizontal
@@ -223,7 +211,6 @@ const styles = {
   },
   cardsContainer: {
     marginBottom: 10,
-    height: 300,
     
   },
   card: {
@@ -248,7 +235,6 @@ const styles = {
     fontSize: 16,
     paddingTop: 3,
     width: 170,
-    color:'grey'
   },
   cardUser: {
     flexDirection: 'row',
