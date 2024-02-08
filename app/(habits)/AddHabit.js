@@ -10,6 +10,8 @@ import HabitIconModal from '../../components/Habits/HabitIcons';
 import MyHabitIcon from '../../components/Habits/habitIcon';
 import I18nContext from '../../context/i18nProvider';
 import { API_BASE_URL,colorOptions } from '../../appConstants';
+import {schedulePushNotification,cancelAllHabitNotifications} from '../../services/notificationServices'
+
 const HabitModal = () => {
   const initialState = {
     habitName: '',
@@ -47,8 +49,8 @@ const HabitModal = () => {
   const [frequency, setFrequency] = useState(initialState.frequency);
   const [isshared , setIsShared] = useState(initialState.isshared)
   const [habitIcon,setHabitIcon] = useState(initialState.habitIcon)
-  const [habits, setHabits] = useState([]); // Add this line to define habits state
-  const [loading, setLoading] = useState(false); // Add this line to define loading state
+  const [habits, setHabits] = useState([]); 
+  const [loading, setLoading] = useState(false); 
   const { user } = useUser();
   const [habitNameError, setHabitNameError] = useState('');
   const [selectedColorError, setSelectedColorError] = useState('');
@@ -69,7 +71,6 @@ const HabitModal = () => {
       setHabitStateFromParams(params);
     }
     else if (params.mood === 'create') {
-      console.log('Params called Create');
       resetModalState()
     }
   }, [params.mood]);
@@ -82,7 +83,7 @@ const HabitModal = () => {
     
     setSetReminder(params.hasReminder ==='true'? true : false);
     setReminderTime(
-      params.reminder_time ? new Date(`2023-01-01T${params.reminder_time}`) : initialState.reminderTime
+      params.reminder_time ? new Date(`${params.reminder_time}`) : initialState.reminderTime
     );
     setStartDatePickerVisible(false);
     setEndDatePickerVisible(false);
@@ -120,7 +121,6 @@ const HabitModal = () => {
     setHabitIcon(initialState.habitIcon)
   };
 
-console.log('the team--',isshared)
   const handleCreateHabit = async () => {
     try {
       if (!habitName) {
@@ -141,6 +141,7 @@ console.log('the team--',isshared)
       const specificDaysString = frequency === 'weekly' ? selectedDays.join(',') : null;
 
       const teamValue = isshared && user.team_id ? user.team_id : null;
+      console.log('this is my version',reminderTime)
       const response = await fetch(`${API_BASE_URL}/habits/create/`, {
         method: "POST",
         headers: {
@@ -157,19 +158,27 @@ console.log('the team--',isshared)
           description: description,
           start_date: startDate.toISOString().split('T')[0],
           end_date: endDate ? endDate.toISOString().split('T')[0] : null,
-          reminder_time: setReminder ? reminderTime.toISOString().split('T')[1].substring(0, 5) : null,
+          reminder_time: setReminder ? reminderTime : null,
           specific_days_of_week: specificDaysString,
         }),
       });
 
       if (!response.ok) {
         throw new Error("Failed to create habit");
+
       }
       const data = await response.json();
-      console.log('All refresh data Before',refresh)
-      setRefresh({ refreshHabits: true, refreshList: false,refreshSummary:true,refreshNotes:false });
-      console.log('All refresh data After',refresh)
-
+      console.log('habit created',data)
+      const daysString = data.specific_days_of_week
+      if (setReminder) {
+        const notificationId = await schedulePushNotification(
+          habitName,
+          description, 
+          reminderTime,
+          daysString ? daysString.split(',') : [],
+          data.habitidentifier
+        );}
+          setRefresh({ refreshHabits: true, refreshList: false,refreshSummary:true,refreshNotes:false });
 
       resetModalState();
       router.push('/habits');
@@ -206,6 +215,7 @@ console.log('the team--',isshared)
     console.log('Selected',selectedDays)
     const specificDaysString = frequency === 'weekly' ? selectedDays.join(',') : null;
     const teamValue = isshared && user.team_id ? user.team_id : null;
+
     try {
       const response = await fetch(`${API_BASE_URL}/habits/${params.id}/update/`, {
         method: "PUT",
@@ -231,12 +241,19 @@ console.log('the team--',isshared)
       if (!response.ok) {
         throw new Error("Failed to update habit");
       }
-
       const data = await response.json();
-
       resetModalState();
       setRefresh({ refreshHabits: true, refreshList: false,refreshSummary:true ,refreshNotes:false});
-
+      await cancelAllHabitNotifications(data.habitidentifier)
+        const daysString = data.specific_days_of_week
+        if (setReminder) {
+          const notificationId = await schedulePushNotification(
+            habitName,
+            description, 
+            reminderTime,
+            daysString ? daysString.split(',') : [],
+            data.habitidentifier
+          );}
       router.push('/habits');
     } catch (error) {
       console.error("Error updating habit:", error.message);
@@ -352,7 +369,6 @@ console.log('the team--',isshared)
       />
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.modalContainer}>
-          
           <TextInput
             style={styles.input}
             placeholder={i18n.t('editHabit.namePlaceholder')}
@@ -371,17 +387,17 @@ console.log('the team--',isshared)
           />
           {descriptionError ? <Text style={styles.errorText}>{descriptionError}</Text> : null}
           <Text style={styles.label}>{i18n.t('editHabit.selectColor.title')}</Text>
-          <View style={{ flexDirection: 'row', marginVertical: 20, justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', marginVertical: 20 ,flexWrap:'wrap',gap:5}}>
             {colorOptions.map((color, index) => (
               <TouchableOpacity
                 key={index}
                 style={{
                   width: 30,
                   height: 30,
+                  borderRadius:15,
                   backgroundColor: color,
                   borderColor: color === selectedColor ? 'black' : 'transparent',
                   borderWidth: 2,
-                  borderRadius: 15,
                   marginHorizontal: 5,
                 }}
                 onPress={() => {
@@ -392,11 +408,9 @@ console.log('the team--',isshared)
           </View>
         {selectedColorError ? <Text style={styles.errorText}>{selectedColorError}</Text> : null}
           <Text style={styles.label}>{i18n.t('editHabit.selectIcon.title')}</Text>
-          <TouchableOpacity  style={{ justifyContent:'center',alignItems:'center', marginBottom: 20,width:60,height:60,backgroundColor:'whitesmoke',borderRadius:'10' }} onPress={() => setIconModalShow(true)}> 
+          <TouchableOpacity  style={{ justifyContent:'center',alignItems:'center', marginBottom: 20,width:60,height:60,backgroundColor:'whitesmoke',borderRadius:10 }} onPress={() => setIconModalShow(true)}> 
               <MyHabitIcon iconName={habitIcon} size={25} />
           </TouchableOpacity>
-
-
           <Text style={styles.label}>{i18n.t('editHabit.startDate')}</Text>
           <TouchableOpacity onPress={() => showDatePicker('start')}>
             <Text style={styles.input}>{startDate.toISOString().split('T')[0]}</Text>
@@ -405,7 +419,6 @@ console.log('the team--',isshared)
           <DatePickerModal
             isVisible={isStartDatePickerVisible}
             date={startDate}
-
             onConfirm={(date) => handleDateConfirm('start', date)}
             onCancel={() => hideDatePicker('start')}
             mode="date"
@@ -443,7 +456,6 @@ console.log('the team--',isshared)
           <Text style={styles.label}>{i18n.t('editHabit.frequency')}:</Text>
           {renderFrequencyButtons()}
           {renderDaysOfWeekButtons()}
-
           {user.hasTeam ? (
             <View style={styles.reminderContainer}>
               <Text style={styles.label}>{i18n.t('editHabit.sharepartner')} </Text>
@@ -451,7 +463,7 @@ console.log('the team--',isshared)
                       value={isshared}
                       onValueChange={handleSwitchChange}
                       trackColor={{ false: 'grey', true: 'black' }}
-                                      />
+                      />
                </View>
                   ) : (
                     <View>
@@ -460,7 +472,8 @@ console.log('the team--',isshared)
                         <Switch
                             value={isshared}
                             onValueChange={handleSwitchChange}
-                            trackColor={{ false: 'grey', true: 'black' }}/>
+                            thumbColor={Platform.OS === 'android' ? 'white' : undefined}
+                            />
                         </View>
                           <Text style={{ fontSize: 14, color: 'grey', marginBottom: 20 }}>
                         {i18n.t('editHabit.sharepartnerText')}

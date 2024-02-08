@@ -88,8 +88,7 @@ const ChangePasswordPage = () => {
 
           }}
         />
-                {currentPasswordError ? <Text style={styles.errorText}>{currentPasswordError}</Text> : null}
-
+        {currentPasswordError ? <Text style={styles.errorText}>{currentPasswordError}</Text> : null}
         <Input
           label={i18n.t('changePassword.newLabel')}
           secureTextEntry
@@ -125,7 +124,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-
     padding: 20,
     gap: 30,
     backgroundColor: 'white',

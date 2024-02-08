@@ -1,6 +1,12 @@
-import profile from "../assets/images/kemal.jpg";
-import holdhands from '../assets/images/holdhands.png'
+import list from '../components/onboarding/svg/couple'
+import habit from '../components/onboarding/svg/habit'
+import noWifi from '../assets/images/svg/noWifi'
+import holdingHands from  '../assets/images/svg/holdinghands'
+
 export default {
-  profile,
-  holdhands
+  list,
+habit,
+noWifi,
+holdingHands
+ 
 };

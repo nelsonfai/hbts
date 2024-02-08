@@ -2,7 +2,6 @@ import { Tabs, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { Text } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
-import { NavigationContainer } from '@react-navigation/native';
 import I18nContext from "../../context/i18nProvider";
 import { useContext } from "react";
 const Layout = () => {
@@ -11,12 +10,14 @@ const Layout = () => {
 <Tabs      
     screenOptions={({ route }) => ({
       headerShown: true,
-      
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        alignSelf: 'center',
+      },
       tabBarActiveTintColor: "black",
         tabBarStyle: [
-          {
-            "display": "flex"
-          },
+         {   display: "flex",
+            },
           null
         ],
       
@@ -30,7 +31,7 @@ const Layout = () => {
         } else if (route.name === 'profile') {
           iconName = focused ? 'user' : 'user';
         } else if (route.name === 'partnershare') {
-          iconName = focused ? 'users' : 'users';
+          iconName = focused ? 'heart' : 'heart';
         } else if (route.name === 'habits') {
           iconName = focused ? 'list-ul' : 'list-ul';
         } else if (route.name === '(habits)/AddHabit') {
@@ -59,14 +60,12 @@ const Layout = () => {
         />
               <Tabs.Screen name="notes"
             options={{
-              title:'Notes'
+              title:i18n.t('notes.notes')
           }} 
         />
       <Tabs.Screen name="partnershare"
         options={{
-          title:'Us',
-          href: null,
-
+          title:'Pairing',
                 }} />
               <Tabs.Screen name="settings"
             options={{

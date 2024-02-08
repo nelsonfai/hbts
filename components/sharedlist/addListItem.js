@@ -4,15 +4,18 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorageService from '../../services/asyncStorage';
 import { useRefresh } from '../../context/refreshContext';
 import { API_BASE_URL } from '../../appConstants';
-const SearchComponent = ({ updateList, color, sharedListId,placeholderText }) => {
+
+const SearchComponent = ({ updateList, color, sharedListId,placeholderText,network }) => {
   const {setRefresh} = useRefresh()
   const [searchText, setSearchText] = useState('');
   const handleSearch = async () => {
+    if (!network){
+      return 
+    }
     try {
       if (!searchText.trim()) {
         return;
       }
-
       const token = await AsyncStorageService.getItem('token');
       const apiUrl = `${API_BASE_URL}/items/`;
   
@@ -84,8 +87,7 @@ const styles = StyleSheet.create({
         shadowRadius: 0.2,
       },
       android: {
-        // Elevation for Android
-        elevation: 4,
+        elevation: 1,
       },
     }),
   },
@@ -108,8 +110,7 @@ borderLeftWidth:0.3,
         shadowRadius: 0.2,
       },
       android: {
-        // Elevation for Android
-        elevation: 4,
+        elevation: 1,
       },
     }),
 

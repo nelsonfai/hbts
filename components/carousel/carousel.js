@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const HabitSummary = ({user, summaryData,i18n })=>{
   return (
     <View>
-        <Text style={{ marginBottom: 15, fontSize: 18 }}>{i18n.t('home.todayActivity')}</Text>
+        <Text style={{ marginBottom: 15, fontSize: 18 }}>{i18n.t('home.habitSummary.todayActivity')}</Text>
     <View style={{flexDirection:'row',alignItems:'flex-start',gap:10,}}> 
     <View style={{flex:1,backgroundColor:'white',justifyContent:'center',padding:10,borderRadius:10}}>
       <View style={{flexDirection:'row',alignItems:'center',gap:3,marginBottom:10,justifyContent:'center',padding:5,backgroundColor:'white'}}>
@@ -43,6 +43,7 @@ const HabitSummary = ({user, summaryData,i18n })=>{
         <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 10, justifyContent: 'center', padding: 5, backgroundColor: 'white', alignItems: 'center' }}>
               <ProfileImage
+                mainImageUri={`${API_BASE_URL}${summaryData.partner2.habits.profile}`}
                 width={30}
                 height={30}
                 name={summaryData.partner2.habits.name}
@@ -70,12 +71,10 @@ const HabitSummary = ({user, summaryData,i18n })=>{
             </View>
 
             <View>
-              <View style={{}}>
-                <ProfileImage
-                width={65}
-                height={65}
-                name={i18n.t('home.habitSummary.partner')}
-              />
+              <View style={{flexDirection:'row',justifyContent:'center'}}> 
+            <View style={{height:60,width:60,borderRadius:30,backgroundColor:'whitesmoke',margin:'auto'}}>
+    
+              </View>
               </View>
               <View>
                 <TouchableOpacity onPress={ () => {router.push('partnershare')}}> 
@@ -95,7 +94,7 @@ const HabitSummary = ({user, summaryData,i18n })=>{
 const ListSummary = ({ user, summaryData,i18n }) => {
     return (
     <View>
-      <Text style={{ marginBottom: 15, fontSize: 18 }}>{i18n.t('home.todayActivity')}</Text>
+      <Text style={{ marginBottom: 15, fontSize: 18 }}>{i18n.t('home.listSummary.todayActivity')}</Text>
         <View style={{backgroundColor:'white',borderRadius:5}}>
       <View style={styles.container}>
       <View style={styles.summaryItemContainer}>
@@ -200,21 +199,24 @@ const YourCarouselComponent = ({  user }) => {
   );
 
   if (loading) {
-    // Render loading state
-    return<ActivityIndicator size='medium' color={'grey'} />
-    ;
+    return (
+      <View style={{ justifyContent: 'center', alignItems: 'center', height: 250, width: '100%',backgroundColor: '#f5f4fd',borderRadius:10,marginTop:10}}>
+        <ActivityIndicator size='medium' color={'grey'} />
+      </View>
+    );
   }
+  
 
 
   const renderItem = ({ item }) => (
-    <View style={[styles.item, {  backgroundColor: '#efedfd' }]}>
+    <View style={[styles.item, { backgroundColor:'#efedfd',backgroundColor:'#f5f4fd' }]}>
     
       {React.cloneElement(item.component, { user, summaryData ,i18n})} 
     </View>
   );
   
   return (
-<View  style={{marginTop:5}}>
+<View style={{marginTop:5}}>
       <Carousel
         data={data}
         renderItem={renderItem}
@@ -238,7 +240,6 @@ const YourCarouselComponent = ({  user }) => {
 
 const styles = StyleSheet.create({
   item: {
-    backgroundColor: 'lightblue',
     borderRadius: 5,
     paddingVertical: 15,
     padding: 10,

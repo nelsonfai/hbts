@@ -10,21 +10,23 @@
     "shareListTitle": "Shared List",
     "premiumText":"Unlock premium features and supercharge your experience!",
     "premiumButton":"Try Premium Now",
-    "todayActivity":"Today's Habit Summary",
     "habitSummary":{
       "habitDone":"Done!",
       "invitePartner":"+ Invite Partner",
-      "partner":"Partner"
+      "partner":"Partner",
+      "todayActivity":"Today's Habit Summary"
     },
     "listSummary":{
       "listDone":"List Done",
       "due":"Lists Past Deadline",
-      "listCount":"Number of Lists"
+      "listCount":"Number of Lists",
+      "todayActivity":"Today's Habit Summary"
     }
 
   },
   "listDetails":{
     "completed":"Completed",
+    "dueBy":"Due by",
     "forms":{
       "confirmDelete":"Confirm Delete",
       "deleteText":"Are you sure you want to delete this List?",
@@ -88,8 +90,11 @@
       "editProfile": "Edit Profile",
       "language": "Language",
       "subscription":"Subscription"
-
-
+    },
+    "subscription": {
+      "sectionTitle": "Subscription",
+      "manageSubscription": "Manage Subscription",
+      "review": "Review"
     },
     "notifications": {
       "sectionTitle": "Notifications",
@@ -103,6 +108,8 @@
 
   },
   "sharedListModal": {
+    "noList":"Kein Listenpunkt gefunden!",
+  "addList":"Beginnen Sie, indem Sie einen neuen Listenpunkt hinzufügen",
     "listName": "List Name",
     "description": "Description (optional)",
     "shareList": "Share List With Partner",
@@ -234,8 +241,19 @@
       "label":"Username",
       "saveProfileButton":"Update Profile",
       "updatedProfileButton":"Profile Updated"
+    },
+    "notes":{
+      "notes":"Notes",
+      "noNote":"No Note Found !",
+      "addNote":"Start by Adding New Note",
+      "write":{
+          "header": {
+            "save": "Save"
+          },
+          "placeholder": "Enter title ...",
+          "networkError": "You are Currently Offline",
+          "richTextPlaceholder": "Enter text here..."
+        }
     }
-    
-  
-  
+
 }

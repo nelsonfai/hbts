@@ -4,19 +4,17 @@ import { Redirect,Stack,useRouter } from "expo-router";
 import { ScreenHeaderBtn } from "../components";
 import OnboardingScreen from '../components/onboarding/onboarding';
 const { height } = Dimensions.get('window');
-import { useUser, setUser } from '../context/userContext';
 
 
 const Index = () => {
 const router = useRouter()
 
 const gotoSignup = () => {
-  router.push('(auth)/signup');
+  router.replace('(auth)/signup');
 };
-const gotoLogin = () => {
-  router.push('(auth)/login');
+const gotoLogin = () => {+
+  router.replace('(auth)/login');
 };
-
     return (
       <View style={styles.container}>
         <Stack.Screen
@@ -26,7 +24,6 @@ const gotoLogin = () => {
           }}
         />
         <View style={styles.carousel}>
-
           <OnboardingScreen />
           </View>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback,useContext } from "react";
-import { SafeAreaView, ScrollView, View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import { SafeAreaView, ScrollView, View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator,RefreshControl } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { COLORS } from "../../constants";
 import AsyncStorageService from "../../services/asyncStorage";
@@ -14,6 +14,9 @@ import SubscriptionModal from "../../components/subscription/SubcritionModal";
 import MyHabitIcon from "../../components/Habits/habitIcon";
 import I18nContext from "../../context/i18nProvider";
 import { API_BASE_URL } from "../../appConstants";
+import EmptyNotesPage from "../../components/emptyPage";
+import NetInfo from "@react-native-community/netinfo";
+import { cancelAllHabitNotifications } from "../../services/notificationServices"
 
 const Habits = () => {
   const { user } = useUser();
@@ -33,9 +36,20 @@ const Habits = () => {
   const currentDate = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(currentDate);
   const [dateText, setDateText] = useState(i18n.t('habits.today'));
+  const [refreshing, setRefreshing] = useState(false);
+  const [network, SetNetWork] = useState(true);
 
-
+  const networkCheck = () => {
+    NetInfo.fetch().then((state) => {
+      SetNetWork(state.isConnected);
+    });
+  };
   const fetchHabits = async () => {
+    networkCheck()
+    if (!network){
+      setLoading(false)
+      return
+    }
     try {
       const token = await AsyncStorageService.getItem("token");
       const response = await fetch(`${API_BASE_URL}/habits/`, {
@@ -57,13 +71,18 @@ const Habits = () => {
       const data = await response.json();
       setHabits(data.habits);
     } catch (error) {
-      console.error("Error fetching habits:", error.message);
+      //console.error("Error fetching habits:", error.message);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    fetchHabits();
+  }, [date]);
+
+
+  const onRefresh = useCallback(() => {
     fetchHabits();
   }, [date]);
 
@@ -93,7 +112,6 @@ const Habits = () => {
 };
 
   function formatDate(inputDate) {
-
     const options = { month: 'short', year: 'numeric' };
     const translateDate = new Date(inputDate).toLocaleDateString(locale, options);
   }
@@ -103,12 +121,10 @@ const Habits = () => {
       params: {
         mood: 'create'
       }
-
     });
   };
 
   const UpdateHabit = (habit) => {
-    const router = useRouter();
     currentSwipeable(habit.habit.id)
 
     let hasReminderVal;
@@ -138,7 +154,7 @@ const Habits = () => {
       },
     });
   };
-  const handleDelete = async (habitId) => {
+  const handleDelete = async (habitId,identifier) => {
     try {
       // Show confirmation alert
       Alert.alert(
@@ -165,7 +181,13 @@ const Habits = () => {
               );
 
               if (!response.ok) {
-                throw new Error("Failed to delete habit");
+                const errorData = await response.json();
+                if ( errorData.error === "Permission denied"){
+                  Alert.alert('Permision Denied')
+                }
+              }
+              else{
+                await cancelAllHabitNotifications(identifier)
               }
 
               // Refresh habits after deletion
@@ -177,6 +199,7 @@ const Habits = () => {
       );
     } catch (error) {
       console.error("Error deleting habit:", error.message);
+
     }
   };
 
@@ -243,6 +266,7 @@ const Habits = () => {
             <TouchableOpacity style={{ marginRight: 10,marginBottom:7 }} 
             onPress={user.premium ? AddHabit : () => setSubscribeModal(true)}>
               <MyHabitIcon size={35} iconName={'plus-circle-outline'} color={'grey'}/>
+
             </TouchableOpacity>
           ),
           headerTitle: '',
@@ -252,105 +276,113 @@ const Habits = () => {
         <CalendarStrip
           showMonth	={false}
           startingDate={date}
-          selectedDate={currentDate}
+          selectedDate={date}
           onDateSelected={handleDateSelected}
           style={{ height: 60,padding:10 }}
           calendarAnimation={{ type: 'sequence', duration: 20 }}
-          scrollable={true}
+          scrollable={false}
           daySelectionAnimation={{ type: 'background', highlightColor	: 'black' }}
           highlightDateNumberStyle={{color: 'white'}}
           highlightDateNameStyle={{color: 'white'}}
         />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-        {loading ? (
-          <View style={{ flex: 1, justifyContent: "center", alignItems: 'center' }}>
-            <ActivityIndicator size="medium" color="grey" />
-          </View>
-        ) : (
-          
-            habits.map((habit, index) => (
-              <Swipeable
-                key={habit.id}
-                ref={(ref) => swipeableRefs[habit.id] = ref} 
-                onSwipeableWillOpen={() => {
-                  handleSwipeOpen(habit.id)
-                }}
-                renderRightActions={() => (
-                  <View style={{ flexDirection: 'row' }}>
-                                              <TouchableOpacity
-                            onPress={() => handleMarkAsDone(habit.id)}>
-                            <View style={styles.swipeButton}>
-                              {!habit.done ? (
-                                <Icon name="check" size={20} color={'grey'} />
-                              ) : (
-                                <Icon name="times" size={20} color={'grey'} />
-                              )}
-                            </View>
-                          </TouchableOpacity>
-
-                          <TouchableOpacity
-                            onPress={() => handleDelete(habit.id)}>
-                            <View style={styles.swipeButton}>
-                              <Icon name="trash" size={25} color={'grey'} />
-                            </View>
-                          </TouchableOpacity>
-
-                          <TouchableOpacity
-                            onPress={() => UpdateHabit({ habit })}>
-                            <View style={styles.swipeButton}>
-                              <Icon name="edit" size={24} color='grey' />
-                            </View>
-                          </TouchableOpacity>
-                                          </View>
-                )}
-                //onSwipeableWillOpen={() => handleSwipeOpen(habit.id, index)}
-
-              >
+      <View style={{ flex: 1 }}>
+  {habits.length === 0 && !loading ? (
+    <EmptyNotesPage title={i18n.t('habits.noHabit')} image={'habit'} subtext={i18n.t('habits.addHabit')} />
+  ) : (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+    >
+      {loading ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: 'center' }}>
+          <ActivityIndicator size="medium" color="grey" />
+        </View>
+      ) : (
+        habits.map((habit, index) => (
+          <Swipeable
+            key={habit.id}
+            ref={(ref) => swipeableRefs[habit.id] = ref}
+            onSwipeableWillOpen={() => {
+              handleSwipeOpen(habit.id)
+            }}
+            renderRightActions={() => (
+              <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity
-                  style={[styles.habitItem, { backgroundColor: habit.done ? habit.color : 'whitesmoke', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }]}
-                  onPress={() => {
-                    router.push({
-                      pathname: '/habitstats',
-                      params: {
-                        habitId: habit.id,
-                        name: habit.name || '',
-                        color: habit.color || '',
-                      },
-                    });
-                  }}>
-                  <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: 'row', gap: 7, alignItems: 'flex-start' }}>
-                      <MyHabitIcon iconName={habit.icon} size={25} />
-                      <View>
-                        <Text style={styles.habitName}>{habit.name}</Text>
-                        <Text style={styles.habitDescription}>{habit.description.toLowerCase()}</Text>
-                        <Text style={{fontWeight:300}}> {habit.partner_done_count} | {habit.partner_count}</Text>
-                      </View>
+                  onPress={() => handleMarkAsDone(habit.id)}>
+                  <View style={styles.swipeButton}>
+                    {!habit.done ? (
+                      <Icon name="check" size={20} color={'grey'} />
+                    ) : (
+                      <Icon name="times" size={20} color={'grey'} />
+                    )}
                   </View>
-                  
-                </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 3, }}>
-                    <Text style={{ fontSize: 14 }}>
-                    {habit.streak}
-                  </Text>
-                    <Icon name="fire" size={11} color={'red'} />
-                  </View>
-
                 </TouchableOpacity>
-              </Swipeable>
-            ))
-        )}
-        <SubscriptionModal isVisible={subscribeModal} onClose={()=> setSubscribeModal(false)}/>
-      </ScrollView>
+
+                <TouchableOpacity
+                  onPress={() => handleDelete(habit.id,habit.habitidentifier)}>
+                  <View style={styles.swipeButton}>
+                    <Icon name="trash" size={25} color={'grey'} />
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => UpdateHabit({ habit })}>
+                  <View style={styles.swipeButton}>
+                    <Icon name="edit" size={24} color='grey' />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+          >
+            <TouchableOpacity
+              style={[styles.habitItem, { backgroundColor: habit.done ? habit.color :'whitesmoke', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }]}
+              onPress={() => {
+                router.push({
+                  pathname: '/habitstats',
+                  params: {
+                    habitId: habit.id,
+                    name: habit.name || '',
+                    color: habit.color || '',
+                  },
+                });
+              }}>
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', gap: 7, alignItems: 'center' }}>
+                  <MyHabitIcon iconName={habit.icon} size={30} />
+                  <View>
+                    <Text style={styles.habitName}>{habit.name}</Text>
+                    <Text style={styles.habitDescription}>{habit.description.toLowerCase()}</Text>
+                    <Text style={{fontWeight:300}}> {habit.partner_done_count} | {habit.partner_count}</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 3, }}>
+                <Text style={{ fontSize: 14 }}>
+                  {habit.streak}
+                </Text>
+                <Icon name="fire" size={11} color={'red'} />
+              </View>
+            </TouchableOpacity>
+          </Swipeable>
+        ))
+      )}
+    </ScrollView>
+  )}
+
+  <SubscriptionModal isVisible={subscribeModal} onClose={() => setSubscribeModal(false)} />
+</View>
+
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 12,
-    marginTop: 10,
+    padding: 10,
+    marginTop: 5,
+ 
   },
   habitItem: {
     borderRadius: 10,
@@ -365,7 +397,6 @@ const styles = StyleSheet.create({
   },
   habitDescription: {
     fontSize: 14,
-    marginVertical: 3,
     flex: 1,
   },
   swipeButton: {

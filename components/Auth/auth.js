@@ -12,10 +12,11 @@ import {
 import { Button, Input } from 'react-native-elements';
 import AsyncStorageService from '../../services/asyncStorage';
 import { useRouter, Stack } from 'expo-router';
-import { COLORS } from '../../constants';
 import * as Notifications from 'expo-notifications';
-
+import MyHabitIcon from '../Habits/habitIcon';
 import { API_BASE_URL } from '../../appConstants';
+ import { SyncReminders } from '../../services/syncReminder';
+
 export default function Auth({ authType, authTitle }) {
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -26,12 +27,15 @@ export default function Auth({ authType, authTitle }) {
   const [authError, setAuthError] = useState('');
 
   const gotoProfile = () => {
-    return router.push('/profile');
+    return router.replace({
+      pathname: '/profile',
+      params: {
+        create: true
+      }
+    });   
   };
-
   const validateFields = () => {
     let isValid = true;
-
     // Validate email
     if (!email.trim()) {
       setEmailError('Email is required.');
@@ -45,7 +49,6 @@ export default function Auth({ authType, authTitle }) {
         setEmailError('');
       }
     }
-
     // Validate password
     if (!password.trim()) {
       setPasswordError('Password is required.');
@@ -53,7 +56,6 @@ export default function Auth({ authType, authTitle }) {
     } else {
       setPasswordError('');
     }
-
     return isValid;
   };
 
@@ -66,6 +68,8 @@ export default function Auth({ authType, authTitle }) {
     setLoading(true);
     const logINUrl = `${API_BASE_URL}/login/`;
     try {
+      expo_token = await AsyncStorageService.getItem('expo_token')
+      console.log('Auth',expo_token)
       const response = await fetch(logINUrl, {
         method: 'POST',
         headers: {
@@ -74,11 +78,9 @@ export default function Auth({ authType, authTitle }) {
         body: JSON.stringify({
           email: email,
           password: password,
-          expo_token:existingStatus
-
+          expo_token: expo_token
         }),
       });
-
       const responseData = await response.json();
       if (!response.ok) {
         throw new Error(responseData.detail || 'Unknown error');
@@ -86,9 +88,11 @@ export default function Auth({ authType, authTitle }) {
       else{
         await AsyncStorageService.setItem('token', responseData.token);
         console.log('Token gotten',responseData.token)
-        router.replace('/');
+        SyncReminders(responseData.token)
+        router.replace({
+          pathname:'/',
+        });
       }
-
     } catch (error) {
       setAuthError('Incorrect Email or Password ');
     }
@@ -104,6 +108,9 @@ async function signUpWithEmail() {
     const signupUrl = `${API_BASE_URL}/signup/`;
 
     try {
+      expo_token = await AsyncStorageService.getItem('expo_token')
+      console.log('Auth sign up',expo_token)
+
       const response = await fetch(signupUrl, {
         method: 'POST',
         headers: {
@@ -112,7 +119,7 @@ async function signUpWithEmail() {
         body: JSON.stringify({
           email: email,
           password: password,
-          expo_token:existingStatus
+          expo_token: expo_token
         }),
       });
 
@@ -126,9 +133,12 @@ async function signUpWithEmail() {
     } catch (error) {
       setAuthError('An error occurred during signup');
     }
-
     setLoading(false);
   }
+
+
+
+
 
   return (
     <SafeAreaView style={styles.container2}>
@@ -141,6 +151,12 @@ async function signUpWithEmail() {
             headerShadowVisible: false,
             headerTintColor: 'grey',
             headerTitle: '',
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => router.replace('/onboadpage')}>
+                <MyHabitIcon iconName='arrow-left' size={35}  colorValue={'grey'}/>
+              </TouchableOpacity>
+            ),
+
           }}
         />
         <Text style={{padding:10,fontSize:20,fontWeight:'bold',color:'grey',marginBottom:40}}> </Text>
