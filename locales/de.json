@@ -10,23 +10,23 @@
     "shareListTitle": "Geteilte Liste",
     "premiumText": "Schalten Sie Premium-Funktionen frei und optimieren Sie Ihr Erlebnis!",
     "premiumButton": "Jetzt Premium testen",
-    "todayActivity": "Heutige Gewohnheitszusammenfassung",
     "habitSummary": {
         "habitDone": "Erledigt!",
         "invitePartner": "+ Partner einladen",
-        "partner": "Partner"
-
+        "partner": "Partner",
+        "todayActivity": "Heutige Gewohnheitszusammenfassung"
     },
     "listSummary": {
         "listDone": "Liste erledigt",
         "due": "Listen überfällig",
-        "listCount": "Anzahl der Listen"
+        "listCount": "Anzahl der Listen",
+        "todayActivity":"Zusammenfassung der heutigen Liste."
     }
 }
 ,
   "listDetails": {
     "completed": "Abgeschlossen",
-    "dueBy":"Due by",
+    "dueBy":"Fällig am",
     "forms": {
       "confirmDelete": "Löschen bestätigen",
       "deleteText": "Möchten Sie diese Liste wirklich löschen?",
@@ -43,6 +43,8 @@
   "title": "Gewohnheiten",
   "today":"Heute",
   "habitNotFound": "Gewohnheit nicht gefunden",
+  "noHabit":"Keine Gewohnheit gefunden!",
+  "addHabit":"Beginnen Sie, indem Sie eine neue Gewohnheit hinzufügen",
   "dateFuture": "Das ausgewählte Datum liegt in der Zukunft. Die Gewohnheit kann nicht als erledigt markiert werden.",
   "deleteHabit": {
       "confirmDelete": "Löschen bestätigen",
@@ -106,6 +108,8 @@
     
   },
     "sharedListModal": {
+      "noList":"Kein Listenpunkt gefunden!",
+      "addList":"Beginnen Sie, indem Sie einen neuen Listenpunkt hinzufügen",
       "listName": "Listenname",
       "description": "Beschreibung (optional)",
       "shareList": "Liste mit Partner teilen",
@@ -238,8 +242,21 @@
     "label": "Benutzername",
     "saveProfileButton": "Profil aktualisieren",
     "updatedProfileButton": "Profil aktualisiert"
-  }
+  },
+  "notes":{
+    "notes":"Notizen",
+    "noNote":"Keine Notiz gefunden!",
+    "addNote":"Beginnen Sie, indem Sie eine neue Notiz hinzufügen",
+    "write":{
+      "header": {
+        "save": "Speichern"
+      },
+      "placeholder": "Titel eingeben ...",
+      "networkError": "Sie sind derzeit offline",
+      "richTextPlaceholder": "Hier Text eingeben..."
+    }
     
+  }
   
   }
   

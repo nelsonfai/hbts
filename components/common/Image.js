@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 
 const ProfileImage = ({ mainImageUri, width = 200, height = 200, handlePress, name, fontSize, color }) => {
-  const defaultImageSource = require('./../../assets/images/defaultprofile.jpg');
+  const defaultImageSource = require('./../../assets/images/defaultprofile.svg');
   const borderRadius = width / 2;
 
   const getInitials = (name) => {

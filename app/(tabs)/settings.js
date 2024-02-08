@@ -10,6 +10,7 @@ import { useState } from 'react';
 import I18nContext from '../../context/i18nProvider';
 import * as Notifications from 'expo-notifications';
 import { API_BASE_URL } from '../../appConstants';
+import {cancelAllNotifications} from "../../services/notificationServices"
 const Settings =  () => {
   const { user,setUser} = useUser();
   const {i18n} = useContext(I18nContext)
@@ -81,7 +82,7 @@ useEffect(() => {
         premium: false,
         notify: '',
       });
-      
+      await cancelAllNotifications()
       router.replace('/');
     } catch (error) {
       console.error('Error during logout:', error.message);
@@ -92,16 +93,19 @@ useEffect(() => {
     { code: 'de', label: 'Deutsch' },
   ];
  
-
   useEffect(() => {
-    const currentLanguage = async () => {
-      const lang = await AsyncStorageService.getItem('lang');
+    AsyncStorageService.getItem('lang').then(lang => {
+      console.log('Retrieved language:', lang);
+  
       const langOption = languageOptions.find(option => option.code === lang);
       const language = langOption ? langOption.label : 'Unknown';
-      setSelectedLanguageLabel(language)
-    };
-    currentLanguage();
+      setSelectedLanguageLabel(language);
+    }).catch(error => {
+      console.error('Error retrieving language:', error);
+    });
   }, [selectedLanguage]);
+  
+
   const handleLanguageChange = async (language) => {
     await changeLocale(language);
     setSelectedLanguage(language);
@@ -120,13 +124,15 @@ useEffect(() => {
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
       <Stack.Screen
         options={{
-          headerStyle: { backgroundColor: COLORS.lightWhite },
+          headerStyle: { backgroundColor:COLORS.lightWhite,borderBottomWidth:0.3},
           headerShadowVisible: true,
           headerTitle: i18n.t('settings.title'),
+          headerTitleStyle: {
+            alignSelf: 'center', 
+          },
         }}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
-
       <View style={{ flex: 1, backgroundColor: COLORS.lightWhite, paddingHorizontal: 5 }}>
         <View style={{ paddingVertical: 10, gap: 10, alignItems: 'center' }}>
           <ProfileImage width={100} height={100} name={user.name} mainImageUri={user.profile_pic} fontSize={25} />
@@ -163,7 +169,6 @@ useEffect(() => {
             </View>
           </TouchableOpacity>
 
-
         </View>
     {/* Subscription Section */}
       <View style={{ marginTop: 20, paddingHorizontal: 10, fontSize: 14 ,display:'none'}}>
@@ -190,10 +195,11 @@ useEffect(() => {
             <Text style={styles.linkText}>{i18n.t('settings.notifications.enableNotifications')}</Text>
             </View>
             <Switch
-            trackColor={{ false: 'grey', true: 'black' }}
-              value={notificationsEnabled}
-              onValueChange={(value) => openAppSettings()}
-            />
+                  trackColor={{ false: 'grey', true: 'black' }}
+                  thumbColor={Platform.OS === 'android' ? 'white' : undefined}
+                  value={notificationsEnabled}
+                  onValueChange={(value) => openAppSettings()}
+                />
           </View>
         </View>
 
@@ -275,8 +281,7 @@ const styles = StyleSheet.create({
   },
   section: {
     marginTop: 20,
-paddingHorizontal:10,
-
+    paddingHorizontal:10,
 
   },
   sectionTitle: {
@@ -284,8 +289,6 @@ paddingHorizontal:10,
     fontWeight: 'bold',
     marginBottom: 10,
     color:'grey',   
-     borderBottomWidth:4,
-    borderColor:'red'
   },
   linkContainer: {
     flexDirection: 'row',

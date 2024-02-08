@@ -12,11 +12,11 @@ import {
 import { Button, Input } from 'react-native-elements';
 import AsyncStorageService from '../../services/asyncStorage';
 import { useRouter, Stack } from 'expo-router';
-import { COLORS } from '../../constants';
 import * as Notifications from 'expo-notifications';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import MyHabitIcon from '../Habits/habitIcon';
 import { API_BASE_URL } from '../../appConstants';
+ import { SyncReminders } from '../../services/syncReminder';
+
 export default function Auth({ authType, authTitle }) {
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -88,6 +88,7 @@ export default function Auth({ authType, authTitle }) {
       else{
         await AsyncStorageService.setItem('token', responseData.token);
         console.log('Token gotten',responseData.token)
+        SyncReminders(responseData.token)
         router.replace({
           pathname:'/',
         });
@@ -134,6 +135,10 @@ async function signUpWithEmail() {
     }
     setLoading(false);
   }
+
+
+
+
 
   return (
     <SafeAreaView style={styles.container2}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import {
   Text,
   Platform,
@@ -23,6 +23,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import * as Clipboard from 'expo-clipboard';
 import NetworkStatus from "../../components/NetworkStatus";
 import NetInfo from '@react-native-community/netinfo';
+import I18nContext from "../../context/i18nProvider";
 
 
 const handleHead = ({ tintColor }) => (
@@ -35,8 +36,6 @@ const handleHead2 = ({ tintColor }) => (
 const App = () => {
   const richText = React.useRef();
   const scrollViewRef = React.useRef();
-  
-
   const params = useLocalSearchParams();
   const [change, setChange] = useState(false);
   const [initialText, setInitialText] = useState("");
@@ -45,6 +44,8 @@ const App = () => {
   const {refresh,setRefresh} = useRefresh();
   const [scroll,setScroll] = useState(0)
   const [network,setNetWork] = useState(true)
+  const {i18n} = useContext(I18nContext)
+
 
   const networkCheck =() => {
     NetInfo.fetch().then(state => {
@@ -104,7 +105,7 @@ const App = () => {
     try {
       NetInfo.fetch().then(state => {
         if(!state.isConnected){
-          return Alert.alert('You are Currently Offline')
+          return Alert.alert(i18n.t('notes.write.networkError'))
         }
       });
 
@@ -150,8 +151,8 @@ const App = () => {
             <TouchableOpacity onPress={() => handleDonePress(richText, initialText)}>
               {change ? (
               <Text style={{marginRight: 5,marginBottom:7, fontSize: 18, fontWeight: 600 }}>
-                  Save
-                </Text>
+                      {i18n.t('notes.write.header.save')}
+              </Text>
               ) : null}
             </TouchableOpacity>
           ),
@@ -164,7 +165,7 @@ const App = () => {
         {network && (
         <View style={styles.toolbarContainer}>
           <RichToolbar
-            style={{ flex: 1, backgroundColor: 'whitesmoke' }}
+            style={{ flex: 1,backgroundColor: 'whitesmoke' }}
             editor={richText}
             iconTint="grey"
             selectedIconTint="#312921"
@@ -192,7 +193,7 @@ const App = () => {
                     <TextInput
                       multiline={true}
                       style={[styles.titleInput]}
-                      placeholder="Enter title..."
+                      placeholder={i18n.t('notes.write.placeholder')}
                       value={title}
                       onChangeText={(text) => {
                         setChange(true);
@@ -217,9 +218,10 @@ const App = () => {
                       onChange={(descriptionText) => {
                         setChange(true);
                       }}
-                      placeholder={"Body ..."}
+                      placeholder={i18n.t('notes.write.richTextPlaceholder')}
+                      
                     />
-                    </View>):(<NetworkStatus onRefresh={setHtml}/>)}
+                    </View>):(<NetworkStatus onRefresh={setHtml} />)}
           </ScrollView>
 
       </KeyboardAvoidingView>
@@ -243,3 +245,4 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+

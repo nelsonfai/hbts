@@ -218,7 +218,7 @@ const AddSharedListModal = ({ visible, onClose, userHasTeam, callBack, updateLis
                 </TouchableOpacity>
               </View>
             )}
-            <View style={{ flexDirection: 'row', marginVertical: 20, justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row', marginVertical: 20, justifyContent: 'left',flexWrap:'wrap',gap:10 }}>
               {colorOptions.map((color, index) => (
                 <TouchableOpacity
                   key={index}
@@ -229,7 +229,6 @@ const AddSharedListModal = ({ visible, onClose, userHasTeam, callBack, updateLis
                     borderColor: color === selectedColor ? COLORS.primary : 'transparent',
                     borderWidth: 2,
                     borderRadius: 15,
-                    marginHorizontal: 5,
                   }}
                   onPress={() => handleColorSelect(color)}
                 />

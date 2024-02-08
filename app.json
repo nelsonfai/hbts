@@ -14,10 +14,21 @@
     ],
     "name": "couplejournal",
     "slug": "couplejournal",
-    "orientation": "portrait"
-   },
-   "android": {
-      "package": "com.fai.couplehabits",
-      "googleServicesFile": "./google-services.json"
+    "orientation": "portrait",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "03fd8121-c6f6-4b26-bc03-a707801104b5"
+      }
+    },
+    "android": {
+      "package": "com.nelsonfai.couplejournal"
     }
+  },
+  "android": {
+    "package": "com.fai.couplehabits",
+    "googleServicesFile": "./google-services.json"
+  }
 }

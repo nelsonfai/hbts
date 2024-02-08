@@ -1,8 +1,10 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import {icons}from '../constants';
 import { images } from '../constants';
+import I18nContext from '../context/i18nProvider';
 const NetworkStatus = ({ onRefresh }) => {
+  const {i18n} = useContext(I18nContext)
 
   return (
     <View style={styles.container}>
@@ -10,7 +12,7 @@ const NetworkStatus = ({ onRefresh }) => {
       <images.noWifi />
 
         </View>
-      <Text style={styles.text}>You are currently offline</Text>
+      <Text style={styles.text}>{i18n.t('notes.write.networkError')}</Text>
       <TouchableOpacity onPress={onRefresh} style={styles.refreshButton}>
         <Text style={styles.refreshButtonText}>Refresh</Text>
       </TouchableOpacity>

@@ -5,6 +5,7 @@ import { RefreshProvider } from "../context/refreshContext";
 import { I18nProvider } from "../context/i18nProvider";
 import { SummaryProvider } from "../context/summaryContext";
 import { SwipeableProvider } from "../context/swipeableContext";
+import { StatusBar } from "react-native";
 
 const Layout = () => {
   const [fontsLoaded] = useFonts({
@@ -23,7 +24,8 @@ const Layout = () => {
           <RefreshProvider>
             <SummaryProvider>
               <SwipeableProvider>
-                <Stack initialRouteName="index">
+              <StatusBar barStyle="dark-content"  />
+                <Stack initialRouteName="home">
                 <Stack.Screen
                     options={{
                       headerShadowVisible: true,

@@ -283,7 +283,12 @@ const renderBarChart = () => {
         options={{
           headerStyle: { backgroundColor: params.color || COLORS.lightWhite },
           headerShadowVisible: false,
+          headerTitleAlign: 'center',
+
           headerTintColor: 'black', 
+          headerTitleStyle: {
+            alignSelf: 'center',
+          },
           headerTitle:params.name,
         }}
       />

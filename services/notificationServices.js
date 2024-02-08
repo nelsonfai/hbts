@@ -24,7 +24,6 @@ export function useNotificationService() {
         await AsyncStorageService.setItem('expo_token',token);
 
       }
-
       // Add a listener to handle incoming notifications
       notificationListener = Notifications.addNotificationReceivedListener(notification => {
         console.log('Notification received:', notification);
@@ -33,7 +32,6 @@ export function useNotificationService() {
 
     setupNotificationService();
 
-    // Clean up the listener when the component unmounts
     return () => {
       if (notificationListener) {
         Notifications.removeNotificationSubscription(notificationListener);
@@ -44,7 +42,7 @@ export function useNotificationService() {
   return expoPushToken;
 }
 
-async function registerForPushNotificationsAsync() {
+ async function registerForPushNotificationsAsync() {
   let token = "";
   const isDevice = Constants.platform.ios || Constants.platform.android;
   
@@ -85,9 +83,94 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 
+
+
+
+export async function schedulePushNotification(habitName, habitDescription = null,time, weekdays = null, identifier) {
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  console.log('time gotten',time)
+  time = new Date(time.getTime());
+  const hours = time.getHours();
+  const minutes = time.getMinutes();
+
+  const notificationContent = {
+    title: habitName,
+    body: habitDescription || '',
+    priority: 'high',
+  };
+
+  const notifications = [];
+
+  if (weekdays && weekdays.length > 0) {
+    weekdays.forEach(day => {
+      const weekdayIndex = days.indexOf(day) + 1;
+
+      const triggerOptions = {
+        weekday: weekdayIndex,
+        hour: hours,
+        minute: minutes,
+        repeats: true,
+      };
+
+      const id = Notifications.scheduleNotificationAsync({
+        content: notificationContent,
+        trigger: triggerOptions,
+        identifier: identifier + '_' + day, // Ensure unique identifier for each day
+      });
+
+      notifications.push(id);
+    });
+  } else {
+    // Schedule a notification without specifying the weekday
+    const id = Notifications.scheduleNotificationAsync({
+      content: notificationContent,
+      trigger: {
+        hour: hours,
+        minute: minutes,
+        repeats: true,
+      },
+      identifier: identifier,
+    });
+
+    notifications.push(id);
+  }
+
+  console.log("Notification IDs on scheduling", notifications);
+  return notifications;
+}
+
+export async function cancelAllHabitNotifications(identifier) {
+  try {
+    const allScheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
+    const habitNotifications = allScheduledNotifications.filter(
+      notification => notification.identifier.startsWith(identifier)
+    );
+
+    console.log('All Scheduled Notifications:', allScheduledNotifications);
+    console.log('Habit Notifications to Cancel:', habitNotifications);
+
+    const cancelPromises = habitNotifications.map(notification =>
+      Notifications.cancelScheduledNotificationAsync(notification.identifier)
+    );
+
+    await Promise.all(cancelPromises);
+    console.log('Habit Notifications Canceled Successfully');
+  } catch (error) {
+    console.error('Error canceling habit notifications:', error);
+  }
+}
+
+
+export async function cancelAllNotifications() {
+  try {
+    await Notifications.cancelAllScheduledNotificationsAsync();
+    console.log('All notifications canceled successfully');
+  } catch (error) {
+    console.error('Error canceling all notifications:', error);
+  }
+}
+
 function sendExpoTokenToBackend(expoToken) {
-  // Send the expoToken to your backend API
-  // (Replace this with your actual backend endpoint)
   fetch('https://your-backend-api.com/register-expo-token', {
     method: 'POST',
     headers: {

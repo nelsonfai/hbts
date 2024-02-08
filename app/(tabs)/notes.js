@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback, useRef ,useContext} from "react";
 import {
   Text,
   SafeAreaView,
@@ -27,6 +27,7 @@ import { useUser } from "../../context/userContext";
 import NetInfo from "@react-native-community/netinfo";
 import NetworkStatus from "../../components/NetworkStatus";
 import EmptyNotesPage from "../../components/emptyPage";
+import I18nContext from "../../context/i18nProvider";
 const DELETE_ICON = "trash";
 const EDIT_ICON = "edit";
 
@@ -136,7 +137,7 @@ const NoteListItem = ({ note, onDelete, onEdit, onDetails, swipeableRefs }) => {
             <View style={styles.dateContainer}>
               {!note.team ? (
                 <Icon name="lock" size={16} color={"black"} />
-              ) : null}
+              ) : <Icon name="link" size={16} color={"black"} />}
 
             </View>
           </View>
@@ -161,6 +162,8 @@ const NotesScreen = () => {
   const swipeableRefs = {};
   const [network, SetNetWork] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const {i18n,locale} = useContext(I18nContext)
+
 
   const networkCheck = () => {
     console.log("checked ");
@@ -282,7 +285,7 @@ const NotesScreen = () => {
           headerLeft: () => (
             <Text style={{ fontSize: 22, fontWeight: "600", paddingHorizontal: 20 }}>
               {" "}
-              Notes
+              {i18n.t('notes.notes')}
             </Text>
           ),
           headerRight: () => (
@@ -300,7 +303,7 @@ const NotesScreen = () => {
         <View style={{ marginTop: 10, padding: 5 }}>
         {notes.length === 0 && !loading  ? (
 
-            <EmptyNotesPage title={'note'} image={'list'}/>       
+            <EmptyNotesPage title={i18n.t('notes.noNote')} image={'list'} subtext ={i18n.t('notes.addNote')}/>       
         ) : (
           <FlatList
             data={notes}
@@ -347,14 +350,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.lightWhite,
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     paddingTop: 10,
   },
   notesItem: {
-    padding: 10,
+    padding: 15,
     backgroundColor: "whitesmoke",
     borderRadius: 15,
-    marginBottom: 5,
+    marginBottom: 10,
   },
   title: {
     fontSize: 18,

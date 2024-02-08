@@ -10,12 +10,14 @@ const Layout = () => {
 <Tabs      
     screenOptions={({ route }) => ({
       headerShown: true,
-      
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        alignSelf: 'center',
+      },
       tabBarActiveTintColor: "black",
         tabBarStyle: [
-          {
-            "display": "flex"
-          },
+         {   display: "flex",
+            },
           null
         ],
       
@@ -58,7 +60,7 @@ const Layout = () => {
         />
               <Tabs.Screen name="notes"
             options={{
-              title:'Notes'
+              title:i18n.t('notes.notes')
           }} 
         />
       <Tabs.Screen name="partnershare"

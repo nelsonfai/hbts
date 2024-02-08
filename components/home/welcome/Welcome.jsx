@@ -19,6 +19,7 @@ import I18nContext from "../../../context/i18nProvider";
 const Welcome = ({user,summary}) => {
   const router = useRouter();
   const {i18n} = useContext(I18nContext)
+  console.log('wecome passed')
   return (
     <View style={{flex:1}}>
       <View style={{marginTop:20}}>

@@ -5,13 +5,13 @@ import { useRouter } from 'expo-router';
 import { useUser } from '../../../context/userContext';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorageService from '../../../services/asyncStorage';
-import { Alert } from 'react-native';
 import AddSharedListModal from '../../sharedlist/CollectiveListModal';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRefresh } from '../../../context/refreshContext';
 import I18nContext from '../../../context/i18nProvider';
 import { API_BASE_URL,colorOptions } from '../../../appConstants';
 import MyHabitIcon from '../../Habits/habitIcon';
+import EmptyNotesPage from '../../emptyPage';
 
 const SharedLists = () => {
   const { user } = useUser();
@@ -67,9 +67,6 @@ const SharedLists = () => {
     }
   };
 
-  const handleEditPress = (item) => {
-    console.log('Edit button pressed for item:', item);
-  };
 
   const handleItemPress = (item) => {
     router.push({
@@ -106,7 +103,7 @@ const SharedLists = () => {
   
     const percentage = (doneValue / totalValue) * 100;
   
-    return parseFloat(percentage.toFixed(2));
+    return parseFloat(percentage.toFixed(0));
   }
 
 
@@ -119,10 +116,13 @@ const SharedLists = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.cardsContainer}>
-        {isLoading ? (
+      {isLoading ? (
           <ActivityIndicator size="large" color={COLORS.primary} />
         ) : error ? (
           <Text>{error}</Text>
+        ) : data.length === 0 ? ( // Render placeholder when data array is empty
+        <EmptyNotesPage title={i18n.t('sharedListModal.noList')} subtext={i18n.t('sharedListModal.addList')}/>
+
         ) : (
           <FlatList
             data={data}
@@ -133,7 +133,7 @@ const SharedLists = () => {
                   delayLongPress={2000}>
                   <ImageBackground
                     //source={{ uri: theme[index]}} 
-                    style={[styles.card,{backgroundColor:item.color} ]}
+                    style={[styles.card, { backgroundColor: `${item.color}` }]}
                     imageStyle={{ 
                       borderRadius: 20,
                       borderTopLeftRadius: 7,
@@ -177,6 +177,7 @@ const SharedLists = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
           />
+          
         )}
       </View>
       {/* Modal for Add Shared List */}
@@ -203,6 +204,12 @@ const styles = {
     marginBottom: 10,
     marginTop:10,
     alignItems: 'center',
+    backgroundColor:'whitesmoke',
+    padding:10,
+    borderRadius:15,
+    backgroundColor: '#f5f4fd',
+
+
   },
   headerTitle: {
     fontSize: 20,
@@ -211,7 +218,9 @@ const styles = {
   },
   cardsContainer: {
     marginBottom: 10,
-    
+    paddingVertical:10,
+    minHeight:270,
+
   },
   card: {
     backgroundColor: COLORS.white,

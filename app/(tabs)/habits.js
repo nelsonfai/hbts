@@ -15,8 +15,8 @@ import MyHabitIcon from "../../components/Habits/habitIcon";
 import I18nContext from "../../context/i18nProvider";
 import { API_BASE_URL } from "../../appConstants";
 import EmptyNotesPage from "../../components/emptyPage";
-import NetworkStatus from "../../components/NetworkStatus";
 import NetInfo from "@react-native-community/netinfo";
+import { cancelAllHabitNotifications } from "../../services/notificationServices"
 
 const Habits = () => {
   const { user } = useUser();
@@ -37,7 +37,6 @@ const Habits = () => {
   const [date, setDate] = useState(currentDate);
   const [dateText, setDateText] = useState(i18n.t('habits.today'));
   const [refreshing, setRefreshing] = useState(false);
-
   const [network, SetNetWork] = useState(true);
 
   const networkCheck = () => {
@@ -84,11 +83,8 @@ const Habits = () => {
 
 
   const onRefresh = useCallback(() => {
-    // Trigger your refresh logic here
-    // For example, you can refetch habits data
     fetchHabits();
-  }, [date]); // Make sure to include any dependencies needed for the refresh logic
-
+  }, [date]);
 
   useFocusEffect(
     useCallback(() => {
@@ -158,7 +154,7 @@ const Habits = () => {
       },
     });
   };
-  const handleDelete = async (habitId) => {
+  const handleDelete = async (habitId,identifier) => {
     try {
       // Show confirmation alert
       Alert.alert(
@@ -189,6 +185,9 @@ const Habits = () => {
                 if ( errorData.error === "Permission denied"){
                   Alert.alert('Permision Denied')
                 }
+              }
+              else{
+                await cancelAllHabitNotifications(identifier)
               }
 
               // Refresh habits after deletion
@@ -289,7 +288,7 @@ const Habits = () => {
       </View>
       <View style={{ flex: 1 }}>
   {habits.length === 0 && !loading ? (
-    <EmptyNotesPage title={'habit'} image={'habit'} />
+    <EmptyNotesPage title={i18n.t('habits.noHabit')} image={'habit'} subtext={i18n.t('habits.addHabit')} />
   ) : (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -322,7 +321,7 @@ const Habits = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => handleDelete(habit.id)}>
+                  onPress={() => handleDelete(habit.id,habit.habitidentifier)}>
                   <View style={styles.swipeButton}>
                     <Icon name="trash" size={25} color={'grey'} />
                   </View>
@@ -350,8 +349,8 @@ const Habits = () => {
                 });
               }}>
               <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', gap: 7, alignItems: 'flex-start' }}>
-                  <MyHabitIcon iconName={habit.icon} size={25} />
+                <View style={{ flexDirection: 'row', gap: 7, alignItems: 'center' }}>
+                  <MyHabitIcon iconName={habit.icon} size={30} />
                   <View>
                     <Text style={styles.habitName}>{habit.name}</Text>
                     <Text style={styles.habitDescription}>{habit.description.toLowerCase()}</Text>
@@ -398,7 +397,6 @@ const styles = StyleSheet.create({
   },
   habitDescription: {
     fontSize: 14,
-    marginVertical: 3,
     flex: 1,
   },
   swipeButton: {

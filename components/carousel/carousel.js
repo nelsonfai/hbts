@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const HabitSummary = ({user, summaryData,i18n })=>{
   return (
     <View>
-        <Text style={{ marginBottom: 15, fontSize: 18 }}>{i18n.t('home.todayActivity')}</Text>
+        <Text style={{ marginBottom: 15, fontSize: 18 }}>{i18n.t('home.habitSummary.todayActivity')}</Text>
     <View style={{flexDirection:'row',alignItems:'flex-start',gap:10,}}> 
     <View style={{flex:1,backgroundColor:'white',justifyContent:'center',padding:10,borderRadius:10}}>
       <View style={{flexDirection:'row',alignItems:'center',gap:3,marginBottom:10,justifyContent:'center',padding:5,backgroundColor:'white'}}>
@@ -94,7 +94,7 @@ const HabitSummary = ({user, summaryData,i18n })=>{
 const ListSummary = ({ user, summaryData,i18n }) => {
     return (
     <View>
-      <Text style={{ marginBottom: 15, fontSize: 18 }}>{i18n.t('home.todayActivity')}</Text>
+      <Text style={{ marginBottom: 15, fontSize: 18 }}>{i18n.t('home.listSummary.todayActivity')}</Text>
         <View style={{backgroundColor:'white',borderRadius:5}}>
       <View style={styles.container}>
       <View style={styles.summaryItemContainer}>
@@ -199,10 +199,13 @@ const YourCarouselComponent = ({  user }) => {
   );
 
   if (loading) {
-    // Render loading state
-    return<ActivityIndicator size='medium' color={'grey'} />
-    ;
+    return (
+      <View style={{ justifyContent: 'center', alignItems: 'center', height: 250, width: '100%',backgroundColor: '#f5f4fd',borderRadius:10,marginTop:10}}>
+        <ActivityIndicator size='medium' color={'grey'} />
+      </View>
+    );
   }
+  
 
 
   const renderItem = ({ item }) => (
@@ -213,7 +216,7 @@ const YourCarouselComponent = ({  user }) => {
   );
   
   return (
-<View  style={{marginTop:5}}>
+<View style={{marginTop:5}}>
       <Carousel
         data={data}
         renderItem={renderItem}

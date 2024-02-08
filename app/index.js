@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ActivityIndicator, StyleSheet, SafeAreaView } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, SafeAreaView ,StatusBar} from 'react-native';
 import { useUser } from "../context/userContext";
 import { useRefresh } from "../context/refreshContext";
 import AsyncStorageService from "../services/asyncStorage";
@@ -9,6 +9,7 @@ import { useNotificationService } from "../services/notificationServices";
 import { API_BASE_URL } from "../appConstants";
 import NetworkStatus from "../components/NetworkStatus"; // Assuming NetworkStatus is a component
 import NetInfo from "@react-native-community/netinfo";
+import { SyncReminders } from "../services/syncReminder";
 
 const SplashScreen = ({ network, onRefresh }) => (
   <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -72,9 +73,12 @@ const IndexPage = () => {
         }
         const data = await response.json();
         console.log('userdata', data);
-        const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang, premium } = data;
-        setUser({ id, email, name: name || '', profile_pic, team_invite_code, hasTeam, team_id, lang, premium, notify: expo_token });
+        const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang, premium,isync} = data;
+        setUser({ id, email, name: name || '', profile_pic, team_invite_code, hasTeam, team_id, lang, premium, notify: expo_token,isync });
         setRefresh({ refreshHabits, refreshList, refreshSummary, refreshNotes });
+        if (hasTeam && !isync){
+          SyncReminders(token)
+        }
         router.replace("/home");
       } else {
         router.replace("/onboadpage");
