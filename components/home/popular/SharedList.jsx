@@ -12,6 +12,21 @@ import { useRefresh } from '../../../context/refreshContext';
 import I18nContext from '../../../context/i18nProvider';
 import { API_BASE_URL,colorOptions } from '../../../appConstants';
 import MyHabitIcon from '../../Habits/habitIcon';
+const theme = [
+  'https://i.ibb.co/k50FD1X/1.png',
+
+  'https://i.ibb.co/6bXQR1w/6.png',
+  'https://i.ibb.co/QJGH893/7.png',
+  'https://i.ibb.co/2FZSXWG/8.png',
+  'https://i.ibb.co/Tk95LBm/2.png',
+
+  'https://i.ibb.co/vP1mYxD/9.png',
+  'https://i.ibb.co/56XqSb6/10.png',
+  'https://i.ibb.co/zhZphNR/11.png',
+  'https://i.ibb.co/xhpPFJ0/3.png',
+  'https://i.ibb.co/nkJdW2T/4.png',
+  'https://i.ibb.co/fQrHHB7/5.png',
+];
 
 const SharedLists = () => {
   const { user } = useUser();
@@ -25,7 +40,6 @@ const SharedLists = () => {
   const [selectedColor, setSelectedColor] = useState(colorOptions[0]);
   const [isLongPress, setLongPress] = useState(false);
   const userHasTeam = user.hasTeam;
-  const router = useRouter();
 
   const [newSharedList, setNewSharedList] = useState({
     title: '',
@@ -59,7 +73,7 @@ const SharedLists = () => {
         },
       });
       const data = await response.json();
-        setData(data);
+      setData(data);
       setIsLoading(false);
     } catch (error) {
       setError(error.message);
@@ -72,6 +86,7 @@ const SharedLists = () => {
   };
 
   const handleItemPress = (item) => {
+    const router = useRouter();
     router.push({
       pathname: `/sharedlist/id`,
       params: {
@@ -96,26 +111,38 @@ const SharedLists = () => {
     setShowAddModal(true);
   };
 
-  function calculatePercentage(done, total) {
-    const doneValue = done || 0;
-    const totalValue = total || 0;
-  
-    if (totalValue === 0) {
-      return 0;
-    }
-  
-    const percentage = (doneValue / totalValue) * 100;
-  
-    return parseFloat(percentage.toFixed(2));
-  }
+  const handleLongPress = (item) => {
+    setLongPress(true);
+  };
 
+  const handleDeletePress = (item) => {
+    Alert.alert(
+      'Confirm Delete',
+      'Are you sure you want to delete this item?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: () => {
+            setLongPress(false);
+          },
+          style: 'destructive',
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{i18n.t('home.shareListTitle')}</Text>
         <TouchableOpacity onPress={handleAddButtonClick}>
-          <MyHabitIcon size={30} iconName={'plus-circle-outline'} colorValue={'black'}/>
+          <MyHabitIcon size={30} iconName={'plus-circle-outline'} colorValue={'grey'}/>
+
         </TouchableOpacity>
       </View>
       <View style={styles.cardsContainer}>
@@ -129,7 +156,8 @@ const SharedLists = () => {
             renderItem={({ item, index }) => (
               <View >
                 <TouchableOpacity
-                  onPress={() => {handleItemPress(item)}}
+                  onPress={() => handleItemPress(item)}
+                  onLongPress={() => handleLongPress(item)}
                   delayLongPress={2000}>
                   <ImageBackground
                     //source={{ uri: theme[index]}} 
@@ -142,36 +170,43 @@ const SharedLists = () => {
                     >
                     <View
                       style={{
-                        padding: 0,
-                        width:50,
+                        padding: 10,
+                        width: 50,
                         height: 50,
                         backgroundColor: 'white',
-                        borderRadius: 30,
+
+                        borderRadius: 25,
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}
                     >
-                     <Text style={{color:item.color,fontWeight:700}}>{calculatePercentage(item.done_item_count,item.listitem_count)}%</Text>
+                      {item.has_team ? (
+                        <View style={styles.cardUser}>
+                          <Text>{item.member1_name.charAt(0).toUpperCase()}</Text>
+                          <Text>|</Text>
+                          <Text>{item.member2_name.charAt(0).toUpperCase()}</Text>
+                        </View>
+                      ) : (
+                        <View style={styles.cardUser}>
+                          <Icon name="lock" size={18} style={{ color: 'grey' }} />
+                        </View>
+                      )}
                     </View>
                   </ImageBackground>
 
                 </TouchableOpacity>
-                <Text style={styles.cardTitle} numberOfLines={1}>{' '}{item.title}</Text>
-                <View style={{padding:5,backgroundColor:'whitesmoke',borderRadius:10,width:80,marginTop:5}}>
-                {item.has_team ? (
-                        <View style={{flexDirection:'row',gap:5}} >
-                          <Icon name="link" size={15} style={{ color: 'grey' }} />
-                          <Text style={{fontSize:12}}>{item.member1_name.charAt(0).toUpperCase()}</Text>
-                          <Text style={{fontSize:12}}>|</Text>
-                          <Text style={{fontSize:12}}>{item.member2_name.charAt(0).toUpperCase()}</Text>
-                        </View>
-                      ) : (
-                        <View style={{flexDirection:'row',gap:5}} >
-                          <Icon name="lock" size={14} style={{ color: 'grey' }} />
-                          <Text style={{fontSize:12}}>Private</Text>
-                        </View>
-                      )} 
-                    </View>
+                <Text style={styles.cardTitle} numberOfLines={1}>
+                  {' '}
+                  {item.title}
+                </Text>
+
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <Text style={styles.cardText}>
+                    {' '}
+                    {item.done_item_count ?? 0} | {item.listitem_count ?? 0}
+                  </Text>
+                  <Icon name="check" size={14} style={{ color: 'grey' }} />
+                </View>
               </View>
             )}
             horizontal
@@ -211,7 +246,6 @@ const styles = {
   },
   cardsContainer: {
     marginBottom: 10,
-    
   },
   card: {
     backgroundColor: COLORS.white,
@@ -224,7 +258,12 @@ const styles = {
     marginBottom: 5,
     width: 170,
     height: 240,
-    flexDirection: 'column',    
+    flexDirection: 'column',
+    elevation: 1, // Android elevation for 3D look
+    shadowColor: '#000', // iOS shadow color
+    shadowOffset: { width: 0, height: 2 }, // iOS shadow offset
+    shadowOpacity: 0.1, // iOS shadow opacity
+    
   },
 
   cardText: {
@@ -243,4 +282,5 @@ const styles = {
     alignItems: 'center',
   },
 };
+
 export default SharedLists;

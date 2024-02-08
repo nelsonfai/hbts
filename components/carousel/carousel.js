@@ -43,7 +43,6 @@ const HabitSummary = ({user, summaryData,i18n })=>{
         <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 10, justifyContent: 'center', padding: 5, backgroundColor: 'white', alignItems: 'center' }}>
               <ProfileImage
-                mainImageUri={`${API_BASE_URL}${summaryData.partner2.habits.profile}`}
                 width={30}
                 height={30}
                 name={summaryData.partner2.habits.name}
@@ -71,10 +70,12 @@ const HabitSummary = ({user, summaryData,i18n })=>{
             </View>
 
             <View>
-              <View style={{flexDirection:'row',justifyContent:'center'}}> 
-            <View style={{height:60,width:60,borderRadius:30,backgroundColor:'whitesmoke',margin:'auto'}}>
-    
-              </View>
+              <View style={{}}>
+                <ProfileImage
+                width={65}
+                height={65}
+                name={i18n.t('home.habitSummary.partner')}
+              />
               </View>
               <View>
                 <TouchableOpacity onPress={ () => {router.push('partnershare')}}> 
@@ -206,7 +207,7 @@ const YourCarouselComponent = ({  user }) => {
 
 
   const renderItem = ({ item }) => (
-    <View style={[styles.item, { backgroundColor:'#efedfd',backgroundColor:'#f5f4fd' }]}>
+    <View style={[styles.item, {  backgroundColor: '#efedfd' }]}>
     
       {React.cloneElement(item.component, { user, summaryData ,i18n})} 
     </View>
@@ -237,6 +238,7 @@ const YourCarouselComponent = ({  user }) => {
 
 const styles = StyleSheet.create({
   item: {
+    backgroundColor: 'lightblue',
     borderRadius: 5,
     paddingVertical: 15,
     padding: 10,

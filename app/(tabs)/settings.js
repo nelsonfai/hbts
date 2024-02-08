@@ -11,7 +11,7 @@ import I18nContext from '../../context/i18nProvider';
 import * as Notifications from 'expo-notifications';
 import { API_BASE_URL } from '../../appConstants';
 const Settings =  () => {
-  const { user,setUser} = useUser();
+  const { user} = useUser();
   const {i18n} = useContext(I18nContext)
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
@@ -66,21 +66,10 @@ useEffect(() => {
       if (!response.ok) {
         throw new Error('Failed to logout');
       }
+      console.log('Before ',token)
 
       await AsyncStorageService.removeItem('token');
-      await AsyncStorageService.removeItem('expo_token');
-      setUser({
-        id: null,
-        email: '',
-        name: '',
-        profile_pic: '',
-        team_invite_code: '',
-        hasTeam: false,
-        team_id: null,
-        lang: '',
-        premium: false,
-        notify: '',
-      });
+      console.log('after ',token)
       
       router.replace('/');
     } catch (error) {
@@ -162,24 +151,14 @@ useEffect(() => {
               <Text style={styles.linkText}>{i18n.t('settings.accounts.changePassword')}</Text>
             </View>
           </TouchableOpacity>
-
+          <TouchableOpacity onPress={() => router.push('subscription')}>
+            <View style={styles.linkContainer}>
+              <Icon name="refresh" size={20} color="black" />
+              <Text style={styles.linkText}>{i18n.t('settings.accounts.subscription')}</Text>
+            </View>
+          </TouchableOpacity>
 
         </View>
-    {/* Subscription Section */}
-      <View style={{ marginTop: 20, paddingHorizontal: 10, fontSize: 14 ,display:'none'}}>
-        <Text style={styles.sectionTitle}>{i18n.t('settings.subscription.sectionTitle')}</Text>
-
-        {/* Display User Information */}
-        <View style={{ padding: 15, borderBottomWidth: 1, borderColor: '#f2f2f2' }}>
-          <Text>Email: {user.email}</Text>
-          <Text>Plan: {/* Retrieve and display user's subscription plan */}</Text>
-          <Text>Next Bill Amount: {/* Retrieve and display next bill amount */}</Text>
-          <Text>Next Bill Date: {/* Retrieve and display next bill date */}</Text>
-          <TouchableOpacity onPress={() => router.push('manageSubscription')}>
-              <Text style={{marginTop:5,textDecorationLine: 'underline',}}>{i18n.t('settings.subscription.manageSubscription')}</Text>
-          </TouchableOpacity>
-          </View>
-      </View>
 
         {/* Notifications Section */}
         <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
@@ -190,7 +169,6 @@ useEffect(() => {
             <Text style={styles.linkText}>{i18n.t('settings.notifications.enableNotifications')}</Text>
             </View>
             <Switch
-            trackColor={{ false: 'grey', true: 'black' }}
               value={notificationsEnabled}
               onValueChange={(value) => openAppSettings()}
             />
@@ -213,32 +191,13 @@ useEffect(() => {
             </View>
           </TouchableOpacity>
 
-        </View>
-
-                  {/* Links Section */}
-        <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
-        <Text style={styles.sectionTitle}>{i18n.t('settings.legal.sectionTitle')}</Text>
-
-            <TouchableOpacity onPress={() => Linking.openURL('your-review-link')}>
-              <View style={styles.linkContainer}>
-                <Icon name="star" size={20} color="black" />
-                <Text style={styles.linkText}>{i18n.t('settings.subscription.review')}</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => Linking.openURL('your-instagram-link')}>
-              <View style={styles.linkContainer}>
-                <Icon name="instagram" size={20} color="black" />
-                <Text style={styles.linkText}>Instagram</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
           <TouchableOpacity onPress={handleLogout}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 1, padding: 15, borderBottomWidth: 1, borderColor: '#f2f2f2' }}>
               <Icon name="sign-out" size={20} color="black" />
               <Text style={styles.linkText}>{i18n.t('settings.logout')}</Text>
             </View>
           </TouchableOpacity>
+        </View>
       {/* Language Selection Modal */}
       <Modal
         visible={showLanguageModal}

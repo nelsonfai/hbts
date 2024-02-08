@@ -3,24 +3,14 @@ import { Modal, View, Text, TouchableOpacity, StyleSheet, ScrollView,ImageBackgr
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { images } from '../../constants';
 import I18nContext from '../../context/i18nProvider';
-import { useRouter } from 'expo-router';
-import { Route } from 'expo-router/build/Route';
+
 const SubscriptionModal = ({ isVisible, onClose }) => {
   const {i18n} = useContext(I18nContext)
-  const router = useRouter();
   const [selectedPackage, setSelectedPackage] = useState('monthly');
-
   const handleSubscribe = () => {
     console.log(`Subscribing to ${selectedPackage} package`);
-    router.push({
-      pathname: '/(auth)/subscription',
-      params: {
-        plan: selectedPackage
-      }
-    });
     onClose();
   };
-
   const renderFeature = (title, description, iconName,key) => (
     <View style={styles.featureContainer} key={key}>
       <View style={styles.featureIconContainer}>
@@ -46,20 +36,23 @@ const SubscriptionModal = ({ isVisible, onClose }) => {
           showsVerticalScrollIndicator={false}>
           <View style={styles.modalContent}>
             <View style={styles.imageContainer}>
-
-              <View style={styles.image}> 
-              <images.holdingHands />
-              </View>
+              <ImageBackground
+                source={images.holdhands}
+                resizeMode='cover'
+                style={styles.image}> 
+              </ImageBackground>
             </View>
 
             <Text style={styles.title}>{i18n.t('subscription.title')}</Text>
+
             <View style={styles.packageContainer}>
               <TouchableOpacity
                 style={[
                   styles.package,
                   selectedPackage === 'monthly' && styles.selectedPackage,
                 ]}
-                onPress={() => setSelectedPackage('price_1OTPBXHZ7b9ff5E2zUHNdFBE')}>
+                onPress={() => setSelectedPackage('monthly')}
+              >
                 <Text style={styles.packageText}>{i18n.t('subscription.monthlyPackage.text')}</Text>
                 <Text style={styles.packageDetails}>{i18n.t('subscription.monthlyPackage.details')}</Text>
                 <Text style={styles.packageDetails}></Text>
@@ -70,7 +63,7 @@ const SubscriptionModal = ({ isVisible, onClose }) => {
                   styles.package,
                   selectedPackage === 'yearly' && styles.selectedPackage,
                 ]}
-                onPress={() => setSelectedPackage('price_1OTPCEHZ7b9ff5E23TwPv0Jx')}
+                onPress={() => setSelectedPackage('yearly')}
               >
                 <Text style={styles.packageText}>{i18n.t('subscription.yearlyPackage.text')}</Text>
                 <Text style={styles.packageDetails}>{i18n.t('subscription.yearlyPackage.details')}</Text>
@@ -133,8 +126,8 @@ const styles = StyleSheet.create({
     marginTop:20
   },
   image: {
-    width: 270,
-    height: 270,
+    width: 250,
+    height: 250,
     resizeMode: 'cover',
     marginBottom: 20,
   },

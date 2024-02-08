@@ -11,8 +11,6 @@ import {Stack }from 'expo-router';
 import { COLORS, icons, images, SIZES ,FONT} from "../../constants";
 import I18nContext from '../../context/i18nProvider';
 import { API_BASE_URL } from '../../appConstants';
-import { useLocalSearchParams } from 'expo-router';
-
 const ProfileEditPage = () => {
   const {i18n} = useContext(I18nContext)
   const router = useRouter();
@@ -22,10 +20,8 @@ const ProfileEditPage = () => {
   const [loading, setLoading] = useState(false);
   const [profileSaved, setProfileSaved] = useState(false);
   const [error,setError] = useState('')
-  const params = useLocalSearchParams();
-  const create = params.create
 
-  console.log('Create Vlaue',create)
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -106,7 +102,6 @@ const ProfileEditPage = () => {
       updateTeamInfo(newName=data.name,newPic=data.profile_pic)
       setLoading(false)
       setProfileSaved(true)
-      {create? router.replace('/') : router.replace('/settings')}
 
     } catch (error) {
       console.error('Error saving profile:', error.message);
@@ -118,15 +113,19 @@ const ProfileEditPage = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite  }}>
             <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}>
+        style={{ flex: 1 }}
+      >
     <Stack.Screen
+    
         options={{
           headerStyle: { backgroundColor: COLORS.lightWhite },
           headerShadowVisible: false,
           headerTintColor:'grey',
           headerTitle: i18n.t('editProfile.title') 
-        }}/>
-      <View style={styles.container}>
+        }}
+/>
+    <View style={styles.container}>
+
       <TouchableOpacity onPress={pickImage}>
         {profilePic ? (
           <Image source={{ uri: profilePic }} style={styles.profilePic} />
@@ -153,7 +152,7 @@ const ProfileEditPage = () => {
               {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
       <Button
-      title={!profileSaved ? i18n.t('editProfile.saveProfileButton') : i18n.t('editProfile.updatedProfileButton')}
+      title={profileSaved ? i18n.t('editProfile.saveProfileButton') : i18n.t('editProfile.updatedProfileButton')}
       disabled={loading} onPress={saveProfile} containerStyle={styles.buttonContainer} buttonStyle={{backgroundColor:'black',padding:10,borderRadius:10}}/>
     </View>
     </KeyboardAvoidingView>

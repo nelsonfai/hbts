@@ -6,6 +6,7 @@ const FloatingButton = () => {
   const router = useRouter();
 
   const onPress = () => {
+    // Navigate to the "write" page
     router.push('write'); // Adjust the route name as per your navigation setup
   };
 

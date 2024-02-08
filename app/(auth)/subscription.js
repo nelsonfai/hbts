@@ -1,139 +1,85 @@
-// SubscriptionScreen.js
+import React, { useState } from 'react';
+import { View, Button, Alert } from 'react-native';
+import { CardField, useConfirmPayment } from '@stripe/stripe-react-native';
 
-import React, { useState ,useRef} from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
-import { CardField, useStripe,StripeProvider } from '@stripe/stripe-react-native';
-import { API_BASE_URL } from '../../appConstants';
-import AsyncStorageService from '../../services/asyncStorage';
-import { useLocalSearchParams } from 'expo-router';
+const API_URL = 'YOUR_SERVER_API_ENDPOINT'; // Replace with your actual server API endpoint
 
-const SubscriptionScreen = () => {
-  const { createPaymentMethod, confirmSetupIntent, handleCardAction } = useStripe();
-  const [loading, setLoading] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
-  const [userName, setUserName] = useState('');
-  const cardFieldRef = useRef(); 
+const PaymentScreen = () => {
+  const { confirmPayment, loading } = useConfirmPayment();
+  const [card, setCard] = useState(null);
 
-  //plan = params?.plan
-  const plan = 'price_1OTPBXHZ7b9ff5E2zUHNdFBE'
-
-  const handleSubscribe = async () => {
+  const fetchPaymentIntentClientSecret = async () => {
     try {
-      setLoading(true);
-
-      // Create Payment Method
-      const { paymentMethod, error } = await createPaymentMethod({
-        type: 'card',
-        card: cardElement,
-      });
-
-      if (error) {
-        console.error('Error creating payment method:', error);
-        Alert.alert('Error', 'Failed to create payment method. Please try again.');
-        return;
-      }
-
-      // Confirm Setup Intent
-      const { setupIntent, error: setupError } = await confirmSetupIntent({
-        paymentMethodId: paymentMethod.id,
-      });
-
-      if (setupError) {
-        console.error('Error confirming setup intent:', setupError);
-        Alert.alert('Error', 'Failed to confirm setup intent. Please try again.');
-        return;
-      }
-
-      // Send subscription details to backend
-      await subscribeToBackend(setupIntent.id);
-
-      // Update user premium status on success
-      // Handle UI updates
-
-    } catch (error) {
-      console.error('Error processing subscription:', error);
-      Alert.alert('Error', 'Failed to process subscription. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const subscribeToBackend = async (setupIntentId) => {
-    const token = await AsyncStorageService.getItem("token");
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/create-payment-intent/`, {
+      const response = await fetch(`${API_URL}/create-payment-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-            Authorization: `Token ${token}`,
         },
         body: JSON.stringify({
-          user_email: userEmail,
-          setup_intent_id: setupIntentId,
-          name:userName,
-          plan:plan
+          currency: 'usd',
         }),
       });
+      const { clientSecret } = await response.json();
+      return clientSecret;
+    } catch (error) {
+      console.error('Error fetching PaymentIntent client secret:', error);
+      return null;
+    }
+  };
 
-      if (!response.ok) {
-        throw new Error('Failed to subscribe on the backend.');
+  const handlePayPress = async () => {
+    try {
+      if (!card) {
+        return;
       }
 
-      const result = await response.json();
+      // Fetch the intent client secret from the backend.
+      const clientSecret = await fetchPaymentIntentClientSecret();
 
-      if (result.success) {
-        Alert.alert('Success', 'Subscription successful!');
-      } else {
-        throw new Error('Failed to subscribe on the backend.');
+      // Confirm the payment with the card details
+      const { paymentIntent, error } = await confirmPayment(clientSecret, {
+        paymentMethodType: 'Card',
+        paymentMethodData: {
+          card,
+        },
+      });
+
+      if (error) {
+        console.log('Payment confirmation error', error);
+        Alert.alert('Error', 'Payment failed. Please try again.');
+      } else if (paymentIntent) {
+        console.log('Payment successful:', paymentIntent);
+        Alert.alert('Success', 'Payment successful!');
+        // You may want to navigate to a success screen or update UI here
       }
     } catch (error) {
-      console.error('Error subscribing to backend:', error);
-      Alert.alert('Error', 'Failed to subscribe on the backend. Please try again.');
+      console.error('Error processing payment:', error);
+      Alert.alert('Error', 'An unexpected error occurred. Please try again later.');
     }
   };
 
   return (
-    <StripeProvider
-    publishableKey="pk_test_51OPRTQHZ7b9ff5E2gwvHGdbBmnRzFiFe6jipBucbyJtJ8EAgPAQQdI6sVaSejPN0jHO6eaq01NxzdJ2hVeHYCri300PdlNLEVK"
-    urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
-    merchantIdentifier="merchant.com.couplejournal" // required for Apple Pay
-  >
-
-    <View>
-      <Text>Subscription Screen</Text>
-      <TextInput
-        placeholder="Enter your email"
-        value={userName}
-        onChangeText={(text) => setUserName(text)}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        style={{ margin: 10, padding: 10, borderColor: 'gray', borderWidth: 1 }}
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+      <CardField
+        postalCodeEnabled={true}
+        placeholders={{
+          number: '4242 4242 4242 4242',
+        }}
+        cardStyle={{
+          backgroundColor: '#FFFFFF',
+          textColor: '#000000',
+        }}
+        style={{
+          width: '100%',
+          height: 50,
+          marginVertical: 30,
+        }}
+        onCardChange={(cardDetails) => setCard(cardDetails)}
+        onFocus={(focusedField) => console.log('Focus on:', focusedField)}
       />
-        <CardField
-        ref={cardFieldRef}
-          postalCodeEnabled={false}
-          placeholder={{
-            number: '4242 4242 4242 4242',
-          }}
-          cardStyle={{
-            backgroundColor: '#FFFFFF',
-            textColor: '#000000',
-          }}
-          style={{
-            width: '100%',
-            height: 50,
-            marginVertical: 10,
-          }}
-          onCardChange={(cardDetails) => {
-            console.log('cardDetails', cardDetails);
-            // You can use cardDetails to update your UI or perform additional logic
-          }}
-        />
-      <Button title="Subscribe" onPress={handleSubscribe} disabled={loading} />
+      <Button title="Pay" onPress={handlePayPress} disabled={loading} />
     </View>
-  </StripeProvider>
   );
 };
 
-export default SubscriptionScreen;
+export default PaymentScreen;

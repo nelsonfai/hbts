@@ -7,8 +7,6 @@ import AsyncStorageService from "../../services/asyncStorage";
 import { Calendar, DotMarking, } from "react-native-calendars";
 import { useRouter } from "expo-router";
 import { VictoryBar, VictoryChart, VictoryAxis, VictoryTheme, VictoryGroup, VictoryLabel,} from 'victory-native';
-import NetworkStatus from "../../components/NetworkStatus";
-import NetInfo from "@react-native-community/netinfo";
 
 import I18nContext from "../../context/i18nProvider";
 const HabitStats = ({ route }) => {
@@ -35,51 +33,38 @@ const HabitStats = ({ route }) => {
   );
   const habitId = params.habitId;
   
-
-  const [network, SetNetWork] = useState(true);
-
-  const networkCheck = () => {
-    NetInfo.fetch().then((state) => {
-      SetNetWork(state.isConnected);
-    });
-  };
-
-
-  const fetchHabitStats = async () => {
-    networkCheck()
-    if (!network){
-      return
-    }
-    try {
-      const token = await AsyncStorageService.getItem("token");
-      const fetchUrl = `https://cpj.onrender.com/api/habit/${habitId}/statistics/?start_date=${startDate}&end_date=${endDate}&rangetype=${rangetype}`;
-      const response = await fetch(fetchUrl, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch habit statistics");
-      }
-      const data = await response.json();
-
-      setPartner1Stats(data.partner1);
-      setPartner2Stats(data.partner2);
-      setHabitInfo(data.habit_info);
-      if (rangetype === 'yearly') {
-        console.log('Yearly')
-        const yearlyData = calculateYearlyData(data);
-        setP1Total(yearlyData.partner1Total );
-        setP2Total(yearlyData.partner2Total);
-        setP1Percentage(yearlyData.partner1Percentage);
-        setP2Percentage(yearlyData.partner2Percentage);
-      }
-    } catch (error) {
-      //console.error("Error fetching habit statistics:", error.message);
-    }
-  };
   useEffect(() => {
+    const fetchHabitStats = async () => {
+      try {
+        const token = await AsyncStorageService.getItem("token");
+        const fetchUrl = `https://cpj.onrender.com/api/habit/${habitId}/statistics/?start_date=${startDate}&end_date=${endDate}&rangetype=${rangetype}`;
+        const response = await fetch(fetchUrl, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch habit statistics");
+        }
+        const data = await response.json();
+        console.log(data)
+
+        setPartner1Stats(data.partner1);
+        setPartner2Stats(data.partner2);
+        setHabitInfo(data.habit_info);
+        if (rangetype === 'yearly') {
+          console.log('Yearly')
+          const yearlyData = calculateYearlyData(data);
+          setP1Total(yearlyData.partner1Total );
+          setP2Total(yearlyData.partner2Total);
+          setP1Percentage(yearlyData.partner1Percentage);
+          setP2Percentage(yearlyData.partner2Percentage);
+        }
+      } catch (error) {
+        console.error("Error fetching habit statistics:", error.message);
+      }
+    };
     fetchHabitStats();
   }, [habitId, startDate]);
 
@@ -287,7 +272,7 @@ const renderBarChart = () => {
           headerTitle:params.name,
         }}
       />
-  {network ?    (<ScrollView  showsVerticalScrollIndicator={false}>
+      <ScrollView  showsVerticalScrollIndicator={false}>
         {partner1Stats && partner2Stats && habitInfo ? (
           <View>
             <View style={styles.topContainer}>
@@ -401,7 +386,7 @@ const renderBarChart = () => {
           </View>
 
         )}
-      </ScrollView>) : (<NetworkStatus  onRefresh={fetchHabitStats}/>)}
+      </ScrollView>
     </SafeAreaView>
   );
 };

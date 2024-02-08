@@ -88,11 +88,8 @@
       "editProfile": "Edit Profile",
       "language": "Language",
       "subscription":"Subscription"
-    },
-    "subscription": {
-      "sectionTitle": "Subscription",
-      "manageSubscription": "Manage Subscription",
-      "review": "Review"
+
+
     },
     "notifications": {
       "sectionTitle": "Notifications",

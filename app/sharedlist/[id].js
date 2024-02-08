@@ -11,9 +11,6 @@ import AddSharedListModal from "../../components/sharedlist/CollectiveListModal"
 import { useRefresh } from "../../context/refreshContext";
 import I18nContext from "../../context/i18nProvider";
 import { COLORS } from "../../constants";
-import NetInfo from '@react-native-community/netinfo';
-
-import NetworkStatus from "../../components/NetworkStatus";
 
 const ListItemDetailsScreen = () => {
   const router = useRouter();
@@ -28,7 +25,6 @@ const ListItemDetailsScreen = () => {
   const [editingItemId, setEditingItemId] = useState(null);
   const swipeableRefs = {};
   const [openSwipeables, setOpenSwipeables] = useState([]);
-  const[network,setNetWork] = useState(true)
   const [showAddListModal, setShowAddListModal] = useState(false);
   const [itemCountStats, setItemCountStats] = useState({
     totalCount: 0,
@@ -44,11 +40,6 @@ const ListItemDetailsScreen = () => {
     isSharedValue:true}); 
   const userHasTeam = params.hasTeam;
 
-  const unsubscribe = NetInfo.addEventListener(state => {
-    NetInfo.fetch().then(state => {
-      setNetWork(state.isConnected)
-    });
-  });
   useEffect(() => {
     if (params.id) {
       fetchListItems();
@@ -60,14 +51,9 @@ const ListItemDetailsScreen = () => {
   }, [listItems]);
 
   const fetchListItems = async () => {
-    unsubscribe()
-    if(!network){
-      console.log('Network',network)
-      setIsLoading(false)
-      return
-    }
     const token = await AsyncStorageService.getItem('token')
     try {
+      // const allListUrl = `${API_BASE_URL}/collaborative-lists/${params.id}/`
       const allListUrl = `${API_BASE_URL}/collaborative-lists/${params.id}/items/`
       const response = await fetch(allListUrl, {
           headers: {
@@ -75,6 +61,7 @@ const ListItemDetailsScreen = () => {
               'Authorization': `Token ${token}`,
           },
       });
+      console.log('called data 3')
 
       const data = await response.json();
       if (error) {
@@ -111,10 +98,6 @@ const ListItemDetailsScreen = () => {
         {
           text: i18n.t('listDetails.forms.deleteButton'),
           onPress: async () => {
-            unsubscribe()
-            if(!network){
-              return
-            }
             try {
               const token = await AsyncStorageService.getItem('token');
               const id = selectedItem.id
@@ -158,10 +141,6 @@ const ListItemDetailsScreen = () => {
     return formattedDate;
   }
   const handleDelete = async (itemId) => {
-          unsubscribe()
-          if(!network){
-            return
-          }
         try {
           const token = await AsyncStorageService.getItem('token');
           const apiUrl = `${API_BASE_URL}/items/${itemId}/`;
@@ -175,9 +154,12 @@ const ListItemDetailsScreen = () => {
           const response = await fetch(apiUrl, requestOptions);
 
           if (response.ok) {
+            // If the item is deleted successfully, update the local state
             setRefresh({ refreshHabits: false, refreshList: true,refreshSummary:false ,refreshNotes:false});
+
             setListItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
           } else {
+            // Handle errors
             const errorData = await response.json();
             console.error('Error deleting item:', errorData);
           }
@@ -187,10 +169,6 @@ const ListItemDetailsScreen = () => {
         }
       };
     const updateItem = async (itemId, requestData) => {
-      unsubscribe()
-      if(!network){
-        return
-      }
       try {
         const token = await AsyncStorageService.getItem('token')
     
@@ -310,35 +288,32 @@ const closeEditModal = () => {
             <CircularProgressBar percentage={itemCountStats.percentage} tintColor={selectedItem.color} radius={30} />
           </View>
         </View>
-        <SearchComponent color={selectedItem.color} sharedListId={selectedItem.id} updateList={fetchListItems} placeholderText={i18n.t('listDetails.forms.addPlaceholder')}  network={network}/>
+        <SearchComponent color={selectedItem.color} sharedListId={selectedItem.id} updateList={fetchListItems} placeholderText={i18n.t('listDetails.forms.addPlaceholder')} />
         </View>
         <View style={styles.container}>
-  {isLoading ? (
-    <ActivityIndicator size='medium' color={'grey'} />
-  ) : error ? (
-    <View>
-      <Text>Error Loading Data:</Text>
-      <Text>{error}</Text>
-    </View>
-  ) : network ?  (
-    <FlatList
-      data={listItems}
-      keyExtractor={(item) => (item.id ? item.id.toString() : item.title)}
-      renderItem={({ item }) => (
-        <ListItem
-          item={item}
-          handleCheckButtonPress={updateItemDoneStatus}
-          handleDeleteButtonPress={handleDelete}
-          onEdit={openEditModal}
-          color={selectedItem.color}
-          swipeableRefs={swipeableRefs}
-        />
-      )}
-    />
-  ):(
-    <NetworkStatus />
-  ) }
-</View>
+          {isLoading ? (
+            <ActivityIndicator size='large' color={COLORS.primary} />
+          ) : error ? (
+            <View>
+              <Text>Error Loading Data:</Text>
+              <Text>{error}</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={listItems}
+              keyExtractor={(item) => (item.id ? item.id.toString() : item.title)}
+              renderItem={({ item }) => (
+                <ListItem
+                item={item}
+                handleCheckButtonPress={updateItemDoneStatus}
+                handleDeleteButtonPress={handleDelete}
+                onEdit={openEditModal}
+                color= {selectedItem.color}
+                swipeableRefs={swipeableRefs} />
+              )}
+            />
+          )}
+        </View>
 
       {/* Edit Modal */}
       <Modal

@@ -9,8 +9,7 @@ import {
   Keyboard,
   StyleSheet,
   TextInput,
-  View,
-  Alert,
+  View
 } from "react-native";
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import { Stack, router, useLocalSearchParams } from "expo-router";
@@ -18,96 +17,82 @@ import AsyncStorageService from "../../services/asyncStorage";
 import { API_BASE_URL } from "../../appConstants";
 import { useRefresh } from "../../context/refreshContext";
 import { COLORS } from "../../constants";
-import richTextStyle from "../../styles/richtextStyle";
-import Icon from "react-native-vector-icons/FontAwesome";
-import * as Clipboard from 'expo-clipboard';
-import NetworkStatus from "../../components/NetworkStatus";
-import NetInfo from '@react-native-community/netinfo';
-
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 const handleHead = ({ tintColor }) => (
-  <Text style={{ color: tintColor }}>Hh</Text>
+  <Text style={{ color: tintColor }}>H1</Text>
 );
 const handleHead2 = ({ tintColor }) => (
   <Text style={{ color: tintColor }}>H2</Text>
 );
 
 const App = () => {
-  const richText = React.useRef();
-  const scrollViewRef = React.useRef();
-  
-
   const params = useLocalSearchParams();
   const [change, setChange] = useState(false);
   const [initialText, setInitialText] = useState("");
-  const [title, setTitle] = useState(params.title || ''); 
-  const [color, setColor] = useState(params.color || 'black');
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [title, setTitle] = useState(""); 
   const {refresh,setRefresh} = useRefresh();
-  const [scroll,setScroll] = useState(0)
-  const [network,setNetWork] = useState(true)
 
-  const networkCheck =() => {
-    NetInfo.fetch().then(state => {
-      setNetWork(state.isConnected)
-    });
-  };
-  const setCursor = (cursorPosition) =>{
+  const richText = React.useRef();
 
-    if (scrollViewRef.current && cursorPosition && cursorPosition !== scroll) {
-      console.log('cursor change')
-      scrollViewRef.current.scrollTo({ y: cursorPosition, animated: true });
+  useEffect(() => {
+    if (params.id) {
+      fetchInitialText();
     }
-    setScroll(cursorPosition)
-  }
-  const setHtml = () => {
-    networkCheck()
-    if (params.id){
-      fetchInitialText()
+  }, [params.id]);
+
+
+
+  const fetchInitialText = async () => {
+    try {
+      const token = await AsyncStorageService.getItem("token");
+      const apiUrl = `${API_BASE_URL}/notes/${params.id}/`;
+
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      };
+      const response = await fetch(apiUrl, requestOptions);
+      if (response.ok) {
+        const data = await response.json();
+        setInitialText(data.body);
+		setTitle(data.title)
+		richText.current.setContentHTML(data.body);
+        setChange(false); // Set change to false initially
+      } else {
+        const errorData = await response.json();
+        console.error("Error fetching initial text:", errorData);
+      }
+    } catch (error) {
+      console.error("Error fetching initial text:", error.message);
     }
-   }
-
-   const fetchInitialText = async () => {
-    if(network){ try {
-       const token = await AsyncStorageService.getItem("token");
-       const apiUrl = `${API_BASE_URL}/notes/${params.id}/`;
- 
-       const requestOptions = {
-         method: "GET",
-         headers: {
-           "Content-Type": "application/json",
-           Authorization: `Token ${token}`,
-         },
-       };
-       const response = await fetch(apiUrl, requestOptions);
-       if (response.ok) {
-         const data = await response.json();
-         setInitialText(data.body);
-         setTitle(data.title)
-         setColor(data.color)
-         richText.current.setContentHTML(data.body);
-         setChange(false); // Set change to false initially
-       } else {
-         const errorData = await response.json();
-         console.error("Error fetching initial text:", errorData);
-       }
-     } catch (error) {
-      //console.error("Error fetching initial text:", error.message);
-    }}
- }
-
-
-
-  const handleLinkPress =async (url) => {
-      await Clipboard.setStringAsync(url);
   };
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+
   const handleDonePress = async (richText, initialText) => {
     try {
-      NetInfo.fetch().then(state => {
-        if(!state.isConnected){
-          return Alert.alert('You are Currently Offline')
-        }
-      });
-
       const token = await AsyncStorageService.getItem("token");
       const newBody = await richText.current.getContentHtml();
       const apiUrl = params.id
@@ -120,22 +105,22 @@ const App = () => {
           "Content-Type": "application/json",
           Authorization: `Token ${token}`,
         },
-        body: JSON.stringify({title:title, body: newBody,color:color }),
+        body: JSON.stringify({title:title, body: newBody }),
       };
 
       const response = await fetch(apiUrl, requestOptions);
 
       if (response.ok) {
-    		setChange(false)
-        richText.current.blurContentEditor();
-		    setRefresh({ refreshHabits: false, refreshList: false, refreshSummary: false,refreshNotes:true });
+		router.replace("/notes");
+		setChange(false)
+		setRefresh({ refreshHabits: false, refreshList: false, refreshSummary: false,refreshNotes:true });
 
       } else {
         const errorData = await response.json();
         console.error("Error updating/add text:", errorData);
       }
     } catch (error) {
-      //console.error("Error updating/add text:", error.message);
+      console.error("Error updating/add text:", error.message);
     }
     Keyboard.dismiss();
   };
@@ -146,100 +131,92 @@ const App = () => {
         options={{
           headerStyle: {},
           headerShadowVisible: true,
-                    headerRight: () => (
+          headerRight: () => (
             <TouchableOpacity onPress={() => handleDonePress(richText, initialText)}>
               {change ? (
-              <Text style={{marginRight: 5,marginBottom:7, fontSize: 18, fontWeight: 600 }}>
+                <Text style={{marginRight: 5,marginBottom:7, fontSize: 18, fontWeight: 600 }}>
                   Save
                 </Text>
               ) : null}
             </TouchableOpacity>
           ),
-          headerTitle: '',
+          headerTitle: "",
           headerTintColor: "black",
         }}
       />
-
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1}}> 
-        {network && (
-        <View style={styles.toolbarContainer}>
-          <RichToolbar
-            style={{ flex: 1, backgroundColor: 'whitesmoke' }}
-            editor={richText}
-            iconTint="grey"
-            selectedIconTint="#312921"
-            actions={[
-              actions.undo,
-              actions.setBold,
-              actions.insertBulletsList,
-              actions.insertOrderedList,
-              actions.insertLink,
-              actions.setItalic,
-              actions.checkboxList,
-              actions.setUnderline,
-            ]}
-          />
-        </View>
+      {isKeyboardVisible && (
+        <RichToolbar
+          style={styles.toolbarContainer}
+          editor={richText}
+          iconTint="#312921"
+          actions={[
+            actions.undo,
+            actions.setBold,
+            actions.insertBulletsList,
+            actions.insertOrderedList,
+            actions.insertLink,
+            actions.setItalic,
+            actions.setUnderline,
+            actions.heading1,
+            actions.heading2,
+          ]}
+        />
       )}
-        <ScrollView contentContainerStyle={{flexGrow:1,padding:7,paddingBottom:100,paddingTop:40}}
-        showsVerticalScrollIndicator={false}
-          ref={scrollViewRef}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+        >
 
-              <View style={{ padding: 15, gap: 5 ,flexDirection:'row',alignItems:'flex-start',backgroundColor:'whitesmoke',marginVertical:10,borderRadius:10,}}>
-                  <TouchableOpacity onPress={ () => setColor('red')}>
-                    <View style={{paddingTop:5}}><Icon name="bookmark" size={23} color={color} /></View>
-                  </TouchableOpacity>
-                    <TextInput
-                      multiline={true}
-                      style={[styles.titleInput]}
-                      placeholder="Enter title..."
-                      value={title}
-                      onChangeText={(text) => {
-                        setChange(true);
-                        setTitle(text);
-                      }}
-                    />
-              </View>
-          {  network ? ( <View>
-                    <RichEditor
-                      editorInitializedCallback={setHtml}
-                      onCursorPosition={setCursor}
-                      style={{flex:1}}
-                        editorStyle={{
-                        color: 'black',
-                        caretColor: 'black',
-                        backgroundColor: COLORS.lightWhite,
-                        cssText: richTextStyle(color),
-                      }}
-                      contentCSSText={true}
-                      ref={richText}
-                      onLink={handleLinkPress}
-                      onChange={(descriptionText) => {
-                        setChange(true);
-                      }}
-                      placeholder={"Body ..."}
-                    />
-                    </View>):(<NetworkStatus onRefresh={setHtml}/>)}
-          </ScrollView>
+		  <View style={{flexDirection:'row',alignItems:'flex-start',padding:10,gap:5,marginTop: isKeyboardVisible ? 50 : 10,}}>
+		  <Icon name="bookmark" size={22} color={'black'} />
+		  <TextInput
+		  	numberOfLines={5}
+            style={[styles.titleInput]}
+            placeholder="Enter title..."
+            value={title}
+            onChangeText={(text) => 
+				{setChange(true)
+				setTitle(text)}}
+          />
+			</View>
 
-      </KeyboardAvoidingView>
+          <RichEditor
+			editorStyle={{
+				color: 'black',
+				padding:'50px',
+				caretColor:'black',
+				backgroundColor:COLORS.lightWhite
+			  }}
+            caretColor="red"
+            ref={richText}
+            onChange={(descriptionText) => {
+              setChange(true);
+            }}
+            placeholder={"Body ..."} 
+          />
+        </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   toolbarContainer: {
-    width:'100%',
-    zIndex:1,
-    position:'absolute',
+    position: "absolute",
+    backgroundColor: "whitesmoke",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
+  richEditor: {
+flex:1  },
   titleInput:{
 	fontSize:22,
-	fontWeight:500, 
-  flex:1,
-  borderRadius:5
+	fontWeight:500,
+	flex:1
   }
-
 });
 
 export default App;

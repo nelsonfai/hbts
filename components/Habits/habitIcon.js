@@ -2,7 +2,7 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TouchableOpacity,StyleSheet } from 'react-native';
 const MyHabitIcon = ({ iconName, isSelected, onPress,size,colorValue }) => {
-    const MaterialIcons = ['hiking', 'run', 'dumbbell', 'cup-water', 'compass', 'church', 'medical-bag', 'meditation', 'microphone', 'walk', 'hands-pray','plus-circle-outline','arrow-back-ios','arrow-left',];
+    const MaterialIcons = ['hiking', 'run', 'dumbbell', 'cup-water', 'compass', 'church', 'medical-bag', 'meditation', 'microphone', 'walk', 'hands-pray','plus-circle-outline'];
     const isMaterialIcon = MaterialIcons.includes(iconName);
     const renderIcon = () => {
       if (isMaterialIcon) {

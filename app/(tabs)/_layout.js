@@ -2,6 +2,7 @@ import { Tabs, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { Text } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
+import { NavigationContainer } from '@react-navigation/native';
 import I18nContext from "../../context/i18nProvider";
 import { useContext } from "react";
 const Layout = () => {
@@ -29,7 +30,7 @@ const Layout = () => {
         } else if (route.name === 'profile') {
           iconName = focused ? 'user' : 'user';
         } else if (route.name === 'partnershare') {
-          iconName = focused ? 'heart' : 'heart';
+          iconName = focused ? 'users' : 'users';
         } else if (route.name === 'habits') {
           iconName = focused ? 'list-ul' : 'list-ul';
         } else if (route.name === '(habits)/AddHabit') {
@@ -63,7 +64,9 @@ const Layout = () => {
         />
       <Tabs.Screen name="partnershare"
         options={{
-          title:'Pairing',
+          title:'Us',
+          href: null,
+
                 }} />
               <Tabs.Screen name="settings"
             options={{
