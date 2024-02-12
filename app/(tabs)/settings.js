@@ -202,7 +202,6 @@ useEffect(() => {
                 />
           </View>
         </View>
-
         {/* Legal Section */}
         <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
           <Text style={styles.sectionTitle}>{i18n.t('settings.legal.sectionTitle')}</Text>
@@ -218,10 +217,9 @@ useEffect(() => {
               <Text style={styles.linkText}>{i18n.t('settings.legal.requiredLink')}</Text>
             </View>
           </TouchableOpacity>
-
         </View>
 
-                  {/* Links Section */}
+        {/* Links Section */}
         <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
         <Text style={styles.sectionTitle}>{i18n.t('settings.legal.sectionTitle')}</Text>
 

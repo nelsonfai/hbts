@@ -7,6 +7,7 @@ import { COLORS } from "../../constants";
 import * as Clipboard from 'expo-clipboard';
 import { useRefresh } from "../../context/refreshContext";
 import I18nContext from "../../context/i18nProvider";
+import { SyncReminders } from "../../services/syncReminder";
 
 export default function IndexPage() {
   const {user, setUser } = useUser();
@@ -60,8 +61,8 @@ export default function IndexPage() {
 
               if (response.ok) {
                 const data = await response.json();
-               // Alert.alert('Success', data.message);
                 updateTeamInfo(newHasTeamValue=false, newTeamIdValue=null);
+                SyncReminders(token)
 
               } else {
                 const errorMessage = await response.text();
@@ -100,8 +101,8 @@ export default function IndexPage() {
       if (response.ok) {
         const data = await response.json();
         setError('');
-        console.log(data)
         setSuccess(i18n.t('partnerPairing.enterPartnerCode.success'));
+        SyncReminders(token)
       } else {
         const errorMessage = await response.text();
 
