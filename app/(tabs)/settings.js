@@ -260,7 +260,7 @@ useEffect(() => {
                 <Text style={styles.linkText}>{i18n.t('settings.subscription.review')}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => Linking.openURL('https://www.instagram.com/nelson__fai/')}>
+            <TouchableOpacity onPress={() => Linking.openURL('https://hbts.netlify.app/contact')}>
               <View style={styles.linkContainer}>
                 <Icon name="phone" size={20} color="black" />
                 <Text style={styles.linkText}>{i18n.t('settings.subscription.contact')}</Text>

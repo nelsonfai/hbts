@@ -52,8 +52,7 @@ const Habits = () => {
       return
     }
     try {
-      console.log('fetching')
-
+      setLoading(true);
       const token = await AsyncStorageService.getItem("token");
       const response = await fetch(`${API_BASE_URL}/habits/`, {
         method: "POST",
@@ -75,7 +74,6 @@ const Habits = () => {
       setHabits(data.habits);
       setLimit(data.limit)
     } catch (error) {
-      //console.error("Error fetching habits:", error.message);
     } finally {
       setLoading(false);
     }
@@ -83,7 +81,7 @@ const Habits = () => {
 
   useEffect(() => {
     fetchHabits();
-  }, []);
+  }, [date]);
 
 
   const onRefresh = useCallback(() => {
@@ -104,16 +102,9 @@ const Habits = () => {
   );
 
 
-  const handleWeekChanged = (end) => {
-    console.log('changed ',end)
-  };
-  
-
-
   const handleDateSelected = (selectedDate) => {
     const formattedDate = selectedDate.toISOString().split("T")[0];
     setDate(formattedDate);
-    fetchHabits()
     if (formattedDate === currentDate) {
         setDateText(i18n.t('habits.today'));
     } else {
@@ -293,7 +284,6 @@ const Habits = () => {
           onDateSelected={handleDateSelected}
           style={{ height: 80,padding:10 }}
           scrollable={false}
-          onWeekChanged={handleWeekChanged}
           daySelectionAnimation={{ type: 'background', highlightColor	: 'black' }}
           highlightDateNumberStyle={{color: 'white'}}
           highlightDateNameStyle={{color: 'white'}}
