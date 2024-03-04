@@ -52,7 +52,6 @@ const Habits = () => {
       return
     }
     try {
-      setLoading(true);
       const token = await AsyncStorageService.getItem("token");
       const response = await fetch(`${API_BASE_URL}/habits/`, {
         method: "POST",
