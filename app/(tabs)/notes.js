@@ -30,10 +30,12 @@ import EmptyNotesPage from "../../components/emptyPage";
 import I18nContext from "../../context/i18nProvider";
 const DELETE_ICON = "trash";
 const EDIT_ICON = "edit";
+import SubscriptionModal from "../../components/subscription/SubcritionModal";
 
 const NoteListItem = ({ note, onDelete, onEdit, onDetails, swipeableRefs }) => {
   const formattedDate = new Date(note.date).toLocaleDateString();
   const swipeableRef = useRef(null);
+
   const { openRowId, setOpenRowId } = useSwipeable({
     listOpenId: null,
     habitOpenid: null,
@@ -163,6 +165,7 @@ const NotesScreen = () => {
   const [network, SetNetWork] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const {i18n,locale} = useContext(I18nContext)
+  const [subscribeModal ,setSubscribeModal] = useState(false)
 
 
   const networkCheck = () => {
@@ -289,11 +292,11 @@ const NotesScreen = () => {
             </Text>
           ),
           headerRight: () => (
-            <TouchableOpacity onPress={() => router.push("/notes/write")}>
-              <View style={{ marginRight: 10, marginBottom: 7 }}>
-                <MyHabitIcon size={35} iconName={"plus-circle-outline"} color={"grey"} />
-              </View>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={user.premium ? () => router.push("/notes/write") : () => setSubscribeModal(true)}>
+            <View style={{ marginRight: 10, marginBottom: 7 }}>
+              <MyHabitIcon size={35} iconName={"plus-circle-outline"} color={"grey"} />
+            </View>
+          </TouchableOpacity>
           ),
           headerTitle: "",
           headerTintColor: "black",
@@ -342,6 +345,8 @@ const NotesScreen = () => {
         userHasTeam={userHasTeam}
         ini_shared={isShared}
       />
+        <SubscriptionModal isVisible={subscribeModal} onClose={() => setSubscribeModal(false)} />
+
     </SafeAreaView>
   );
 };

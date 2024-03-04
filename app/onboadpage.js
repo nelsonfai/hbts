@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Dimensions,TouchableOpacity } from 'react-native';
-import { Redirect,Stack,useRouter } from "expo-router";
-import { ScreenHeaderBtn } from "../components";
+import { Stack,useRouter } from "expo-router";
 import OnboardingScreen from '../components/onboarding/onboarding';
 const { height } = Dimensions.get('window');
 
@@ -56,13 +55,13 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginBottom: 10,
-    padding: 12,
+    padding: 15,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'black',
     color: 'white',
-    borderRadius:10
+    borderRadius:7
   },
 });
 

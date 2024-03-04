@@ -94,7 +94,11 @@
     "subscription": {
       "sectionTitle": "Subscription",
       "manageSubscription": "Manage Subscription",
-      "review": "Review"
+      "review": "Review and Support",
+      "contact":"Contact us",
+      "share":"Share",
+      "about":"About us",
+      "others":"Others"
     },
     "notifications": {
       "sectionTitle": "Notifications",
@@ -103,7 +107,7 @@
     "legal": {
       "sectionTitle": "Legal",
       "termsAndConditions": "Terms and Conditions",
-      "requiredLink": "Another Required Link"
+      "privacy": "Privacy Policy"
     }
 
   },

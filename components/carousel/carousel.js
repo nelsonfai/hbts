@@ -20,7 +20,7 @@ const HabitSummary = ({user, summaryData,i18n })=>{
     <View style={{flex:1,backgroundColor:'white',justifyContent:'center',padding:10,borderRadius:10}}>
       <View style={{flexDirection:'row',alignItems:'center',gap:3,marginBottom:10,justifyContent:'center',padding:5,backgroundColor:'white'}}>
           <ProfileImage
-                mainImageUri={user.profile_pic}
+                mainImageUri={user.imageurl}
                 width={30}
                 height={30}
                 name={user.name}
@@ -43,7 +43,7 @@ const HabitSummary = ({user, summaryData,i18n })=>{
         <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 10, justifyContent: 'center', padding: 5, backgroundColor: 'white', alignItems: 'center' }}>
               <ProfileImage
-                mainImageUri={`${API_BASE_URL}${summaryData.partner2.habits.profile}`}
+                mainImageUri={summaryData.partner2.habits.profile}
                 width={30}
                 height={30}
                 name={summaryData.partner2.habits.name}
@@ -177,6 +177,7 @@ const YourCarouselComponent = ({  user }) => {
         }
         const data = await response.json();
         setSummaryData(data);
+        console.log('DATA',data)
         setLoading(false); // Set loading to false after data is fetched
       }
     } catch (error) {

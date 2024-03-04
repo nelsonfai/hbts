@@ -27,7 +27,9 @@ const HabitModal = () => {
     isshared:true,
     selectedDays: [],
     frequency: 'daily',
-    habitIcon:'hourglass'
+    habitIcon:'hourglass',
+    selectedDaysOfMonth:[],
+    specific_day_of_month:[]
   };
   const router = useRouter();
   const {refresh,setRefresh} = useRefresh();
@@ -47,6 +49,9 @@ const HabitModal = () => {
   const [selectedColor, setSelectedColor] = useState(initialState.selectedColor);
   const [selectedDays, setSelectedDays] = useState(initialState.selectedDays);
   const [frequency, setFrequency] = useState(initialState.frequency);
+  const [selectedDaysOfMonth, setSelectedDaysOfMonth] = useState(initialState.selectedDaysOfMonth);
+
+
   const [isshared , setIsShared] = useState(initialState.isshared)
   const [habitIcon,setHabitIcon] = useState(initialState.habitIcon)
   const [habits, setHabits] = useState([]); 
@@ -90,10 +95,14 @@ const HabitModal = () => {
     setReminderTimePickerVisible(false);
     setSelectedColor(params.color || initialState.selectedColor);
     setSelectedDays(params.specific_days_of_week.split(',')|| initialState.selectedDays);
-    console.log('Initial Selected Days-',selectedDays,'.....',params.specific_days_of_week)
     setFrequency(params.frequency || initialState.frequency);
     setIsShared(params.isshared ==='true'? true : false);
     setHabitIcon(params.habitIcon||initialState.habitIcon)
+    setSelectedDaysOfMonth(
+      params.specific_day_of_month ? params.specific_day_of_month.split(',').map(Number) : initialState.selectedDaysOfMonth
+    );
+        console.log('Initial Selected Days-','.....',selectedDaysOfMonth)
+
   };
 
     const handleSwitchChange = (value) => {
@@ -103,6 +112,37 @@ const HabitModal = () => {
   const handleFrequencyPress = (selectedFrequency) => {
     setFrequency(selectedFrequency);
   };
+
+  const handleDayOfMonthSelect = (day) => {
+    if (selectedDaysOfMonth.includes(day)) {
+      setSelectedDaysOfMonth(selectedDaysOfMonth.filter((selectedDay) => selectedDay !== day));
+    } else {
+      setSelectedDaysOfMonth([...selectedDaysOfMonth, day]);
+    }
+  };
+
+const renderDayOfMonthPicker = () => {
+  if (frequency === 'monthly') {
+    return (
+      <View>
+        <Text style={styles.label}>{i18n.t('editHabit.selectDayOfMonth')}</Text>
+        {/* Render checkboxes for each day of the month */}
+        <View style={styles.daysOfMonthContainer}>
+          {[...Array(31).keys()].map((day) => (
+            <TouchableOpacity
+              key={day + 1}
+              style={[styles.dayOfMonthCheckbox, { backgroundColor: selectedDaysOfMonth.includes(day + 1) ? 'black' : 'gray' }]}
+              onPress={() => handleDayOfMonthSelect(day + 1)}
+            >
+              <Text style={styles.dayOfMonthText}>{day + 1}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    );
+  }
+  return null;
+};
 
   const resetModalState = () => {
     setHabitName(initialState.habitName);
@@ -139,6 +179,7 @@ const HabitModal = () => {
 
       const token = await AsyncStorageService.getItem('token');
       const specificDaysString = frequency === 'weekly' ? selectedDays.join(',') : null;
+      const specificMonthDayString = frequency === 'monthly' ? selectedDaysOfMonth.join(',') : null;
 
       const teamValue = isshared && user.team_id ? user.team_id : null;
       console.log('this is my version',reminderTime)
@@ -160,6 +201,8 @@ const HabitModal = () => {
           end_date: endDate ? endDate.toISOString().split('T')[0] : null,
           reminder_time: setReminder ? reminderTime : null,
           specific_days_of_week: specificDaysString,
+          specific_day_of_month: specificMonthDayString,
+
         }),
       });
 
@@ -215,6 +258,7 @@ const HabitModal = () => {
     console.log('Selected',selectedDays)
     const specificDaysString = frequency === 'weekly' ? selectedDays.join(',') : null;
     const teamValue = isshared && user.team_id ? user.team_id : null;
+    const specificMonthDayString = frequency === 'monthly' ? selectedDaysOfMonth.join(',') : null;
 
     try {
       const response = await fetch(`${API_BASE_URL}/habits/${params.id}/update/`, {
@@ -233,8 +277,9 @@ const HabitModal = () => {
           description: description,
           start_date: startDate.toISOString().split('T')[0],
           end_date: endDate ? endDate.toISOString().split('T')[0] : null,
-          reminder_time: setReminder ? reminderTime.toISOString().split('T')[1].substring(0, 5) : null,
+          reminder_time: setReminder ? reminderTime : null,
           specific_days_of_week: specificDaysString,
+          specific_day_of_month:specificMonthDayString
         }),
       });
 
@@ -252,7 +297,11 @@ const HabitModal = () => {
             description, 
             reminderTime,
             daysString ? daysString.split(',') : [],
-            data.habitidentifier
+            data.habitidentifier,
+            data.frequency,
+            data.specific_day_of_month
+
+
           );}
       router.push('/habits');
     } catch (error) {
@@ -268,8 +317,7 @@ const HabitModal = () => {
           <TouchableOpacity
             key={option}
             style={[styles.frequencyButton, { backgroundColor: frequency === option ? 'black' : 'gray' }]}
-            onPress={() => handleFrequencyPress(option)}
-          >
+            onPress={() => handleFrequencyPress(option)}>
             <Text style={styles.frequencyButtonText}>{option}</Text>
           </TouchableOpacity>
         ))}
@@ -456,6 +504,7 @@ const HabitModal = () => {
           <Text style={styles.label}>{i18n.t('editHabit.frequency')}:</Text>
           {renderFrequencyButtons()}
           {renderDaysOfWeekButtons()}
+          {renderDayOfMonthPicker()}
           {user.hasTeam ? (
             <View style={styles.reminderContainer}>
               <Text style={styles.label}>{i18n.t('editHabit.sharepartner')} </Text>
@@ -594,6 +643,18 @@ const styles = StyleSheet.create({
     borderTopColor: '#ccc',
     padding: 20,
   },
+  daysOfMonthContainer:{
+    flexDirection:'row',
+    gap:'10px',
+    flexWrap:'wrap'
+  },
+  dayOfMonthCheckbox:{
+    padding:10,    borderRadius: 5,
+
+  },
+  dayOfMonthText:{
+    color:'white'
+  }
 });
 
 export default HabitModal;

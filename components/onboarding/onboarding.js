@@ -11,31 +11,34 @@ const slides = [
     title: 'Shared List',
     svgComponent: List,
     text: 'Simplify your to-dos and stay in sync with your partner through shared lists for seamless collaboration',
+    id:''
   },
   {
     key: 'slide2',
-    title: 'Habits',
+    title: 'Habit Tracker',
     svgComponent: Habit,
     text: 'Cultivate shared habits and goals, reinforcing accountability and wellness in your relationship',
+    id:'habit'
   },
   {
     key: 'slide3',
-    title: 'Notes',
+    title: ' Shared Notes',
     svgComponent: Couple,
     text: 'Enhance communication and create a shared digital space for notes, fostering intimacy and connection between you and your partner.',
+    id:''
   },
 ];
 
 const OnboardingScreen = () => {
   const renderItem = ({ item }) => (
     <View style={styles.slide}>
-      <Text style={styles.sectionTitle}>{item.title}</Text>
-      <View style={styles.image}>
+      <View style= {{ width: item.id === 'habit' ? 150 : 200, height: item.id === 'habit' ? 150 : 200,marginBottom:item.id ==='habit' ? 12:0}}>
       {item.svgComponent && (
         < item.svgComponent />
       )}
       </View>
- 
+      <Text style={styles.sectionTitle}>{item.title}</Text>
+
       <Text style={styles.TextBlock}>{item.text}</Text>
     </View>
   );
@@ -74,19 +77,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
   },
-  image: {
-    width: 200,
-    height: 200,
-  },
   sectionTitle: {
     color: COLORS.primary,
     fontSize: SIZES.medium,
-    marginBottom: 10,
-    marginTop: 30,
+    marginTop: 10,
     fontWeight: 'bold',
+    fontSize:18
   },
   TextBlock: {
     textAlign: 'center',
+    fontSize:16,
+    padding:15
   },
 });
 

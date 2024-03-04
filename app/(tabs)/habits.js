@@ -32,6 +32,7 @@ const Habits = () => {
   const { refresh, setRefresh } = useRefresh();
   const router = useRouter();
   const [habits, setHabits] = useState([]);
+  const [limit, setLimit] = useState(false);
   const [loading, setLoading] = useState(true);
   const currentDate = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(currentDate);
@@ -51,6 +52,8 @@ const Habits = () => {
       return
     }
     try {
+      console.log('fetching')
+
       const token = await AsyncStorageService.getItem("token");
       const response = await fetch(`${API_BASE_URL}/habits/`, {
         method: "POST",
@@ -70,6 +73,7 @@ const Habits = () => {
 
       const data = await response.json();
       setHabits(data.habits);
+      setLimit(data.limit)
     } catch (error) {
       //console.error("Error fetching habits:", error.message);
     } finally {
@@ -79,7 +83,7 @@ const Habits = () => {
 
   useEffect(() => {
     fetchHabits();
-  }, [date]);
+  }, []);
 
 
   const onRefresh = useCallback(() => {
@@ -99,9 +103,17 @@ const Habits = () => {
     }, [refresh.refreshHabits])
   );
 
+
+  const handleWeekChanged = (end) => {
+    console.log('changed ',end)
+  };
+  
+
+
   const handleDateSelected = (selectedDate) => {
     const formattedDate = selectedDate.toISOString().split("T")[0];
     setDate(formattedDate);
+    fetchHabits()
     if (formattedDate === currentDate) {
         setDateText(i18n.t('habits.today'));
     } else {
@@ -150,6 +162,7 @@ const Habits = () => {
         isshared: habit.habit.isShared,
         mood: 'update',
         habitIcon: habit.habit.icon || '',
+        specific_day_of_month:habit.habit.specific_day_of_month
 
       },
     });
@@ -264,7 +277,7 @@ const Habits = () => {
           ),
           headerRight: () => (
             <TouchableOpacity style={{ marginRight: 10,marginBottom:7 }} 
-            onPress={user.premium ? AddHabit : () => setSubscribeModal(true)}>
+            onPress={!limit ? AddHabit : () => setSubscribeModal(true)}>
               <MyHabitIcon size={35} iconName={'plus-circle-outline'} color={'grey'}/>
 
             </TouchableOpacity>
@@ -275,12 +288,12 @@ const Habits = () => {
       <View style={{ padding:5}}>
         <CalendarStrip
           showMonth	={false}
-          startingDate={date}
           selectedDate={date}
+          startingDate={date}
           onDateSelected={handleDateSelected}
-          style={{ height: 60,padding:10 }}
-          calendarAnimation={{ type: 'sequence', duration: 20 }}
+          style={{ height: 80,padding:10 }}
           scrollable={false}
+          onWeekChanged={handleWeekChanged}
           daySelectionAnimation={{ type: 'background', highlightColor	: 'black' }}
           highlightDateNumberStyle={{color: 'white'}}
           highlightDateNameStyle={{color: 'white'}}
@@ -349,11 +362,13 @@ const Habits = () => {
                 });
               }}>
               <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', gap: 7, alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', gap: 5, alignItems: 'flex-start' }}>
+                <View style={{paddingTop:3,width:30}}>
                   <MyHabitIcon iconName={habit.icon} size={30} />
+                </View>
                   <View>
                     <Text style={styles.habitName}>{habit.name}</Text>
-                    <Text style={styles.habitDescription}>{habit.description.toLowerCase()}</Text>
+                    {habit.description && <Text style={styles.habitDescription}>{habit.description.toLowerCase()}</Text>}
                     <Text style={{fontWeight:300}}> {habit.partner_done_count} | {habit.partner_count}</Text>
                   </View>
                 </View>
@@ -391,9 +406,9 @@ const styles = StyleSheet.create({
     gap: 10
   },
   habitName: {
-    paddingVertical: 5,
     fontSize: 18,
     fontWeight: '400',
+    marginBottom:3
   },
   habitDescription: {
     fontSize: 14,

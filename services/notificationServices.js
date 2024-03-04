@@ -7,7 +7,7 @@ import AsyncStorageService from './asyncStorage';
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
-    shouldPlaySound: false,
+    shouldPlaySound: true,
     shouldSetBadge: false,
   }),
 });
@@ -46,14 +46,16 @@ export function useNotificationService() {
   let token = "";
   const isDevice = Constants.platform.ios || Constants.platform.android;
   
-  if (Platform.OS === 'android') {
+  if (isDevice ) {
     await Notifications.setNotificationChannelAsync('default', {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF231F7C',
-    });
-  }
+      sound: 'default', 
+
+    });}
+  
 
   if (isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -86,9 +88,8 @@ export function useNotificationService() {
 
 
 
-export async function schedulePushNotification(habitName, habitDescription = null,time, weekdays = null, identifier) {
+export async function schedulePushNotification(habitName, habitDescription = null,time, weekdays = null, identifier,frequency,specificDaysOfMonth = null,) {
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  console.log('time gotten',time)
   time = new Date(time.getTime());
   const hours = time.getHours();
   const minutes = time.getMinutes();
@@ -97,9 +98,31 @@ export async function schedulePushNotification(habitName, habitDescription = nul
     title: habitName,
     body: habitDescription || '',
     priority: 'high',
+    sound: true
   };
 
   const notifications = [];
+
+ if (frequency === 'monthly' && specificDaysOfMonth) {
+  const daysOfMonthArray = specificDaysOfMonth.split(',').map(Number); // Convert string to array of integers
+  console.log('array',daysOfMonthArray)
+  daysOfMonthArray.forEach(dayOfMonth => {
+    const triggerOptions = {
+      day: dayOfMonth,
+      hour: hours,
+      minute: minutes,
+      repeats: true,
+    };
+
+    const id = Notifications.scheduleNotificationAsync({
+      content: notificationContent,
+      trigger: triggerOptions,
+      identifier: identifier + '_' + dayOfMonth, // Ensure unique identifier for each day of month
+    });
+    
+    notifications.push(id);
+    return
+  });}
 
   if (weekdays && weekdays.length > 0) {
     weekdays.forEach(day => {

@@ -1,5 +1,5 @@
 import React, { useEffect ,useContext} from 'react';
-import { View, Text,AppState, StyleSheet, Alert, Image, TouchableOpacity ,SafeAreaView,Switch,Modal,FlatList,ScrollView,Linking, LogBox} from 'react-native';
+import { View, Text,AppState, StyleSheet, Alert, Image, TouchableOpacity ,SafeAreaView,Switch,Modal,FlatList,ScrollView,Linking, Share} from 'react-native';
 import { useUser } from '../../context/userContext';
 import AsyncStorageService from '../../services/asyncStorage';
 import { useRouter, Stack} from 'expo-router';
@@ -24,7 +24,6 @@ const Settings =  () => {
   const openAppSettings = () => {
     Linking.openSettings();
   };
-
 
 const checkNotificationStatus =  async () =>{
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -74,7 +73,8 @@ useEffect(() => {
         id: null,
         email: '',
         name: '',
-        profile_pic: '',
+        profile_pic:'',
+        imageurl: '',
         team_invite_code: '',
         hasTeam: false,
         team_id: null,
@@ -83,7 +83,7 @@ useEffect(() => {
         notify: '',
       });
       await cancelAllNotifications()
-      router.replace('/');
+      router.replace('/onboadpage');
     } catch (error) {
       console.error('Error during logout:', error.message);
     }
@@ -120,6 +120,38 @@ useEffect(() => {
     </TouchableOpacity>
   );
 
+  const shareApp = async () => {
+    try {
+      const appStoreUrl = 'https://apps.apple.com/app/idYOUR_APP_ID'; // Replace with your iOS app's App Store URL
+      const playStoreUrl = 'https://play.google.com/store/apps/details?id=YOUR_APP_PACKAGE_NAME'; // Replace with your Android app's Play Store URL
+      
+      await Share.share({
+        message: `Download our app from the App Store: ${appStoreUrl} \n Or from Google Play Store: ${playStoreUrl}`,
+      });
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+
+  const openReview = async () => {
+    try {
+      let reviewUrl;
+  
+      if (Platform.OS === 'ios') {
+        reviewUrl = 'https://apps.apple.com/app/idYOUR_APP_ID'; // Replace with your iOS app's App Store review URL
+      } else if (Platform.OS === 'android') {
+        reviewUrl = 'market://details?id=YOUR_APP_PACKAGE_NAME'; // Replace with your Android app's Play Store review URL
+      } else {
+        console.log('Review is not supported on this platform.');
+        return;
+      }
+  
+      await Linking.openURL(reviewUrl);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
       <Stack.Screen
@@ -135,7 +167,7 @@ useEffect(() => {
       <ScrollView showsVerticalScrollIndicator={false}>
       <View style={{ flex: 1, backgroundColor: COLORS.lightWhite, paddingHorizontal: 5 }}>
         <View style={{ paddingVertical: 10, gap: 10, alignItems: 'center' }}>
-          <ProfileImage width={100} height={100} name={user.name} mainImageUri={user.profile_pic} fontSize={25} />
+          <ProfileImage width={100} height={100} name={user.name} mainImageUri={user.imageurl} fontSize={25} />
           <TouchableOpacity onPress={() => router.push('profile')}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 1, padding: 10,gap:10 }}>
                 <Text style={styles.name}>{user.name}</Text>
@@ -211,30 +243,48 @@ useEffect(() => {
               <Text style={styles.linkText}>{i18n.t('settings.legal.termsAndConditions')}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => console.log('required clicked')}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://www.instagram.com/nelson__fai/')}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 1, padding: 15, borderBottomWidth: 1, borderColor: '#f2f2f2' }}>
-              <Icon name="exclamation-circle" size={20} color="black" />
-              <Text style={styles.linkText}>{i18n.t('settings.legal.requiredLink')}</Text>
+              <Icon name="shield" size={20} color="black" />
+              <Text style={styles.linkText}>{i18n.t('settings.legal.privacy')}</Text>
             </View>
           </TouchableOpacity>
         </View>
 
         {/* Links Section */}
         <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
-        <Text style={styles.sectionTitle}>{i18n.t('settings.legal.sectionTitle')}</Text>
-
-            <TouchableOpacity onPress={() => Linking.openURL('your-review-link')}>
+        <Text style={styles.sectionTitle}>{i18n.t('settings.subscription.others')}</Text>
+            <TouchableOpacity onPress={openReview}>
               <View style={styles.linkContainer}>
                 <Icon name="star" size={20} color="black" />
                 <Text style={styles.linkText}>{i18n.t('settings.subscription.review')}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => Linking.openURL('your-instagram-link')}>
+            <TouchableOpacity onPress={() => Linking.openURL('https://www.instagram.com/nelson__fai/')}>
+              <View style={styles.linkContainer}>
+                <Icon name="phone" size={20} color="black" />
+                <Text style={styles.linkText}>{i18n.t('settings.subscription.contact')}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => Linking.openURL('https://www.instagram.com/nelson__fai/')}>
               <View style={styles.linkContainer}>
                 <Icon name="instagram" size={20} color="black" />
                 <Text style={styles.linkText}>Instagram</Text>
               </View>
             </TouchableOpacity>
+            <TouchableOpacity onPress={shareApp}>
+              <View style={styles.linkContainer}>
+                <Icon name="share" size={20} color="black" />
+                <Text style={styles.linkText}>{i18n.t('settings.subscription.share')}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => Linking.openURL('https://www.instagram.com/nelson__fai/')}>
+              <View style={styles.linkContainer}>
+                <Icon name="info-circle" size={20} color="black" />
+                <Text style={styles.linkText}>{i18n.t('settings.subscription.about')}</Text>
+              </View>
+            </TouchableOpacity>
+
           </View>
 
           <TouchableOpacity onPress={handleLogout}>

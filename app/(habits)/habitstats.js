@@ -297,7 +297,7 @@ const renderBarChart = () => {
           <View>
             <View style={styles.topContainer}>
               <View style={styles.partnerContainer}>
-                <ProfileImage  mainImageUri ={`https://cpj.onrender.com/${partner1Stats.profile}`} width= {60} height = {60} />
+                <ProfileImage  mainImageUri ={partner1Stats.profile} width= {60} height = {60} />
                 <Text style={styles.name}>{partner1Stats.user_name}</Text>
               </View>
               <View style={[styles.addSignContainer,{backgroundColor: params.color, }]}>
@@ -305,7 +305,7 @@ const renderBarChart = () => {
               </View>
               {partner2Stats && partner2Stats.user_id ? (
                   <View style={styles.partnerContainer}>
-                    <ProfileImage  mainImageUri ={`https://cpj.onrender.com/${partner2Stats.profile}`}name={partner2Stats.user_name} width={60} height={60} />
+                    <ProfileImage  mainImageUri ={partner2Stats.profile} name={partner2Stats.user_name} width={60} height={60} />
                     <Text style={styles.name}>{partner2Stats.user_name}</Text>
                   </View>
                 ) : (

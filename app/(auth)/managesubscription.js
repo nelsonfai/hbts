@@ -117,7 +117,7 @@ useEffect(() => {
 
       <View style={{ flex: 1, backgroundColor: COLORS.lightWhite, paddingHorizontal: 5 }}>
         <View style={{ paddingVertical: 10, gap: 10, alignItems: 'center' }}>
-          <ProfileImage width={100} height={100} name={user.name} mainImageUri={user.profile_pic} fontSize={25} />
+          <ProfileImage width={100} height={100} name={user.name} mainImageUri={user.imageurl} fontSize={25} />
           <TouchableOpacity onPress={() => router.push('profile')}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 1, padding: 10,gap:10 }}>
                 <Text style={styles.name}>{user.name}</Text>

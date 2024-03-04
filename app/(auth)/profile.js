@@ -23,14 +23,14 @@ const ProfileEditPage = () => {
   const [profileSaved, setProfileSaved] = useState(false);
   const [error,setError] = useState('')
   const params = useLocalSearchParams();
-  const create = params.create
+  const create = params.create || false
 
   console.log('Create Vlaue',create)
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         setName(user.name);
-        setProfilePic(user.profile_pic);
+        setProfilePic(user.imageurl);
       } catch (error) {
         console.error('Error fetching user data:', error.message);
       }
@@ -43,7 +43,7 @@ const ProfileEditPage = () => {
     setUser((prevUser) => ({
       ...prevUser,
       name: newName,
-      profile_pic: newPic,
+      imageurl: newPic,
     }));
   };
   const pickImage = async () => {
@@ -103,7 +103,8 @@ const ProfileEditPage = () => {
         throw new Error(errorData.detail || 'Unknown error');
       }
       const data = await response.json()
-      updateTeamInfo(newName=data.name,newPic=data.profile_pic)
+      updateTeamInfo(newName=data.name,newPic=data.imageurl)
+      console.log('profile data',data)
       setLoading(false)
       setProfileSaved(true)
       {create? router.replace('/') : router.replace('/settings')}

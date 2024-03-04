@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet } from 'react-native';
 import MyHabitIcon from './habitIcon';
 import HabitIcon from './habitIcon';
+import EmojiSelector from 'react-native-emoji-selector';
+
 const HabitIconModal = ({ isVisible, onClose, confirmSelection,icon }) => {
   const fontAwesomeIcons = [
 'hourglass',
@@ -71,17 +73,33 @@ const HabitIconModal = ({ isVisible, onClose, confirmSelection,icon }) => {
      'hands-pray'
   ];
   const [selectedIcon,setSelectedIcon] = useState(fontAwesomeIcons[0])
+  const [showIcons, setShowIcons] = useState(true);
+  const toggleIcons = () => {
+    setShowIcons(!showIcons);
+  };
+
+  const selectIcon = (icon) => {
+    setSelectedIcon(icon);
+    confirmSelection(icon)
+  };
+
+  const selectEmoji = (emoji) => {
+    setSelectedIcon(emoji);
+    confirmSelection(emoji)
+  };
+
+
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => setSelectedIcon(item)}> 
-  <View style={styles.iconContainer}>
-    <MyHabitIcon
-      iconName={item}
-      isSelected={selectedIcon === item}
-      size={30}
-    />
-  </View>
-  </TouchableOpacity>
+    <TouchableOpacity onPress={() => selectIcon(item)}>
+      <View style={styles.iconContainer}>
+        <HabitIcon
+          iconName={item}
+          isSelected={selectedIcon === item}
+          size={30}
+        />
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -93,20 +111,31 @@ const HabitIconModal = ({ isVisible, onClose, confirmSelection,icon }) => {
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}> 
-          <Text style={styles.modalTitle}>Select an Icon</Text>
-          <TouchableOpacity onPress={() => confirmSelection(selectedIcon)}>
-            <Text style={[styles.modalTitle,{color:'#c5bef9'}]}> Confirm</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center' ,paddingBottom:10,marginBottom:20,borderBottomWidth:2,borderColor:'whitesmoke'}}>
+            <Text style={styles.modalTitle}>Select an Icon or Emoji</Text>
+            <TouchableOpacity style={styles.toggleButton} onPress={toggleIcons}>
+            <Text style={styles.toggleButtonText}>
+              {showIcons ? 'Show Emojis' : 'Show Icons'}
+            </Text>
           </TouchableOpacity>
           </View>
-          <FlatList
-            numColumns={7}
-            data={[...fontAwesomeIcons, ...materialIcons]}
-            renderItem={renderItem}
-            keyExtractor={(item) => item}
-            contentContainerStyle={{flexDirection:'column',justifyContent:'space-between',gap:5,alignItems:'center'}}
+          {showIcons ? (
+            <FlatList
+              numColumns={7}
+              data={[...fontAwesomeIcons, ...materialIcons]}
+              renderItem={renderItem}
+              keyExtractor={(item) => item}
+              contentContainerStyle={{ flexDirection: 'column', justifyContent: 'space-between', gap: 5, alignItems: 'center' }}
+            />
+          ) : (
+            <EmojiSelector
+              columns={8}
+              onEmojiSelected={emoji => selectEmoji(emoji)}
+              style={{ maxHeight: 1000 ,height:500 }} // Adjust the height of the EmojiSelector
 
-          />
+            />
+          )}
+
           <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}>
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
@@ -115,7 +144,6 @@ const HabitIconModal = ({ isVisible, onClose, confirmSelection,icon }) => {
     </Modal>
   );
 };
-
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
@@ -128,17 +156,24 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     width: '100%',
-
   },
   modalTitle: {
     fontSize: 18,
-    marginBottom: 20,
     fontWeight: '600',
   },
   iconContainer: {
     alignItems: 'center',
-    height:50,
-    width:50
+    height: 50,
+    width: 50
+  },
+  toggleButton: {
+    padding: 10,
+    backgroundColor: '#eee',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  toggleButtonText: {
+    fontWeight: 'bold',
   },
   closeButton: {
     marginTop: 20,

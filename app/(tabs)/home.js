@@ -61,7 +61,7 @@ const Home = () => {
           headerRight: () => (
             <View style={{ padding: 15, marginBottom: 10 }}>
               <ProfileImage
-                mainImageUri={user.profile_pic}
+                mainImageUri={user.imageurl}
                 width={35}
                 height={35}
                 name={user.name}

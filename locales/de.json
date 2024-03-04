@@ -96,6 +96,16 @@
       "language": "Sprache",
       "subscription":"Abonnement"
     },
+    "subscription": {
+      "sectionTitle": "Abonnement",
+      "manageSubscription": "Abonnement verwalten",
+      "review": "Bewertung und Unterstützung",
+      "contact":"Kontaktiere uns",
+      "share":"Teilen",
+      "about":"Über uns",
+      "others":"Andere"
+    }
+    ,
     "notifications": {
       "sectionTitle": "Benachrichtigungen",
       "enableNotifications": "Benachrichtigungen aktivieren"
@@ -103,7 +113,8 @@
     "legal": {
       "sectionTitle": "Rechtliches",
       "termsAndConditions": "Nutzungsbedingungen",
-      "requiredLink": "Ein weiterer erforderlicher Link"
+      "privacy": "Datenschutzrichtlinie"
+
     }
     
   },
