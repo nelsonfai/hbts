@@ -362,15 +362,10 @@ const Habits = () => {
                 });
               }}>
               <View style={{ flex: 1 }}>
-<<<<<<< HEAD
                 <View style={{ flexDirection: 'row', gap: 5, alignItems: 'flex-start' }}>
                 <View style={{paddingTop:3,width:30}}>
                   <MyHabitIcon iconName={habit.icon} size={30} />
                 </View>
-=======
-                <View style={{ flexDirection: 'row', gap: 7, alignItems: 'center' }}>
-                  <MyHabitIcon iconName={habit.icon} size={30} />
->>>>>>> 62cfc4de84e85c221db70cf689d48b61bee76b2c
                   <View>
                     <Text style={styles.habitName}>{habit.name}</Text>
                     {habit.description && <Text style={styles.habitDescription}>{habit.description.toLowerCase()}</Text>}
