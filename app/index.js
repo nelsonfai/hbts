@@ -73,8 +73,13 @@ const IndexPage = () => {
         }
         const data = await response.json();
         console.log('userdata', data);
+<<<<<<< HEAD
         const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang, premium,isync,imageurl} = data;
         setUser({ id, email, name: name || '', profile_pic, team_invite_code, hasTeam, team_id, lang, premium, notify: expo_token,isync,imageurl });
+=======
+        const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang, premium,isync} = data;
+        setUser({ id, email, name: name || '', profile_pic, team_invite_code, hasTeam, team_id, lang, premium, notify: expo_token,isync });
+>>>>>>> 62cfc4de84e85c221db70cf689d48b61bee76b2c
         setRefresh({ refreshHabits, refreshList, refreshSummary, refreshNotes });
         if (hasTeam && !isync){
           SyncReminders(token)

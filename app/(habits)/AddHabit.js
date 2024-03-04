@@ -258,7 +258,10 @@ const renderDayOfMonthPicker = () => {
     console.log('Selected',selectedDays)
     const specificDaysString = frequency === 'weekly' ? selectedDays.join(',') : null;
     const teamValue = isshared && user.team_id ? user.team_id : null;
+<<<<<<< HEAD
     const specificMonthDayString = frequency === 'monthly' ? selectedDaysOfMonth.join(',') : null;
+=======
+>>>>>>> 62cfc4de84e85c221db70cf689d48b61bee76b2c
 
     try {
       const response = await fetch(`${API_BASE_URL}/habits/${params.id}/update/`, {
@@ -297,11 +300,15 @@ const renderDayOfMonthPicker = () => {
             description, 
             reminderTime,
             daysString ? daysString.split(',') : [],
+<<<<<<< HEAD
             data.habitidentifier,
             data.frequency,
             data.specific_day_of_month
 
 
+=======
+            data.habitidentifier
+>>>>>>> 62cfc4de84e85c221db70cf689d48b61bee76b2c
           );}
       router.push('/habits');
     } catch (error) {
@@ -504,7 +511,10 @@ const renderDayOfMonthPicker = () => {
           <Text style={styles.label}>{i18n.t('editHabit.frequency')}:</Text>
           {renderFrequencyButtons()}
           {renderDaysOfWeekButtons()}
+<<<<<<< HEAD
           {renderDayOfMonthPicker()}
+=======
+>>>>>>> 62cfc4de84e85c221db70cf689d48b61bee76b2c
           {user.hasTeam ? (
             <View style={styles.reminderContainer}>
               <Text style={styles.label}>{i18n.t('editHabit.sharepartner')} </Text>

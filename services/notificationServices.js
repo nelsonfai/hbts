@@ -88,8 +88,14 @@ export function useNotificationService() {
 
 
 
+<<<<<<< HEAD
 export async function schedulePushNotification(habitName, habitDescription = null,time, weekdays = null, identifier,frequency,specificDaysOfMonth = null,) {
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+=======
+export async function schedulePushNotification(habitName, habitDescription = null,time, weekdays = null, identifier) {
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  console.log('time gotten',time)
+>>>>>>> 62cfc4de84e85c221db70cf689d48b61bee76b2c
   time = new Date(time.getTime());
   const hours = time.getHours();
   const minutes = time.getMinutes();
@@ -98,11 +104,15 @@ export async function schedulePushNotification(habitName, habitDescription = nul
     title: habitName,
     body: habitDescription || '',
     priority: 'high',
+<<<<<<< HEAD
     sound: true
+=======
+>>>>>>> 62cfc4de84e85c221db70cf689d48b61bee76b2c
   };
 
   const notifications = [];
 
+<<<<<<< HEAD
  if (frequency === 'monthly' && specificDaysOfMonth) {
   const daysOfMonthArray = specificDaysOfMonth.split(',').map(Number); // Convert string to array of integers
   console.log('array',daysOfMonthArray)
@@ -124,6 +134,8 @@ export async function schedulePushNotification(habitName, habitDescription = nul
     return
   });}
 
+=======
+>>>>>>> 62cfc4de84e85c221db70cf689d48b61bee76b2c
   if (weekdays && weekdays.length > 0) {
     weekdays.forEach(day => {
       const weekdayIndex = days.indexOf(day) + 1;

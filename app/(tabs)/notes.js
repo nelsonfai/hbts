@@ -165,7 +165,10 @@ const NotesScreen = () => {
   const [network, SetNetWork] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const {i18n,locale} = useContext(I18nContext)
+<<<<<<< HEAD
   const [subscribeModal ,setSubscribeModal] = useState(false)
+=======
+>>>>>>> 62cfc4de84e85c221db70cf689d48b61bee76b2c
 
 
   const networkCheck = () => {

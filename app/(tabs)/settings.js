@@ -83,7 +83,11 @@ useEffect(() => {
         notify: '',
       });
       await cancelAllNotifications()
+<<<<<<< HEAD
       router.replace('/onboadpage');
+=======
+      router.replace('/');
+>>>>>>> 62cfc4de84e85c221db70cf689d48b61bee76b2c
     } catch (error) {
       console.error('Error during logout:', error.message);
     }
