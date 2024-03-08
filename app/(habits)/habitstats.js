@@ -204,7 +204,6 @@ const renderBarChart = () => {
       <VictoryGroup offset={7}>
         <VictoryBar
           data={monthlyData.map(entry => ({ x: entry.month, y: entry.partner1Percentage }))}
-          labels={({ datum }) => datum.y }
           barWidth={5}
           labelComponent={<VictoryLabel dy={0}/>}
           style={{
@@ -215,12 +214,11 @@ const renderBarChart = () => {
           />
         <VictoryBar
           data={monthlyData.map(entry => ({ x: entry.month, y: entry.partner2Percentage }))}
-          labels={({ datum }) => datum.y}
           barWidth={5}
           labelComponent={<VictoryLabel dy={0}/>}
           style={{
             data: {
-              fill: 'black'
+              fill: '#ccc'
             },
           }}
                   />
@@ -269,7 +267,7 @@ const renderBarChart = () => {
         dotMarkings[completedDay] = dotMarkings[completedDay] || {};
         dotMarkings[completedDay].periods = dotMarkings[completedDay].periods || [];
         dotMarkings[completedDay].periods.push({
-          color: '#f784a5', 
+          color: '#ccc', 
           startingDay: false,
           endingDay: false,
         });
@@ -390,9 +388,7 @@ const renderBarChart = () => {
                     <Text style={styles.numbers}>
                     {partner2Stats.current_streak !== null && partner2Stats.current_streak !== undefined
                             ? partner2Stats.current_streak
-                            : '-'}
-
-
+                            : '-'} 
                     </Text>
                     </View>
                 </View>
