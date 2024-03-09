@@ -78,15 +78,13 @@ const SubscriptionModal = ({ isVisible, onClose }) => {
               </TouchableOpacity>
             </View>
 
-            {/* {subscription.features.map((feature, index) => (*/}
-            
+          
             {i18n.t('subscription.features', { returnObjects: true }).map((feature, index) => (
               renderFeature(
                 title=feature.title,
                 description=feature.description,
                 iconName=feature.icon,
                 key=feature.title
-                // Using feature.title as the key
                 )
             ))}
             <View style={{ marginBottom: 90 }} />

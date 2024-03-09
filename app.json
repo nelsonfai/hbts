@@ -1,5 +1,8 @@
 {
   "expo": {
+    "name": "Habts Us",
+    "slug": "habtsus",
+    "version": "1.0.0",
     "scheme": "acme",
     "web": {
       "bundler": "metro"
@@ -12,19 +15,21 @@
       "expo-router",
       "expo-localization"
     ],
-    "name": "couplejournal",
-    "slug": "couplejournal",
     "orientation": "portrait",
     "extra": {
       "router": {
         "origin": false
       },
       "eas": {
-        "projectId": "03fd8121-c6f6-4b26-bc03-a707801104b5"
+        "projectId": "dbd43c58-ce80-45ff-a1f2-6d6c3b6bb569"
       }
     },
     "android": {
-      "package": "com.nelsonfai.couplejournal"
+      "package": "com.nelsonfai.habtsus"
+    },
+    "owner": "nelsonfai",
+    "ios": {
+      "bundleIdentifier": "com.nelsonfai.habtsus"
     }
   },
   "android": {

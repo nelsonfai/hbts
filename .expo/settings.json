@@ -5,6 +5,6 @@
   "minify": false,
   "urlRandomness": "ur-ghx",
   "https": false,
-  "scheme": null,
+  "scheme": "com.nelsonfai.habtsus",
   "devClient": false
 }

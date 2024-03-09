@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "920247663232",
-    "project_id": "couplehabits-f01c7",
-    "storage_bucket": "couplehabits-f01c7.appspot.com"
+    "project_number": "652492783706",
+    "project_id": "habtsus-1087b",
+    "storage_bucket": "habtsus-1087b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:920247663232:android:0316da5fd25855caff4465",
+        "mobilesdk_app_id": "1:652492783706:android:9b484e0857388e252d5863",
         "android_client_info": {
-          "package_name": "com.fai.couplehabits"
+          "package_name": "com.nelsonfai.habtsus"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDn8QzjgpQgFteO3Ski8fYaKGrtyziIdrU"
+          "current_key": "AIzaSyC4B0EqMTynQoPwenKkE95xsJxjqIH2_-Y"
         }
       ],
       "services": {

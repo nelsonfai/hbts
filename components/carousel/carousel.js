@@ -177,7 +177,6 @@ const YourCarouselComponent = ({  user }) => {
         }
         const data = await response.json();
         setSummaryData(data);
-        console.log('DATA',data)
         setLoading(false); // Set loading to false after data is fetched
       }
     } catch (error) {
