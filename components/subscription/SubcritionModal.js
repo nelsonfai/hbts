@@ -5,11 +5,13 @@ import { images } from '../../constants';
 import I18nContext from '../../context/i18nProvider';
 import { useRouter } from 'expo-router';
 import { Route } from 'expo-router/build/Route';
-const SubscriptionModal = ({ isVisible, onClose }) => {
+
+const SubscriptionModal = ({ isVisible, onClose,offerings }) => {
+
   const {i18n} = useContext(I18nContext)
   const router = useRouter();
   const [selectedPackage, setSelectedPackage] = useState('monthly');
-
+  console.log('This is the offering',offerings)
   const handleSubscribe = () => {
     console.log(`Subscribing to ${selectedPackage} package`);
     router.push({

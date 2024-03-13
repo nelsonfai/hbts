@@ -6,6 +6,7 @@ import { I18nProvider } from "../context/i18nProvider";
 import { SummaryProvider } from "../context/summaryContext";
 import { SwipeableProvider } from "../context/swipeableContext";
 import { StatusBar } from "react-native";
+import { GlassfyProvider } from '../context/GlassfyContext'
 
 const Layout = () => {
   const [fontsLoaded] = useFonts({
@@ -19,6 +20,7 @@ const Layout = () => {
   }
 
   return (
+    <GlassfyProvider>
       <UserProvider>
         <I18nProvider>
           <RefreshProvider>
@@ -40,6 +42,7 @@ const Layout = () => {
           </RefreshProvider>
         </I18nProvider>
       </UserProvider>
+      </GlassfyProvider>
   );
 };
 

@@ -6,5 +6,5 @@
   "urlRandomness": "ur-ghx",
   "https": false,
   "scheme": "com.nelsonfai.habtsus",
-  "devClient": false
+  "devClient": true
 }

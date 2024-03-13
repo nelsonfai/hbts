@@ -10,7 +10,7 @@ import { API_BASE_URL } from "../appConstants";
 import NetworkStatus from "../components/NetworkStatus"; // Assuming NetworkStatus is a component
 import NetInfo from "@react-native-community/netinfo";
 import { SyncReminders } from "../services/syncReminder";
-import { initializeGlassfy, fetchOfferings, fetchSkuById } from '../components/subscription/GlassfyManager';
+import { useGlassfy } from '../context/GlassfyContext';
 
 
 const SplashScreen = ({ network, onRefresh }) => (
@@ -37,27 +37,8 @@ const IndexPage = () => {
   const [loading, setLoading] = useState(true);
   const expo_token = useNotificationService();
   const [network, setNetwork] = useState(true);
-
-  useEffect(() => {
-    // Initialize Glassfy SDK
-    const initialize = async () => {
-      try {
-        await initializeGlassfy();
-        console.log('Glassfy initialized successfully');
-        
-        // Fetch offerings
-        const offerings = await fetchOfferings();
-        console.log('Offerings:', offerings);
-
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-
-    initialize();
-  }, []);
-
-
+  const { offerings, userSubscriptions, fetchSkuById } = useGlassfy();
+  console.log('This is the offering index',offerings)
   const networkCheck = () => {
     NetInfo.fetch().then((state) => {
       setNetwork(state.isConnected);
