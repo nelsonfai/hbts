@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Glassfy, GlassfyOffering, GlassfySku } from 'react-native-glassfy-module';
+import { Glassfy, GlassfyOffering, GlassfySku,GlassfyProduct } from 'react-native-glassfy-module';
+
 
 // Define types for user state
 const GlassfyContext = createContext(null);
@@ -11,24 +12,27 @@ export const GlassfyProvider = ({ children }) => {
   const [isReady, setIsReady] = useState(false);
   const apiKey = "6d9c3f88dd6b480184c2f1672bc23b4c"
   useEffect(() => {
-    const init = async () => {
-      try {
-        await Glassfy.initialize(apiKey, false);
-        setIsReady(true);
-        await loadOfferings();
-        // Load other data as needed
-      } catch (error) {
-        console.error('Error initializing Glassfy:', error);
-      }
-    };
+
     init();
   }, []);
 
+  const init = async () => {
+    try {
+      await Glassfy.initialize("6d9c3f88dd6b480184c2f1672bc23b4c", false);
+      setIsReady(true);
+      console.log('App has been Initialized succesfully')
+    } catch (error) {
+      console.error('Error initializing Glassfy:', error);
+    }
+  };
   // Function to load offerings
   const loadOfferings = async () => {
     try {
-      const loadedOfferings = await Glassfy.offerings().all;
-      setOfferings(loadedOfferings);
+      const offerings = await Glassfy.offerings()
+      const skus = offerings.all.map(offer => offer.skus).flat();      
+      setOfferings(skus);
+      console.log('mY SKUs ',skus)
+      return offerings
     } catch (error) {
       console.error('Error loading offerings:', error);
     }
@@ -37,11 +41,44 @@ export const GlassfyProvider = ({ children }) => {
   // Function to handle purchase
   const purchase = async (sku) => {
     try {
-      // Handle purchase logic
-    } catch (error) {
-      console.error('Error purchasing:', error);
-    }
+      const transaction = await Glassfy.purchaseSku(sku);
+      const permission = transaction.permissions.all.find((p) => p.permissionId === "aPermission");
+      if (permission && permission.isValid) {
+          // unlock aFeature
+      }
+  } catch (e) {
+    // initialization error
+  }
   };
+
+const getPermission = async () => {
+  try {
+    const permissions = await Glassfy.permissions();
+    let isPremium = true;  
+    permissions.forEach((p)=>{
+        switch (p.permissionId) {
+            case "premium":
+                if (p.isValid) {
+                  isPremium = false;
+                }
+                break;
+        
+            default:
+                break;
+        }
+    });
+    return isPremium; 
+  } catch (e) {
+    return false; 
+  }
+};
+
+
+
+  
+
+
+  
 
   // Function to restore permissions
   const restorePermissions = async () => {
@@ -57,6 +94,7 @@ export const GlassfyProvider = ({ children }) => {
     loadOfferings,
     purchase,
     restorePermissions,
+    getPermission,
     user,
     offerings
   };

@@ -5,15 +5,14 @@ import { images } from '../../constants';
 import I18nContext from '../../context/i18nProvider';
 import { useRouter } from 'expo-router';
 import { Route } from 'expo-router/build/Route';
+import { useGlassfy} from '../../context/GlassfyContext'
 
-const SubscriptionModal = ({ isVisible, onClose,offerings }) => {
-
+const SubscriptionModal = ({ isVisible, onClose,subscriptions }) => {
+  const { offerings,purchase } = useGlassfy();
   const {i18n} = useContext(I18nContext)
   const router = useRouter();
   const [selectedPackage, setSelectedPackage] = useState('monthly');
-  console.log('This is the offering',offerings)
   const handleSubscribe = () => {
-    console.log(`Subscribing to ${selectedPackage} package`);
     router.push({
       pathname: '/(auth)/subscription',
       params: {
@@ -22,6 +21,13 @@ const SubscriptionModal = ({ isVisible, onClose,offerings }) => {
     });
     onClose();
   };
+
+  const numberFormat = (product) =>
+  new Intl.NumberFormat('en-EN', {
+    style: 'currency',
+    currency: product.currencyCode
+  }).format(product.price);
+
 
   const renderFeature = (title, description, iconName,key) => (
     <View style={styles.featureContainer} key={key}>
@@ -38,7 +44,8 @@ const SubscriptionModal = ({ isVisible, onClose,offerings }) => {
       visible={isVisible}
       animationType="slide"
       transparent
-      onRequestClose={onClose}>
+      onRequestClose={onClose}
+    >
       <View style={styles.modalContainer}>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Icon name={'close'} size={30} color={'grey'} />
@@ -56,29 +63,25 @@ const SubscriptionModal = ({ isVisible, onClose,offerings }) => {
 
             <Text style={styles.title}>{i18n.t('subscription.title')}</Text>
             <View style={styles.packageContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.package,
-                  selectedPackage === 'monthly' && styles.selectedPackage,
-                ]}
-                onPress={() => setSelectedPackage('price_1OTPBXHZ7b9ff5E2zUHNdFBE')}>
-                <Text style={styles.packageText}>{i18n.t('subscription.monthlyPackage.text')}</Text>
-                <Text style={styles.packageDetails}>{i18n.t('subscription.monthlyPackage.details')}</Text>
-                <Text style={styles.packageDetails}></Text>
-              </TouchableOpacity>
+                {offerings.map((subscription, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.package,
+                      selectedPackage === subscription.productId && styles.selectedPackage,
+                    ]}
+                    onPress={() => purchase(subscription)}
+                    >
+                    <Text style={styles.packageText}>{subscription.product.title}</Text>
+                    <Text style={styles.packageDetails}>{subscription.product.description}</Text>
+                    <Text style={styles.price}>{numberFormat(subscription.product)}</Text>
+                    <Text style={[styles.packageDetails, { color: '#FF5733' }]}>
+                      {subscription.extravars.bestValue === 'true' ? i18n.t('subscription.yearlyPackage.bestValue') : null}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
 
-              <TouchableOpacity
-                style={[
-                  styles.package,
-                  selectedPackage === 'yearly' && styles.selectedPackage,
-                ]}
-                onPress={() => setSelectedPackage('price_1OTPCEHZ7b9ff5E23TwPv0Jx')}
-              >
-                <Text style={styles.packageText}>{i18n.t('subscription.yearlyPackage.text')}</Text>
-                <Text style={styles.packageDetails}>{i18n.t('subscription.yearlyPackage.details')}</Text>
-                <Text style={[styles.packageDetails, { color: '#FF5733' }]}>{i18n.t('subscription.yearlyPackage.bestValue')}</Text>
-              </TouchableOpacity>
-            </View>
 
           
             {i18n.t('subscription.features', { returnObjects: true }).map((feature, index) => (
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    backgroundColor:'white'
+backgroundColor:'white'
   },
   scrollContainer: {
     flexGrow: 1,
@@ -146,10 +149,10 @@ const styles = StyleSheet.create({
   },
   packageContainer: {
     flexDirection: 'row',
-    gap: 10,
+gap: 10,
     marginVertical: 10,
     justifyContent: 'space-between',
-  },
+      },
   package: {
     borderWidth: 0.3,
     borderColor: '#ccc',
@@ -190,7 +193,7 @@ const styles = StyleSheet.create({
   subscribeButtonText: {
     color: 'white',
     fontSize: 16,
-    textAlign: 'center',
+textAlign: 'center',
   },
   closeButton: {
     padding: 10,
@@ -221,6 +224,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
+  price:{
+    fontSize:16,
+    marginVertical:5
+  }
 });
 
 export default SubscriptionModal;

@@ -15,7 +15,6 @@
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      console.log('data leghth',data.length,data)
       await cancelAllNotifications()
 
       for (const habit of data) {

@@ -37,8 +37,9 @@ const IndexPage = () => {
   const [loading, setLoading] = useState(true);
   const expo_token = useNotificationService();
   const [network, setNetwork] = useState(true);
-  const { offerings, userSubscriptions, fetchSkuById } = useGlassfy();
-  console.log('This is the offering index',offerings)
+  const { getPermission } = useGlassfy();
+  const [premiumValue, setPremiumValue] = useState(false);
+
   const networkCheck = () => {
     NetInfo.fetch().then((state) => {
       setNetwork(state.isConnected);
@@ -46,14 +47,24 @@ const IndexPage = () => {
   };
 
   useEffect(() => {
-    networkCheck(); // Initial network check
-  }, []);
+    const fetchInit = async () => {
+      networkCheck(); 
+      const premium = await getPermission();
+      setPremiumValue(premium);
 
+    };
+  
+    fetchInit();
+  }, []);
+  
   const fetchData = async () => {
+   
     networkCheck(); // Network check before making the fetch request
     if (!network) {
       return;
     }
+
+
     try {
       const token = await AsyncStorageService.getItem('token');
       const refreshHabits = false;
@@ -75,13 +86,13 @@ const IndexPage = () => {
           throw new Error('Failed to fetch user profile');
         }
         const data = await response.json();
-        const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang, premium,isync,imageurl} = data;
-        setUser({ id, email, name: name || '', profile_pic, team_invite_code, hasTeam, team_id, lang, premium, notify: expo_token,isync,imageurl });
+        const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang,isync,imageurl} = data;
+        setUser({ id, email, name: name || '', profile_pic, premium:premiumValue, team_invite_code, hasTeam, team_id, lang, notify: expo_token,isync,imageurl });
         setRefresh({ refreshHabits, refreshList, refreshSummary, refreshNotes });
         if (hasTeam && !isync){
           SyncReminders(token)
         }
-        router.replace("/home");
+        router.replace("home");
       } else {
         router.replace("/onboadpage");
       }
@@ -89,7 +100,7 @@ const IndexPage = () => {
       setLoading(false);
     } catch (error) {
       router.replace("/onboadpage");
-      console.error('Error fetching user profile:', error.message);
+console.error('Error fetching user profile:', error.message);
       setLoading(false);
     }
   };
