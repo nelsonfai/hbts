@@ -9,8 +9,8 @@ import { useNotificationService } from "../services/notificationServices";
 import { API_BASE_URL } from "../appConstants";
 import NetworkStatus from "../components/NetworkStatus"; // Assuming NetworkStatus is a component
 import NetInfo from "@react-native-community/netinfo";
-import { SyncReminders } from "../services/syncReminder";
-import { useGlassfy } from '../context/GlassfyContext';
+import { SyncReminders} from "../services/syncReminder";
+import { useGlassfy,connectUser } from '../context/GlassfyContext';
 
 
 const SplashScreen = ({ network, onRefresh }) => (
@@ -38,7 +38,7 @@ const IndexPage = () => {
   const expo_token = useNotificationService();
   const [network, setNetwork] = useState(true);
   const { getPermission } = useGlassfy();
-  const [premiumValue, setPremiumValue] = useState(false);
+  const [premiumValue, setPremiumValue] = useState(true);
 
   const networkCheck = () => {
     NetInfo.fetch().then((state) => {
@@ -50,7 +50,13 @@ const IndexPage = () => {
     const fetchInit = async () => {
       networkCheck(); 
       const premium = await getPermission();
-      setPremiumValue(premium);
+      setPremiumValue(premium.isPremium);
+      console.log('Index called int',premium.isPremium)
+      setUser(prevUser => ({
+        ...prevUser, // Keep the existing properties
+        premium: premiumValue // Update only the premium property
+    }));
+    
 
     };
   
@@ -86,9 +92,10 @@ const IndexPage = () => {
           throw new Error('Failed to fetch user profile');
         }
         const data = await response.json();
-        const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang,isync,imageurl} = data;
-        setUser({ id, email, name: name || '', profile_pic, premium:premiumValue, team_invite_code, hasTeam, team_id, lang, notify: expo_token,isync,imageurl });
+        const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang,isync,imageurl,premium,subcription_user} = data;
+        setUser({ id, email, name: name || '', profile_pic, premium:premium, team_invite_code, hasTeam, team_id, lang, notify: expo_token,isync,imageurl });
         setRefresh({ refreshHabits, refreshList, refreshSummary, refreshNotes });
+        console.log('our premium value',premiumValue)
         if (hasTeam && !isync){
           SyncReminders(token)
         }
@@ -100,7 +107,6 @@ const IndexPage = () => {
       setLoading(false);
     } catch (error) {
       router.replace("/onboadpage");
-console.error('Error fetching user profile:', error.message);
       setLoading(false);
     }
   };

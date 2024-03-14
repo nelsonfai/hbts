@@ -1,5 +1,5 @@
 import React, { useState,useEffect,useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch, Platform, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch, Platform, SafeAreaView, ScrollView, Alert } from 'react-native';
 import DatePickerModal from '../../components/Habits/HabitsDatePickerModal';
 import { COLORS } from '../../constants';
 import { useUser } from '../../context/userContext';
@@ -11,6 +11,7 @@ import MyHabitIcon from '../../components/Habits/habitIcon';
 import I18nContext from '../../context/i18nProvider';
 import { API_BASE_URL,colorOptions } from '../../appConstants';
 import {schedulePushNotification,cancelAllHabitNotifications} from '../../services/notificationServices'
+import { err } from 'react-native-svg/lib/typescript/xml';
 
 const HabitModal = () => {
   const initialState = {
@@ -163,74 +164,105 @@ const renderDayOfMonthPicker = () => {
 
   const handleCreateHabit = async () => {
     try {
+      // Validate habit name and color
       if (!habitName) {
         setHabitNameError(i18n.t('editHabit.selectName.errorNone'));
         return;
       } else {
         setHabitNameError('');
       }
-
+  
       if (!selectedColor) {
         setSelectedColorError(i18n.t('editHabit.selectColor.error'));
         return;
       } else {
         setSelectedColorError('');
       }
-
+  
+      // Get user token
       const token = await AsyncStorageService.getItem('token');
+  
+      // Construct habit creation request body
       const specificDaysString = frequency === 'weekly' ? selectedDays.join(',') : null;
       const specificMonthDayString = frequency === 'monthly' ? selectedDaysOfMonth.join(',') : null;
-
       const teamValue = isshared && user.team_id ? user.team_id : null;
-      console.log('this is my version',reminderTime)
+      const requestBody = {
+        user: user.id,
+        team: teamValue,
+        color: selectedColor,
+        name: habitName,
+        icon: habitIcon,
+        frequency: frequency,
+        description: description,
+        start_date: startDate.toISOString().split('T')[0],
+        end_date: endDate ? endDate.toISOString().split('T')[0] : null,
+        reminder_time: setReminder ? reminderTime : null,
+        specific_days_of_week: specificDaysString,
+        specific_day_of_month: specificMonthDayString,
+      };
+  
+      // Send habit creation request to the server
       const response = await fetch(`${API_BASE_URL}/habits/create/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${token}`,
         },
-        body: JSON.stringify({
-          user: user.id,
-          team:teamValue,
-          color: selectedColor,
-          name: habitName,
-          icon:habitIcon,
-          frequency: frequency,
-          description: description,
-          start_date: startDate.toISOString().split('T')[0],
-          end_date: endDate ? endDate.toISOString().split('T')[0] : null,
-          reminder_time: setReminder ? reminderTime : null,
-          specific_days_of_week: specificDaysString,
-          specific_day_of_month: specificMonthDayString,
-
-        }),
+        body: JSON.stringify(requestBody),
       });
-
+        // Parse response data
+        const responseData = await response.json();
+      // Check if the request was successful
       if (!response.ok) {
-        throw new Error("Failed to create habit");
+      
+        const errorMessage = responseData.error;
 
-      }
-      const data = await response.json();
-      console.log('habit created',data)
-      const daysString = data.specific_days_of_week
-      if (setReminder) {
-        const notificationId = await schedulePushNotification(
-          habitName,
-          description, 
-          reminderTime,
-          daysString ? daysString.split(',') : [],
-          data.habitidentifier
-        );}
-          setRefresh({ refreshHabits: true, refreshList: false,refreshSummary:true,refreshNotes:false });
+        // Check if the error message contains "habit limit"
+        if (errorMessage.includes('habit limit')) {
+          Alert.alert(
+            'Habit Limit Reached',
+            'You have reached your maximum habit limit of 3.\nSubscribe to premium plan to create more',
+            [
+                {
+                    text: 'Subscribe',
+                    onPress: () => handleSubscription(),
+                },
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+            ],
+            { cancelable: false }
+        );
+        
+    }}
+  
 
-      resetModalState();
-      router.push('/habits');
+  
+      // Check if the habit creation was successful
+      if (responseData) {
+        // Habit created successfully, handle any additional actions
+        const daysString = responseData.specific_days_of_week;
+        if (setReminder && responseData) {
+          const notificationId = await schedulePushNotification(
+            habitName,
+            description,
+            reminderTime,
+            daysString ? daysString.split(',') : [],
+            responseData.habitidentifier
+          );
+        }
+        setRefresh({ refreshHabits: true, refreshList: false, refreshSummary: true, refreshNotes: false });
+        resetModalState();
+        router.push('/habits');
+      } 
     } catch (error) {
-      console.error("Error creating habit:", error.message);
     } finally {
+      // Update loading state
       setLoading(false);
     }
   };
+  
 
   const handleUpdateHabit = async () => {
     if (!habitName) {

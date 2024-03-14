@@ -11,6 +11,8 @@ import I18nContext from '../../context/i18nProvider';
 import * as Notifications from 'expo-notifications';
 import { API_BASE_URL } from '../../appConstants';
 import {cancelAllNotifications} from "../../services/notificationServices"
+import { useGlassfy } from '../../context/GlassfyContext';
+
 const Settings =  () => {
   const { user,setUser} = useUser();
   const {i18n} = useContext(I18nContext)
@@ -18,12 +20,22 @@ const Settings =  () => {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.locale);
   const [selectedLanguageLabel, setSelectedLanguageLabel] = useState('');
+  const [subscription, setSubscription] = useState({
+    expirationDate: null,
+    isPremium: false
+});
+
   const { locale, changeLocale } = useContext(I18nContext);
   const router = useRouter();
+  const { getPermission,restorePermission } = useGlassfy();
+
 
   const openAppSettings = () => {
     Linking.openSettings();
   };
+  const updateSubscription =  async () =>{
+    await restorePermission()
+  }
 
 const checkNotificationStatus =  async () =>{
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -51,7 +63,22 @@ useEffect(() => {
 
 useEffect(() => {
   checkNotificationStatus();
+  getPermission().then(permissionInfo => {
+      setSubscription({
+          subscriptionStatus: permissionInfo.subscriptionStatus,
+          expirationDate: permissionInfo.expirationDate,
+          isPremium: permissionInfo.isPremium,
+          subscriptionType:permissionInfo.subscriptionType
+
+      });
+  }).catch(error => {
+      setSubscription({
+          expirationDate: null,
+          isPremium: false
+      });
+  });
 }, []);
+
 
   const handleLogout = async () => {
     try {
@@ -202,25 +229,11 @@ useEffect(() => {
           </TouchableOpacity>
 
         </View>
-    {/* Subscription Section */}
-      <View style={{ marginTop: 20, paddingHorizontal: 10, fontSize: 14 ,display:'none'}}>
-        <Text style={styles.sectionTitle}>{i18n.t('settings.subscription.sectionTitle')}</Text>
 
-        {/* Display User Information */}
-        <View style={{ padding: 15, borderBottomWidth: 1, borderColor: '#f2f2f2' }}>
-          <Text>Email: {user.email}</Text>
-          <Text>Plan: {/* Retrieve and display user's subscription plan */}</Text>
-          <Text>Next Bill Amount: {/* Retrieve and display next bill amount */}</Text>
-          <Text>Next Bill Date: {/* Retrieve and display next bill date */}</Text>
-          <TouchableOpacity onPress={() => router.push('manageSubscription')}>
-              <Text style={{marginTop:5,textDecorationLine: 'underline',}}>{i18n.t('settings.subscription.manageSubscription')}</Text>
-          </TouchableOpacity>
-          </View>
-      </View>
 
         {/* Notifications Section */}
         <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
-          <Text style={styles.sectionTitle}>{i18n.t('settings.notifications.sectionTitle')}</Text>
+          <Text style={styles.sectionTitle}>{i18n.t('settings.notifications.sectionTitle')} </Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={styles.linkContainer}>
             <Icon name="bell" size={20} color="black" />
@@ -234,6 +247,24 @@ useEffect(() => {
                 />
           </View>
         </View>
+            {/* Subscription Section */}
+      <View style={{ marginTop: 20, paddingHorizontal: 10, fontSize: 14 }}>
+        <Text style={styles.sectionTitle}>{i18n.t('settings.subscription.sectionTitle')}</Text>
+
+        {/* Display User Information */}
+        <View style={{ padding: 15, borderBottomWidth: 1, borderColor: '#f2f2f2' }}>
+        <View >
+        <Text style={{fontSize:14}}>Current Plan: {subscription.isPremium ? 'Premium' : 'Free plan'}</Text>
+            <Text style={{fontSize:14}}>{subscription.subscriptionType}</Text>
+            {subscription.expirationDate && (
+                <Text style={{fontSize:14}}>Valid till: {subscription.expirationDate}</Text>
+            )}
+           {!subscription.isPremium && <TouchableOpacity onPress={() => {updateSubscription}}>
+              <Text style={{fontSize:14,marginTop:5}}> Reactivate Subscription</Text>
+            </TouchableOpacity>}
+        </View>
+          </View>
+      </View>
         {/* Legal Section */}
         <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
           <Text style={styles.sectionTitle}>{i18n.t('settings.legal.sectionTitle')}</Text>

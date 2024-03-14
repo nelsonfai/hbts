@@ -7,6 +7,7 @@
     "web": {
       "bundler": "metro"
     },
+    "icon":"./assets/icon.png",
     "splash": {
       "image": "./assets/images/splash2.png",
       "backgroundColor": "#C5BEF9"

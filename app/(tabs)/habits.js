@@ -266,8 +266,8 @@ const Habits = () => {
             <Text style={{fontSize:22,fontWeight:'600',paddingHorizontal:20}}> {dateText}</Text>
           ),
           headerRight: () => (
-            <TouchableOpacity style={{ marginRight: 10,marginBottom:7 }} 
-            onPress={!limit ? AddHabit : () => setSubscribeModal(true)}>
+            <TouchableOpacity style={{ marginRight: 10,marginBottom:7 }}
+            onPress={AddHabit}>
               <MyHabitIcon size={35} iconName={'plus-circle-outline'} color={'grey'}/>
 
             </TouchableOpacity>

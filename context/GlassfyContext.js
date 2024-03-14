@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Glassfy, GlassfyOffering, GlassfySku,GlassfyProduct } from 'react-native-glassfy-module';
+import { Glassfy } from 'react-native-glassfy-module';
+import { useUser } from "../context/userContext";
 
 
 // Define types for user state
@@ -7,31 +8,39 @@ const GlassfyContext = createContext(null);
 
 // Glassfy provider component
 export const GlassfyProvider = ({ children }) => {
-  const [user, setUser] = useState({ /* Initial user state */ });
   const [offerings, setOfferings] = useState([]);
   const [isReady, setIsReady] = useState(false);
-  const apiKey = "6d9c3f88dd6b480184c2f1672bc23b4c"
+
   useEffect(() => {
 
     init();
-  }, []);
+    }, []);
 
   const init = async () => {
     try {
       await Glassfy.initialize("6d9c3f88dd6b480184c2f1672bc23b4c", false);
       setIsReady(true);
-      console.log('App has been Initialized succesfully')
+      loadOfferings() 
     } catch (error) {
       console.error('Error initializing Glassfy:', error);
     }
   };
+  const connectUser = async (userid) =>{
+    try{
+      await Glassfy.connectCustomSubscriber(userid);
+
+    }
+    catch (error) {
+      console.error('Error initializing')
+    }
+
+  }
   // Function to load offerings
   const loadOfferings = async () => {
     try {
       const offerings = await Glassfy.offerings()
       const skus = offerings.all.map(offer => offer.skus).flat();      
       setOfferings(skus);
-      console.log('mY SKUs ',skus)
       return offerings
     } catch (error) {
       console.error('Error loading offerings:', error);
@@ -43,51 +52,88 @@ export const GlassfyProvider = ({ children }) => {
     try {
       const transaction = await Glassfy.purchaseSku(sku);
       const permission = transaction.permissions.all.find((p) => p.permissionId === "aPermission");
+      await Glassfy.connectCustomSubscriber('mytestuser_two');
+      
       if (permission && permission.isValid) {
-          // unlock aFeature
+
       }
   } catch (e) {
     // initialization error
   }
   };
 
-const getPermission = async () => {
-  try {
-    const permissions = await Glassfy.permissions();
-    let isPremium = true;  
-    permissions.forEach((p)=>{
-        switch (p.permissionId) {
-            case "premium":
-                if (p.isValid) {
-                  isPremium = false;
+  const getPermission = async () => {
+    try {
+        const permissions = await Glassfy.permissions();
+        const accountableSkus = permissions.all[0].accountableSkus;
+        // Iterate over accountableSkus array
+        accountableSkus.forEach(sku => {
+            // Check if skuId matches a specific value
+            if (sku.skuId === 'yearly_subscription_299') {
+                subscriptionType = 'Yearly Plan';
+            } else if (sku.skuId === 'monthly_subscription_99') {
+                subscriptionType = 'Monthly Plan';
+            }
+        });
+
+        // Extracting subscription status and expiration date
+        let subscriptionStatus = 'No subscription';
+        let expirationDate = null;
+        permissions.all.forEach(permission => {
+            if (permission.permissionId === 'premium') {
+                subscriptionStatus = permission.isValid ? 'Active' : 'Inactive';
+                if (permission.isValid) {
+                    const expireDate = new Date(permission.expireDate * 1000); // Convert to milliseconds
+                    expirationDate = expireDate.toISOString().split('T')[0]; // Extracting date part
                 }
-                break;
-        
-            default:
-                break;
-        }
-    });
-    return isPremium; 
-  } catch (e) {
-    return false; 
-  }
+            }
+        });
+
+        // Check if user is on premium plan
+        let isPremium = false;
+        permissions.all.forEach(permission => {
+            if (permission.permissionId === 'premium' && permission.isValid) {
+                isPremium = true;
+            }
+        });
+
+        return {
+            subscriptionStatus,
+            expirationDate,
+            isPremium,
+            subscriptionType
+        };
+    } catch (e) {
+        console.error('Error fetching permissions:', e);
+        return {
+            subscriptionStatus: 'Error',
+            expirationDate: null,
+            isPremium: false,
+            subscriptionType: 'Unknown'
+        };
+    }
 };
-
-
-
-  
-
-
-  
 
   // Function to restore permissions
   const restorePermissions = async () => {
     try {
-      // Handle permissions restoration logic
+      var permissions = await Glassfy.restorePurchases();
+      for (var p in permissions.all ?? []) {
+        console.log(`${p.permissionId} is ${p.isValid}`);
+        // Use permissionId and isValid to lock and unlock features
+      }
     } catch (error) {
-      console.error('Error restoring permissions:', error);
+      console.log("Failed to restore purchases $error");
     }
   };
+
+
+
+
+
+
+
+
 
   // Context value
   const value = {
@@ -95,7 +141,7 @@ const getPermission = async () => {
     purchase,
     restorePermissions,
     getPermission,
-    user,
+    connectUser,
     offerings
   };
 

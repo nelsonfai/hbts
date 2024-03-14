@@ -11,6 +11,7 @@ import SubscriptionModal from "../../components/subscription/SubcritionModal";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import NetInfo from '@react-native-community/netinfo';
 import NetworkStatus from "../../components/NetworkStatus";
+import { useGlassfy } from '../../context/GlassfyContext';
 
 const Home = () => {
   const { user } = useUser();
@@ -19,6 +20,7 @@ const Home = () => {
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [network, setNetwork] = useState(true);
+
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -82,7 +84,7 @@ const Home = () => {
         >
           <View style={styles.container}>
             <Welcome user={user} />
-            {!user.premium ? (
+            {user.premium ? (
               <View style={styles.subscriptionContainer}>
                 <Text style={styles.subscriptionText}>
                   {i18n.t('home.premiumText')}

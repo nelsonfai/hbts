@@ -11,7 +11,8 @@ const SubscriptionModal = ({ isVisible, onClose,subscriptions }) => {
   const { offerings,purchase } = useGlassfy();
   const {i18n} = useContext(I18nContext)
   const router = useRouter();
-  const [selectedPackage, setSelectedPackage] = useState('monthly');
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [packageindex,setPackageIndex] = useState(null)
   const handleSubscribe = () => {
     router.push({
       pathname: '/(auth)/subscription',
@@ -68,9 +69,11 @@ const SubscriptionModal = ({ isVisible, onClose,subscriptions }) => {
                     key={index}
                     style={[
                       styles.package,
-                      selectedPackage === subscription.productId && styles.selectedPackage,
+                      packageindex === index && styles.selectedPackage,
                     ]}
-                    onPress={() => purchase(subscription)}
+                    onPress={() => {
+                      setPackageIndex(index)
+                      setSelectedPackage(subscription)}}
                     >
                     <Text style={styles.packageText}>{subscription.product.title}</Text>
                     <Text style={styles.packageDetails}>{subscription.product.description}</Text>
@@ -98,7 +101,7 @@ const SubscriptionModal = ({ isVisible, onClose,subscriptions }) => {
 
         {/* Fixed buttons at the bottom */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.subscribeButton} onPress={handleSubscribe}>
+          <TouchableOpacity style={styles.subscribeButton} onPress={() => purchase(selectedPackage)}>
             <Text style={styles.subscribeButtonText}>{i18n.t('subscription.subscribeButton')}</Text>
           </TouchableOpacity>
           <Text style={{ textAlign: 'center', paddingTop: 8 }}>{i18n.t('subscription.partnerText')}</Text>
@@ -149,7 +152,7 @@ backgroundColor:'white'
   },
   packageContainer: {
     flexDirection: 'row',
-gap: 10,
+    gap: 10,
     marginVertical: 10,
     justifyContent: 'space-between',
       },
