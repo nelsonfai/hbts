@@ -1,8 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Glassfy } from 'react-native-glassfy-module';
-import { useUser } from "../context/userContext";
-
-
+import { Glassfy ,GlassfySku} from 'react-native-glassfy-module';
 // Define types for user state
 const GlassfyContext = createContext(null);
 
@@ -11,9 +8,10 @@ export const GlassfyProvider = ({ children }) => {
   const [offerings, setOfferings] = useState([]);
   const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
 
+  useEffect(() => {
     init();
+  
     }, []);
 
   const init = async () => {
@@ -25,13 +23,14 @@ export const GlassfyProvider = ({ children }) => {
       console.error('Error initializing Glassfy:', error);
     }
   };
-  const connectUser = async (userid) =>{
-    try{
-      await Glassfy.connectCustomSubscriber(userid);
 
+  const connectUser = async (consumerid) =>{
+    try{
+      await Glassfy.connectCustomSubscriber(consumerid);
     }
     catch (error) {
       console.error('Error initializing')
+
     }
 
   }
@@ -39,7 +38,7 @@ export const GlassfyProvider = ({ children }) => {
   const loadOfferings = async () => {
     try {
       const offerings = await Glassfy.offerings()
-      const skus = offerings.all.map(offer => offer.skus).flat();      
+      const skus = offerings.all.map(offer => offer.skus).flat();   
       setOfferings(skus);
       return offerings
     } catch (error) {
@@ -51,22 +50,27 @@ export const GlassfyProvider = ({ children }) => {
   const purchase = async (sku) => {
     try {
       const transaction = await Glassfy.purchaseSku(sku);
+      console.log('Transactions',transaction)
       const permission = transaction.permissions.all.find((p) => p.permissionId === "aPermission");
-      await Glassfy.connectCustomSubscriber('mytestuser_two');
-      
+      console.log('IsValid',permission)
       if (permission && permission.isValid) {
+        console.log('IsValid')
 
       }
   } catch (e) {
-    // initialization error
+    console.error('There was an error Transaction',e)
+    
   }
   };
+
+
+
+
 
   const getPermission = async () => {
     try {
         const permissions = await Glassfy.permissions();
         const accountableSkus = permissions.all[0].accountableSkus;
-        // Iterate over accountableSkus array
         accountableSkus.forEach(sku => {
             // Check if skuId matches a specific value
             if (sku.skuId === 'yearly_subscription_299') {
@@ -120,19 +124,12 @@ export const GlassfyProvider = ({ children }) => {
       var permissions = await Glassfy.restorePurchases();
       for (var p in permissions.all ?? []) {
         console.log(`${p.permissionId} is ${p.isValid}`);
-        // Use permissionId and isValid to lock and unlock features
+    
       }
     } catch (error) {
       console.log("Failed to restore purchases $error");
     }
   };
-
-
-
-
-
-
-
 
 
   // Context value
@@ -146,10 +143,8 @@ export const GlassfyProvider = ({ children }) => {
   };
 
   // Return empty fragment if provider is not ready
-  if (!isReady) return React.createElement(React.Fragment, null);
-
   return React.createElement(GlassfyContext.Provider, { value: value }, children);
-};
+}
 
 // Custom hook to access Glassfy context
 export const useGlassfy = () => {

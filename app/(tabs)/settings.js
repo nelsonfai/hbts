@@ -12,6 +12,7 @@ import * as Notifications from 'expo-notifications';
 import { API_BASE_URL } from '../../appConstants';
 import {cancelAllNotifications} from "../../services/notificationServices"
 import { useGlassfy } from '../../context/GlassfyContext';
+import { color } from 'react-native-elements/dist/helpers';
 
 const Settings =  () => {
   const { user,setUser} = useUser();
@@ -20,16 +21,16 @@ const Settings =  () => {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.locale);
   const [selectedLanguageLabel, setSelectedLanguageLabel] = useState('');
+
   const [subscription, setSubscription] = useState({
     expirationDate: null,
     isPremium: false
 });
-
   const { locale, changeLocale } = useContext(I18nContext);
   const router = useRouter();
-  const { getPermission,restorePermission } = useGlassfy();
+  const { restorePermission,connectUser } = useGlassfy();
 
-
+ 
   const openAppSettings = () => {
     Linking.openSettings();
   };
@@ -47,6 +48,11 @@ const checkNotificationStatus =  async () =>{
   }
 }
 
+function formatDate(dateString) {
+  const date = new Date(dateString); // Parse the date string
+  const formattedDate = date.toISOString().split('T')[0]; // Extract only the date part
+  return formattedDate; // Return the formatted date
+}
 
 useEffect(() => {
   const handleAppStateChange = (nextAppState) => {
@@ -63,20 +69,7 @@ useEffect(() => {
 
 useEffect(() => {
   checkNotificationStatus();
-  getPermission().then(permissionInfo => {
-      setSubscription({
-          subscriptionStatus: permissionInfo.subscriptionStatus,
-          expirationDate: permissionInfo.expirationDate,
-          isPremium: permissionInfo.isPremium,
-          subscriptionType:permissionInfo.subscriptionType
 
-      });
-  }).catch(error => {
-      setSubscription({
-          expirationDate: null,
-          isPremium: false
-      });
-  });
 }, []);
 
 
@@ -90,10 +83,7 @@ useEffect(() => {
           'Authorization': `Token ${token}`,
         },
       });
-      if (!response.ok) {
-        throw new Error('Failed to logout');
-      }
-
+ 
       await AsyncStorageService.removeItem('token');
       await AsyncStorageService.removeItem('expo_token');
       setUser({
@@ -108,11 +98,22 @@ useEffect(() => {
         lang: '',
         premium: false,
         notify: '',
+        expo_token:null,
+        isync:false,
+        imageurl:null,
+        customerid:null,
+        valid_till :null,
+        subscription_type :null,
+        subscription_code :null,
+        productid:null,
+        auto_renew_status:false
       });
+
       await cancelAllNotifications()
+      await connectUser(null)
+  
       router.replace('/onboadpage');
     } catch (error) {
-      console.error('Error during logout:', error.message);
     }
   };
   const languageOptions = [
@@ -247,24 +248,35 @@ useEffect(() => {
                 />
           </View>
         </View>
-            {/* Subscription Section */}
-      <View style={{ marginTop: 20, paddingHorizontal: 10, fontSize: 14 }}>
-        <Text style={styles.sectionTitle}>{i18n.t('settings.subscription.sectionTitle')}</Text>
+      {/* Subscription Section */}
+      <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
+      <Text style={styles.sectionTitle}>{i18n.t('settings.subscription.sectionTitle')}</Text>
 
-        {/* Display User Information */}
-        <View style={{ padding: 15, borderBottomWidth: 1, borderColor: '#f2f2f2' }}>
-        <View >
-        <Text style={{fontSize:14}}>Current Plan: {subscription.isPremium ? 'Premium' : 'Free plan'}</Text>
-            <Text style={{fontSize:14}}>{subscription.subscriptionType}</Text>
-            {subscription.expirationDate && (
-                <Text style={{fontSize:14}}>Valid till: {subscription.expirationDate}</Text>
-            )}
-           {!subscription.isPremium && <TouchableOpacity onPress={() => {updateSubscription}}>
-              <Text style={{fontSize:14,marginTop:5}}> Reactivate Subscription</Text>
-            </TouchableOpacity>}
-        </View>
-          </View>
+      <View style={styles.subscriptionContainer}>
+        <Text style={styles.linkText}>Current Plan: {user.premium ? 'Premium' : 'Free plan'}</Text>
+        {user.premium && <Text style={styles.linkText}>Subscription Type: {user.subscription_type} </Text>}
+        {user.premium && user.valid_till && (
+        <Text style={styles.linkText}>Valid Till: {formatDate(user.valid_till)}</Text>
+        )}
+        { user.premium && user.auto_renew_status && <Text> Auto Renews : {user.auto_renew_status}</Text>}
+        {!user.premium && (
+          <TouchableOpacity onPress={updateSubscription} style={styles.subscriptionButton}>
+                <Text style={[styles.linkText, { textDecorationLine: 'underline'}]}>Reactivate Subscription</Text>
+          </TouchableOpacity>
+        )}
+        {user.premium && (
+          <TouchableOpacity style={styles.subscriptionButton}>
+            <Text style={styles.linkText}></Text>
+            <Text style={[styles.linkText,{marginTop:10}]}>Manage Subscription</Text>
+          </TouchableOpacity>
+        )}
+        {!user.premium && (
+          <Text style={[styles.linkText,{color:'grey',marginTop:5,fontSize:14}]}>To manage user subscriptions, go to Settings{ '> '}Subscriptions { '> '} Habts Us</Text>
+        )}
       </View>
+    </View>
+
+     
         {/* Legal Section */}
         <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
           <Text style={styles.sectionTitle}>{i18n.t('settings.legal.sectionTitle')}</Text>

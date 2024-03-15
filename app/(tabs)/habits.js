@@ -299,7 +299,7 @@ const Habits = () => {
     >
       {loading ? (
         <View style={{ flex: 1, justifyContent: "center", alignItems: 'center' }}>
-          <ActivityIndicator size="medium" color="grey" />
+          <ActivityIndicator size={15} color="grey" />
         </View>
       ) : (
         habits.map((habit, index) => (

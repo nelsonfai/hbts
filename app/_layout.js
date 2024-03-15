@@ -21,7 +21,7 @@ const Layout = () => {
 
   return (
     <GlassfyProvider>
-      <UserProvider>
+    <UserProvider>
         <I18nProvider>
           <RefreshProvider>
             <SummaryProvider>
@@ -41,8 +41,10 @@ const Layout = () => {
             </SummaryProvider>
           </RefreshProvider>
         </I18nProvider>
-      </UserProvider>
-      </GlassfyProvider>
+        </UserProvider>
+        </GlassfyProvider>
+   
+    
   );
 };
 

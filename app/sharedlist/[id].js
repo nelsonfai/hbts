@@ -314,7 +314,7 @@ const closeEditModal = () => {
         </View>
         <View style={styles.container}>
   {isLoading ? (
-    <ActivityIndicator size='medium' color={'grey'} />
+    <ActivityIndicator size={15} color={'grey'} />
   ) : error ? (
     <View>
       <Text>Error Loading Data:</Text>

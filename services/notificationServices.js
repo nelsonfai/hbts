@@ -158,7 +158,6 @@ export async function schedulePushNotification(habitName, habitDescription = nul
     notifications.push(id);
   }
 
-  console.log("Notification IDs on scheduling", notifications);
   return notifications;
 }
 
@@ -168,9 +167,6 @@ export async function cancelAllHabitNotifications(identifier) {
     const habitNotifications = allScheduledNotifications.filter(
       notification => notification.identifier.startsWith(identifier)
     );
-
-    console.log('All Scheduled Notifications:', allScheduledNotifications);
-    console.log('Habit Notifications to Cancel:', habitNotifications);
 
     const cancelPromises = habitNotifications.map(notification =>
       Notifications.cancelScheduledNotificationAsync(notification.identifier)
@@ -187,27 +183,8 @@ export async function cancelAllHabitNotifications(identifier) {
 export async function cancelAllNotifications() {
   try {
     await Notifications.cancelAllScheduledNotificationsAsync();
-    console.log('All notifications canceled successfully');
   } catch (error) {
     console.error('Error canceling all notifications:', error);
   }
 }
 
-function sendExpoTokenToBackend(expoToken) {
-  fetch('https://your-backend-api.com/register-expo-token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      expoToken: expoToken,
-    }),
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Expo token registered successfully:', data);
-    })
-    .catch(error => {
-      console.error('Error registering expo token:', error);
-    });
-}

@@ -201,7 +201,7 @@ const YourCarouselComponent = ({  user }) => {
   if (loading) {
     return (
       <View style={{ justifyContent: 'center', alignItems: 'center', height: 250, width: '100%',backgroundColor: '#f5f4fd',borderRadius:10,marginTop:10}}>
-        <ActivityIndicator size='medium' color={'grey'} />
+        <ActivityIndicator size={15} color={'grey'} />
       </View>
     );
   }

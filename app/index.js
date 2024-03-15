@@ -10,7 +10,7 @@ import { API_BASE_URL } from "../appConstants";
 import NetworkStatus from "../components/NetworkStatus"; // Assuming NetworkStatus is a component
 import NetInfo from "@react-native-community/netinfo";
 import { SyncReminders} from "../services/syncReminder";
-import { useGlassfy,connectUser } from '../context/GlassfyContext';
+import { useGlassfy } from '../context/GlassfyContext';
 
 
 const SplashScreen = ({ network, onRefresh }) => (
@@ -37,8 +37,7 @@ const IndexPage = () => {
   const [loading, setLoading] = useState(true);
   const expo_token = useNotificationService();
   const [network, setNetwork] = useState(true);
-  const { getPermission } = useGlassfy();
-  const [premiumValue, setPremiumValue] = useState(true);
+  const { connectUser } = useGlassfy();
 
   const networkCheck = () => {
     NetInfo.fetch().then((state) => {
@@ -49,25 +48,24 @@ const IndexPage = () => {
   useEffect(() => {
     const fetchInit = async () => {
       networkCheck(); 
-      const premium = await getPermission();
-      setPremiumValue(premium.isPremium);
-      console.log('Index called int',premium.isPremium)
-      setUser(prevUser => ({
-        ...prevUser, // Keep the existing properties
-        premium: premiumValue // Update only the premium property
-    }));
-    
 
     };
   
     fetchInit();
   }, []);
   
+
+
   const fetchData = async () => {
    
     networkCheck(); // Network check before making the fetch request
     if (!network) {
       return;
+    }
+
+    const connectCustomSubscriber = async (consumerid) =>{
+      await connectUser(consumerid)
+
     }
 
 
@@ -92,13 +90,15 @@ const IndexPage = () => {
           throw new Error('Failed to fetch user profile');
         }
         const data = await response.json();
-        const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang,isync,imageurl,premium,subcription_user} = data;
-        setUser({ id, email, name: name || '', profile_pic, premium:premium, team_invite_code, hasTeam, team_id, lang, notify: expo_token,isync,imageurl });
+        const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang,isync,imageurl,premium,customerid,valid_till,subscription_type,subscription_code,productid,auto_renew_status} = data;
+
+        setUser({ id, email, name: name || '', profile_pic, premium, team_invite_code, hasTeam, team_id, lang, notify: expo_token,isync,imageurl, customerid,valid_till,subscription_type,subscription_code,productid,auto_renew_status });
         setRefresh({ refreshHabits, refreshList, refreshSummary, refreshNotes });
-        console.log('our premium value',premiumValue)
         if (hasTeam && !isync){
           SyncReminders(token)
         }
+        connectCustomSubscriber(customerid)
+
         router.replace("home");
       } else {
         router.replace("/onboadpage");
@@ -118,6 +118,7 @@ const IndexPage = () => {
   );
 
   return loading ? <SplashScreen network={network} onRefresh={fetchData} /> : null;
+
 };
 
 const styles = StyleSheet.create({

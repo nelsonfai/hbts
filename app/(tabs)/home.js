@@ -7,7 +7,7 @@ import ProfileImage from "../../components/common/Image";
 import { Welcome } from "../../components";
 import SharedLists from "../../components/home/popular/SharedList";
 import I18nContext from "../../context/i18nProvider";
-import SubscriptionModal from "../../components/subscription/SubcritionModal";
+ import SubscriptionModal from "../../components/subscription/SubcritionModal";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import NetInfo from '@react-native-community/netinfo';
 import NetworkStatus from "../../components/NetworkStatus";
@@ -35,6 +35,7 @@ const Home = () => {
 
   const onPressSubscribe = () => {
     setShowSubscriptionModal(true);
+
   };
 
   const networkStateListener = NetInfo.addEventListener(networkState => {
@@ -84,7 +85,7 @@ const Home = () => {
         >
           <View style={styles.container}>
             <Welcome user={user} />
-            {user.premium ? (
+            {!user.premium ? (
               <View style={styles.subscriptionContainer}>
                 <Text style={styles.subscriptionText}>
                   {i18n.t('home.premiumText')}
@@ -109,7 +110,7 @@ const Home = () => {
       ) : (
         <NetworkStatus />
       )}
-      <SubscriptionModal
+        <SubscriptionModal
         isVisible={showSubscriptionModal}
         onClose={() => setShowSubscriptionModal(false)}
       />

@@ -6,28 +6,50 @@ import I18nContext from '../../context/i18nProvider';
 import { useRouter } from 'expo-router';
 import { Route } from 'expo-router/build/Route';
 import { useGlassfy} from '../../context/GlassfyContext'
+import { useUser } from "../../context/userContext";
 
 const SubscriptionModal = ({ isVisible, onClose,subscriptions }) => {
   const { offerings,purchase } = useGlassfy();
+  const { setUser } = useUser();
   const {i18n} = useContext(I18nContext)
   const router = useRouter();
   const [selectedPackage, setSelectedPackage] = useState(null);
-  const [packageindex,setPackageIndex] = useState(null)
-  const handleSubscribe = () => {
-    router.push({
-      pathname: '/(auth)/subscription',
-      params: {
-        plan: selectedPackage
-      }
-    });
-    onClose();
-  };
+  const [packageindex,setPackageIndex] = useState(1)
 
   const numberFormat = (product) =>
   new Intl.NumberFormat('en-EN', {
     style: 'currency',
     currency: product.currencyCode
   }).format(product.price);
+
+  const yearlyOffering = offerings.find(offer => offer.productId === "ios_yearly_subscription_299");
+  const yearlyIndex = offerings.findIndex(offer => offer.productId === "ios_yearly_subscription_299");
+
+  useState(() => {
+    console.log("Setting default values...");
+    console.log("Yearly Offering:", yearlyOffering);
+    console.log("Yearly Index:", yearlyIndex);
+    setSelectedPackage(yearlyOffering);
+    setPackageIndex(yearlyIndex);
+  });
+  
+
+const makepruchase = async  () =>{
+  try {
+
+    const transaction =  await purchase(selectedPackage);
+    console.log('Transaction reutnes',transaction)
+    if (transaction){
+      console.log('Translate :',transaction)
+
+            
+      onClose();
+    }
+
+  } catch (error) {
+    console.error('Error making purchase:', error);
+  }
+}
 
 
   const renderFeature = (title, description, iconName,key) => (
@@ -75,7 +97,7 @@ const SubscriptionModal = ({ isVisible, onClose,subscriptions }) => {
                       setPackageIndex(index)
                       setSelectedPackage(subscription)}}
                     >
-                    <Text style={styles.packageText}>{subscription.product.title}</Text>
+                    <Text style={styles.packageText}>{subscription.product.title} {index}</Text>
                     <Text style={styles.packageDetails}>{subscription.product.description}</Text>
                     <Text style={styles.price}>{numberFormat(subscription.product)}</Text>
                     <Text style={[styles.packageDetails, { color: '#FF5733' }]}>
@@ -84,7 +106,6 @@ const SubscriptionModal = ({ isVisible, onClose,subscriptions }) => {
                   </TouchableOpacity>
                 ))}
               </View>
-
 
           
             {i18n.t('subscription.features', { returnObjects: true }).map((feature, index) => (
@@ -101,9 +122,10 @@ const SubscriptionModal = ({ isVisible, onClose,subscriptions }) => {
 
         {/* Fixed buttons at the bottom */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.subscribeButton} onPress={() => purchase(selectedPackage)}>
+          <TouchableOpacity style={styles.subscribeButton} onPress={() => makepruchase()}>
             <Text style={styles.subscribeButtonText}>{i18n.t('subscription.subscribeButton')}</Text>
           </TouchableOpacity>
+
           <Text style={{ textAlign: 'center', paddingTop: 8 }}>{i18n.t('subscription.partnerText')}</Text>
         </View>
       </View>
@@ -176,7 +198,7 @@ backgroundColor:'white'
     fontSize: 14,
     marginBottom: 5,
   },
-  buttonContainer: {
+ buttonContainer :{
     justifyContent: 'space-between',
     width: '100%',
     position: 'absolute',
@@ -185,6 +207,17 @@ backgroundColor:'white'
     borderTopWidth: 0,
     borderTopColor: '#ccc',
     padding: 30,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
   },
   subscribeButton: {
     backgroundColor: '#c5bef9',
@@ -228,8 +261,9 @@ textAlign: 'center',
     color: '#666',
   },
   price:{
-    fontSize:16,
-    marginVertical:5
+    fontSize:18,
+    marginVertical:5,
+    fontWeight:'bold'
   }
 });
 
