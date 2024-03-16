@@ -66,11 +66,11 @@ export default function IndexPage() {
 
               } else {
                 const errorMessage = await response.text();
-                console.error("Team unpairing failed:", errorMessage);
+                //("Team unpairing failed:", errorMessage);
                 Alert.alert(i18n.t('partnerPairing.unpairTeam.alert.errorTitle'), i18n.t('partnerPairing.unpairTeam.alert.errorMessage'));
               }
             } catch (error) {
-              console.error("Error during team unpairing:", error.message);
+              //("Error during team unpairing:", error.message);
               Alert.alert(i18n.t('partnerPairing.unpairTeam.alert.errorTitle'), i18n.t('partnerPairing.unpairTeam.alert.errorMessage'));
             }
           },
@@ -119,12 +119,12 @@ export default function IndexPage() {
             setError(i18n.t('partnerPairing.404error.teamPairingFailed'));
           }
         } else {
-          //console.error("Team invitation failed:", errorMessage);
+          ////("Team invitation failed:", errorMessage);
           setError(i18n.t('partnerPairing.enterPartnerCode.error'));
         }
       }
     } catch (error) {
-      console.error("Error during team invitation:", error.message);
+      //("Error during team invitation:", error.message);
       setError(i18n.t('partnerPairing.404error.teamPairingFailed'));
     }
   };

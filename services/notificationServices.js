@@ -47,14 +47,17 @@ export function useNotificationService() {
   const isDevice = Constants.platform.ios || Constants.platform.android;
   
   if (isDevice ) {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
-      sound: 'default', 
-
-    });}
+    if (Platform.OS === 'android'){
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+        sound: 'default', 
+  
+      });
+    }
+ }
   
 
   if (isDevice) {
@@ -175,7 +178,7 @@ export async function cancelAllHabitNotifications(identifier) {
     await Promise.all(cancelPromises);
     console.log('Habit Notifications Canceled Successfully');
   } catch (error) {
-    console.error('Error canceling habit notifications:', error);
+    //('Error canceling habit notifications:', error);
   }
 }
 
@@ -184,7 +187,7 @@ export async function cancelAllNotifications() {
   try {
     await Notifications.cancelAllScheduledNotificationsAsync();
   } catch (error) {
-    console.error('Error canceling all notifications:', error);
+    //('Error canceling all notifications:', error);
   }
 }
 

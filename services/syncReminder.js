@@ -33,6 +33,6 @@
       }
       return data;
     } catch (error) {
-      console.error('Error fetching user habits:', error.message);
+      //('Error fetching user habits:', error.message);
     }
   };

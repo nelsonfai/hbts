@@ -20,7 +20,7 @@ export const GlassfyProvider = ({ children }) => {
       setIsReady(true);
       loadOfferings() 
     } catch (error) {
-      console.error('Error initializing Glassfy:', error);
+      //('Error initializing Glassfy:', error);
     }
   };
 
@@ -29,7 +29,7 @@ export const GlassfyProvider = ({ children }) => {
       await Glassfy.connectCustomSubscriber(consumerid);
     }
     catch (error) {
-      console.error('Error initializing')
+      //('Error initializing')
 
     }
 
@@ -42,7 +42,7 @@ export const GlassfyProvider = ({ children }) => {
       setOfferings(skus);
       return offerings
     } catch (error) {
-      console.error('Error loading offerings:', error);
+      //('Error loading offerings:', error);
     }
   };
 
@@ -58,7 +58,7 @@ export const GlassfyProvider = ({ children }) => {
 
       }
   } catch (e) {
-    console.error('There was an error Transaction',e)
+    //('There was an error Transaction',e)
     
   }
   };
@@ -108,7 +108,7 @@ export const GlassfyProvider = ({ children }) => {
             subscriptionType
         };
     } catch (e) {
-        console.error('Error fetching permissions:', e);
+        //('Error fetching permissions:', e);
         return {
             subscriptionStatus: 'Error',
             expirationDate: null,

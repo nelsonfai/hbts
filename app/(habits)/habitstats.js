@@ -76,7 +76,7 @@ const HabitStats = ({ route }) => {
         setP2Percentage(yearlyData.partner2Percentage);
       }
     } catch (error) {
-      //console.error("Error fetching habit statistics:", error.message);
+      ////("Error fetching habit statistics:", error.message);
     }
   };
   useEffect(() => {

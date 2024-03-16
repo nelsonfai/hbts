@@ -144,7 +144,7 @@ const ListItemDetailsScreen = () => {
                 setIsLoading(false);
               }
             } catch (error) {
-              console.error('Error updating item text:', error.message);
+              //('Error updating item text:', error.message);
               setIsLoading(false);
             }
           },
@@ -179,10 +179,10 @@ const ListItemDetailsScreen = () => {
             setListItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
           } else {
             const errorData = await response.json();
-            console.error('Error deleting item:', errorData);
+            //('Error deleting item:', errorData);
           }
         } catch (error) {
-          console.error('Error deleting item:', error.message);
+          //('Error deleting item:', error.message);
           // Handle the error (e.g., show an error message)
         }
       };
@@ -213,10 +213,10 @@ const ListItemDetailsScreen = () => {
         } else {
           // Handle errors
           const errorData = await response.json();
-          console.error('Error updating item:', errorData);
+          //('Error updating item:', errorData);
         }
       } catch (error) {
-        console.error('Error updating item:', error);
+        //('Error updating item:', error);
       }
     };
     
@@ -231,7 +231,7 @@ const ListItemDetailsScreen = () => {
         }
       }
       catch (error) {
-        console.error('Error updating item text:', error.message);
+        //('Error updating item text:', error.message);
       }
       closeEditModal()
     };

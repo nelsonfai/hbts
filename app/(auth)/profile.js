@@ -32,7 +32,7 @@ const ProfileEditPage = () => {
         setName(user.name);
         setProfilePic(user.imageurl);
       } catch (error) {
-        console.error('Error fetching user data:', error.message);
+        ////('Error fetching user data:', error.message);
       }
     };
 
@@ -59,7 +59,7 @@ const ProfileEditPage = () => {
         setProfilePic(result.assets[0].uri); // Use assets array
       }
     } catch (error) {
-      console.error('Error picking image:', error.message);
+      //('Error picking image:', error.message);
     }
   };
   
@@ -110,7 +110,7 @@ const ProfileEditPage = () => {
       {create? router.replace('/') : router.replace('/settings')}
 
     } catch (error) {
-      console.error('Error saving profile:', error.message);
+      //('Error saving profile:', error.message);
       Alert.alert(i18n.t('editProfile.errorOccured'));
       setLoading(false)    }
   };

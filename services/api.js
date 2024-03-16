@@ -10,7 +10,7 @@ const signup = async (userData) => {
     return response.data; // You might want to return the response data or use it for further actions
   } catch (error) {
     // Handle errors
-    console.error('Error during signup:', error);
+    //('Error during signup:', error);
     throw error;
   }
 };

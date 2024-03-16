@@ -49,7 +49,7 @@ const ChangePasswordPage = () => {
       Alert.alert(i18n.t('changePassword.passwordSuccess'));
       router.replace('/');
     } catch (error) {
-      console.error('Error changing password:', error.message);
+      //('Error changing password:', error.message);
       Alert.alert(i18n.t('changePassword.errorOccured'));
 
     }

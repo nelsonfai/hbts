@@ -65,7 +65,7 @@ const saveEmail = async () => {
         Alert.alert(i18n.t('changeEmail.emailSuccess'));
         router.replace('/');
       } catch (error) {
-        console.error('Error changing email:', error.message);
+        ////('Error changing email:', error.message);
         Alert.alert(i18n.t('changeEmail.errorOccured'));
       }
     }

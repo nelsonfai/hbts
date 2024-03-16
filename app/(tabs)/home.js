@@ -12,9 +12,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import NetInfo from '@react-native-community/netinfo';
 import NetworkStatus from "../../components/NetworkStatus";
 import { useGlassfy } from '../../context/GlassfyContext';
-
+import fetchPermission from "../../services/userinfo";
 const Home = () => {
-  const { user } = useUser();
+  const { user,setUser } = useUser();
   const router = useRouter();
   const { i18n } = useContext(I18nContext);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
@@ -33,10 +33,18 @@ const Home = () => {
     router.push('settings');
   };
 
-  const onPressSubscribe = () => {
-    setShowSubscriptionModal(true);
-
+  const onPressSubscribe = async () => {
+    try {
+      const permission = await fetchPermission(setUser);
+      if (permission){
+        setShowSubscriptionModal(true);
+      }
+    } catch (error) {
+      //('Error fetching permission:', error);
+      // Handle the error, e.g., show an error message to the user
+    }
   };
+  
 
   const networkStateListener = NetInfo.addEventListener(networkState => {
     NetInfo.fetch().then(state => {
@@ -75,14 +83,12 @@ const Home = () => {
           headerTitle: '',
         }}
       />
-
       {network ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
+          }>
           <View style={styles.container}>
             <Welcome user={user} />
             {!user.premium ? (
@@ -92,8 +98,7 @@ const Home = () => {
                 </Text>
                 <TouchableOpacity
                   onPress={onPressSubscribe}
-                  style={styles.subscribeButton}
-                >
+                  style={styles.subscribeButton}>
                   <Icon name="star" size={25} color={'#ffdb83'} />
                   <Text style={styles.subscribeButtonText}>
                     {i18n.t('home.premiumButton')}

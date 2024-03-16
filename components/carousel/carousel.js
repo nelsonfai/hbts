@@ -180,7 +180,7 @@ const YourCarouselComponent = ({  user }) => {
         setLoading(false); // Set loading to false after data is fetched
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error.message);
+      //('Error fetching user profile:', error.message);
       setLoading(false); // Set loading to false in case of an error
     }
   };

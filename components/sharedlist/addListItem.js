@@ -36,10 +36,10 @@ const SearchComponent = ({ updateList, color, sharedListId,placeholderText,netwo
         setRefresh({ refreshHabits: false, refreshList: true,refreshSummary:false,refreshNotes:false });
       } else {
         const errorData = await response.json();
-        console.error('Error creating item :', errorData);
+        //('Error creating item :', errorData);
       }
     } catch (error) {
-      console.error('Error creating item:', error.message);
+      //('Error creating item:', error.message);
     }
   };
 

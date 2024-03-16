@@ -9,7 +9,7 @@ const AsyncStorageService = {
 
       return value;
     } catch (error) {
-      console.error(`Error getting item from AsyncStorage (${key}):`, error);
+      //(`Error getting item from AsyncStorage (${key}):`, error);
       return null;
     }
   },
@@ -17,14 +17,14 @@ const AsyncStorageService = {
     try {
       await SecureStore.setItemAsync(key, value);
     } catch (error) {
-      console.error(`Error setting item in AsyncStorage (${key}):`, error);
+      //(`Error setting item in AsyncStorage (${key}):`, error);
     }
   },
   removeItem: async (key) => {
     try {
       await SecureStore.deleteItemAsync(key);
     } catch (error) {
-      console.error(`Error removing item from AsyncStorage (${key}):`, error);
+      //(`Error removing item from AsyncStorage (${key}):`, error);
     }
   },
   // Method to save the selected language

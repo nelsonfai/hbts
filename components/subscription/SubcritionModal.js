@@ -8,7 +8,7 @@ import { Route } from 'expo-router/build/Route';
 import { useGlassfy} from '../../context/GlassfyContext'
 import { useUser } from "../../context/userContext";
 
-const SubscriptionModal = ({ isVisible, onClose,subscriptions }) => {
+const SubscriptionModal = ({ isVisible, onClose,subscriptions,info}) => {
   const { offerings,purchase } = useGlassfy();
   const { setUser } = useUser();
   const {i18n} = useContext(I18nContext)
@@ -26,9 +26,6 @@ const SubscriptionModal = ({ isVisible, onClose,subscriptions }) => {
   const yearlyIndex = offerings.findIndex(offer => offer.productId === "ios_yearly_subscription_299");
 
   useState(() => {
-    console.log("Setting default values...");
-    console.log("Yearly Offering:", yearlyOffering);
-    console.log("Yearly Index:", yearlyIndex);
     setSelectedPackage(yearlyOffering);
     setPackageIndex(yearlyIndex);
   });
@@ -47,7 +44,7 @@ const makepruchase = async  () =>{
     }
 
   } catch (error) {
-    console.error('Error making purchase:', error);
+    //('Error making purchase:', error);
   }
 }
 
@@ -83,7 +80,7 @@ const makepruchase = async  () =>{
               <images.holdingHands />
               </View>
             </View>
-
+            <Text style={styles.info}>{info}</Text>
             <Text style={styles.title}>{i18n.t('subscription.title')}</Text>
             <View style={styles.packageContainer}>
                 {offerings.map((subscription, index) => (
@@ -97,7 +94,7 @@ const makepruchase = async  () =>{
                       setPackageIndex(index)
                       setSelectedPackage(subscription)}}
                     >
-                    <Text style={styles.packageText}>{subscription.product.title} {index}</Text>
+                    <Text style={styles.packageText}>{subscription.product.title} </Text>
                     <Text style={styles.packageDetails}>{subscription.product.description}</Text>
                     <Text style={styles.price}>{numberFormat(subscription.product)}</Text>
                     <Text style={[styles.packageDetails, { color: '#FF5733' }]}>
@@ -169,8 +166,13 @@ backgroundColor:'white'
 
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 15,
+
+  },
+  info:{
+    fontSize: 24,
+    marginBottom:5,
+    fontWeight: '400',
   },
   packageContainer: {
     flexDirection: 'row',

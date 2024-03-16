@@ -337,7 +337,7 @@ const renderDayOfMonthPicker = () => {
           );}
       router.push('/habits');
     } catch (error) {
-      console.error("Error updating habit:", error.message);
+      //("Error updating habit:", error.message);
     } finally {
       setLoading(false);
     }

@@ -89,10 +89,10 @@ const App = () => {
          setChange(false); // Set change to false initially
        } else {
          const errorData = await response.json();
-         console.error("Error fetching initial text:", errorData);
+         //("Error fetching initial text:", errorData);
        }
      } catch (error) {
-      //console.error("Error fetching initial text:", error.message);
+      ////("Error fetching initial text:", error.message);
     }}
  }
 
@@ -133,10 +133,10 @@ const App = () => {
 
       } else {
         const errorData = await response.json();
-        console.error("Error updating/add text:", errorData);
+        //("Error updating/add text:", errorData);
       }
     } catch (error) {
-      //console.error("Error updating/add text:", error.message);
+      ////("Error updating/add text:", error.message);
     }
     Keyboard.dismiss();
   };

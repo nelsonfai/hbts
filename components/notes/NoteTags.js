@@ -59,10 +59,10 @@ const TagColorModal = ({ visible, onClose, onAdd, setColor,noteId,refreshNotes,i
 
       } else {
         const errorData = await response.json();
-        console.error("Error updating/add text:", errorData);
+        //("Error updating/add text:", errorData);
       }
     } catch (error) {
-      console.error("Error updating/add text:", error.message);
+      //("Error updating/add text:", error.message);
     }
   };
  

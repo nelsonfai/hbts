@@ -46,6 +46,7 @@
   "noHabit":"Keine Gewohnheit gefunden!",
   "addHabit":"Beginnen Sie, indem Sie eine neue Gewohnheit hinzufügen",
   "dateFuture": "Das ausgewählte Datum liegt in der Zukunft. Die Gewohnheit kann nicht als erledigt markiert werden.",
+  "habitInfo":"Upgrade, um unbegrenzte Gewohnheiten zu erhalten",
   "deleteHabit": {
       "confirmDelete": "Löschen bestätigen",
       "deleteText": "Sind Sie sicher, dass Sie diese Gewohnheit löschen möchten?",
@@ -98,13 +99,26 @@
     },
     "subscription": {
       "sectionTitle": "Abonnement",
+      "currentPlan": "Aktueller Plan:",
+      "premium": "Premium",
+      "freePlan": "Kostenloser Plan",
+      "subscriptionType": "Abonnementtyp",
+      "monthly": "Monatlich",
+      "yearly": "Jährlich",
+      "validTill": "Gültig bis",
+      "autoRenews": "Automatisch verlängern",
+      "reactivateSubscription": "Abonnement reaktivieren",
       "manageSubscription": "Abonnement verwalten",
-      "review": "Bewertung und Unterstützung",
-      "contact":"Kontaktiere uns",
-      "share":"Teilen",
-      "about":"Über uns",
-      "others":"Andere"
+      "manageSubscriptionsInfo": "Um Benutzerabonnements zu verwalten, gehen Sie zu Einstellungen > Abonnements > Habts Us",
+      "partnerManagement": "Die Verwaltung des Abonnements erfolgt durch Ihren Partner"
+
+    ,"review": "Bewertung und Support",
+    "contact": "Kontaktiere uns",
+    "share": "Teilen",
+    "about": "Über uns",
+    "others": "Andere"
     }
+    
     ,
     "notifications": {
       "sectionTitle": "Benachrichtigungen",
@@ -195,35 +209,41 @@
     "yearlyPackage": {
       "text": "Jährlich",
       "details": "99,99 $/Jahr",
-      "bestValue": "- Bester Wert -"
+      "bestValue": "Bester Wert"
     },
     "features": [
       {
         "title": "Unbegrenzte Gewohnheiten",
-        "description": "Zugriff auf eine unbegrenzte Anzahl von Gewohnheiten für umfassendes Tracking.",
+        "description": "Zugriff auf eine unbegrenzte Anzahl von Gewohnheiten zur umfassenden Verfolgung.",
         "icon": "check-circle"
       },
       {
-        "title": "Erweiterte Analyse-Daten",
+        "title": "Unbegrenzte Notizen",
+        "description": "Nehmen Sie unbegrenzt Notizen auf, um Ihre Gedanken und Ideen als Paar festzuhalten.",
+        "icon": "sticky-note"
+      },
+      {
+        "title": "Erweiterte Analytik-Daten",
         "description": "Erhalten Sie detaillierte Einblicke und Analysen, um Ihren Fortschritt zu verfolgen und zu optimieren.",
         "icon": "pie-chart"
       },
       {
-        "title": "Benutzerdefinierte Themen",
-        "description": "Personalisieren Sie Ihre App mit einer Vielzahl von benutzerdefinierten Themen und Farboptionen.",
+        "title": "Benutzerdefinierte Designs",
+        "description": "Personalisieren Sie Ihre App mit einer Vielzahl von benutzerdefinierten Designs und Farboptionen.",
         "icon": "paint-brush"
       },
       {
-        "title": "Offline-Zugriff",
-        "description": "Greifen Sie auch ohne aktive Internetverbindung auf Ihre Gewohnheiten und Daten zu.",
-        "icon": "wifi"
+        "title": "Erinnerungen",
+        "description": "Halten Sie sich gegenseitig verantwortlich! Erhalten Sie Benachrichtigungen, wenn Ihr Partner Aufgaben abschließt.",
+        "icon": "bell"
       },
       {
-        "title": "Prioritätssupport",
-        "description": "Erhalten Sie Prioritätssupport und Unterstützung bei Problemen oder Anfragen.",
+        "title": "Priorisierter Support",
+        "description": "Erhalten Sie Prioritätssupport und Hilfe bei allen Problemen oder Anfragen.",
         "icon": "headphones"
       }
-    ],
+    ]
+,    
     "subscribeButton": "Premium abonnieren",
     "partnerText": "Ihr Partner erhält Premium kostenlos"
   },
@@ -258,6 +278,7 @@
     "notes":"Notizen",
     "noNote":"Keine Notiz gefunden!",
     "addNote":"Beginnen Sie, indem Sie eine neue Notiz hinzufügen",
+    "notesInfo": "Upgrade, um unbegrenzte Notizen zu erhalten",
     "write":{
       "header": {
         "save": "Speichern"

@@ -31,6 +31,7 @@ import I18nContext from "../../context/i18nProvider";
 const DELETE_ICON = "trash";
 const EDIT_ICON = "edit";
 import SubscriptionModal from "../../components/subscription/SubcritionModal";
+import fetchPermission from "../../services/userinfo";
 
 const NoteListItem = ({ note, onDelete, onEdit, onDetails, swipeableRefs }) => {
   const formattedDate = new Date(note.date).toLocaleDateString();
@@ -150,9 +151,10 @@ const NoteListItem = ({ note, onDelete, onEdit, onDetails, swipeableRefs }) => {
 };
 
 const NotesScreen = () => {
-  const { user } = useUser();
+  const { user,setUser } = useUser();
   const router = useRouter();
   const [notes, setNotes] = useState([]);
+  const [limit, setLimit] = useState([]);
   const [loading, setLoading] = useState(true);
   const { refresh, setRefresh } = useRefresh();
   const [visible, setVisible] = useState(false);
@@ -174,6 +176,19 @@ const NotesScreen = () => {
       SetNetWork(state.isConnected);
     });
   };
+  const createNotes = async () => {
+    try {
+      const  isPremium = await fetchPermission(setUser);
+      if (!isPremium && limit) {
+        setSubscribeModal(true);
+      } else {
+        router.push("/notes/write") 
+      }
+    } catch (error) {
+      //('Error fetching user permissions:', error);
+    }
+  };
+  
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -198,12 +213,13 @@ const NotesScreen = () => {
 
         if (response.ok) {
           const data = await response.json();
-          setNotes(data);
+          setNotes(data.data);
+          setLimit(data.limitreached)
         } else {
           const errorData = await response.json();
         }
       } catch (error) {
-        //console.error("Error fetching notes:", error.message);
+        //("Error fetching notes:", error.message);
       } finally {
         setLoading(false);
       }
@@ -248,13 +264,13 @@ const NotesScreen = () => {
         fetchNotes();
       } else {
         const errorData = await response.json();
-        //console.error("Error deleting note:", errorData);
+        ////("Error deleting note:", errorData);
         if (errorData.error === "Permission denied") {
           Alert.alert("Permission Denied");
         }
       }
     } catch (error) {
-      console.error("Error deleting note:", error.message);
+      //("Error deleting note:", error.message);
     }
   };
 
@@ -292,7 +308,7 @@ const NotesScreen = () => {
             </Text>
           ),
           headerRight: () => (
-          <TouchableOpacity onPress={user.premium ? () => router.push("/notes/write") : () => setSubscribeModal(true)}>
+          <TouchableOpacity onPress={createNotes}>
             <View style={{ marginRight: 10, marginBottom: 7 }}>
               <MyHabitIcon size={35} iconName={"plus-circle-outline"} color={"grey"} />
             </View>
@@ -345,7 +361,7 @@ const NotesScreen = () => {
         userHasTeam={userHasTeam}
         ini_shared={isShared}
       />
-        <SubscriptionModal isVisible={subscribeModal} onClose={() => setSubscribeModal(false)} />
+        <SubscriptionModal isVisible={subscribeModal} onClose={() => setSubscribeModal(false)}  info={i18n.t('notes.notesInfo')}/>
 
     </SafeAreaView>
   );

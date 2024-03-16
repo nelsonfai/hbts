@@ -90,9 +90,9 @@ const IndexPage = () => {
           throw new Error('Failed to fetch user profile');
         }
         const data = await response.json();
-        const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang,isync,imageurl,premium,customerid,valid_till,subscription_type,subscription_code,productid,auto_renew_status} = data;
+        const { id, email, name, profile_pic, team_invite_code, hasTeam, team_id, lang,isync,imageurl,premium,customerid,valid_till,subscription_type,subscription_code,productid,auto_renew_status,mypremium} = data;
 
-        setUser({ id, email, name: name || '', profile_pic, premium, team_invite_code, hasTeam, team_id, lang, notify: expo_token,isync,imageurl, customerid,valid_till,subscription_type,subscription_code,productid,auto_renew_status });
+        setUser({ id, email, name: name || '', profile_pic, premium, team_invite_code, hasTeam, team_id, lang, notify: expo_token,isync,imageurl, customerid,valid_till,subscription_type,subscription_code,productid,auto_renew_status,mypremium});
         setRefresh({ refreshHabits, refreshList, refreshSummary, refreshNotes });
         if (hasTeam && !isync){
           SyncReminders(token)

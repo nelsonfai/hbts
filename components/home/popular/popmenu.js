@@ -63,7 +63,7 @@ const PopupMenu = ({ ListId, onEdit ,current})=> {
                 setIsLoading(false);
               }
             } catch (error) {
-              console.error('Error updating item text:', error.message);
+              //('Error updating item text:', error.message);
               setIsLoading(false);
             }
           },

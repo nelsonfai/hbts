@@ -43,6 +43,7 @@
     "today":"Today",
     "habitNotFound": "Habit not found",
     "dateFuture":"Selected date is in the future. Cannot mark habit as done.",
+    "habitInfo":"Upgrade to get Unlimited Habits",
     "deleteHabit":{
       "confirmDelete":"Confirm Delete",
       "deleteText":"Are you sure you want to delete this habit?",
@@ -93,13 +94,24 @@
     },
     "subscription": {
       "sectionTitle": "Subscription",
+      "currentPlan": "Current Plan:",
+      "premium": "Premium",
+      "freePlan": "Free plan",
+      "subscriptionType": "Subscription Type",
+      "monthly":"Monthly",
+      "yearly":"Yearly",
+      "validTill": "Valid Till",
+      "autoRenews": "Auto Renews",
+      "reactivateSubscription": "Reactivate Subscription",
       "manageSubscription": "Manage Subscription",
+      "manageSubscriptionsInfo": "To manage user subscriptions, go to Settings > Subscriptions > Habts Us",
+      "partnerManagement": "Subscription management is handled by your partner",
       "review": "Review and Support",
       "contact":"Contact us",
       "share":"Share",
       "about":"About us",
-      "others":"Others"
-    },
+      "others":"Others" 
+    },    
     "notifications": {
       "sectionTitle": "Notifications",
       "enableNotifications": "Enable Notifications"
@@ -187,7 +199,7 @@
       "yearlyPackage": {
         "text": "Yearly",
         "details": "$99.99/year",
-        "bestValue": "- Best Value -"
+        "bestValue": "Best Value"
       },
       "features": [
         {
@@ -195,6 +207,12 @@
           "description": "Access to an unlimited number of habits for comprehensive tracking.",
           "icon": "check-circle"
         },
+        {
+          "title": "Unlimited Notes Taking",
+          "description": "Take unlimited notes to capture your thoughts and ideas as a couple.",
+          "icon": "sticky-note"
+        },
+        
         {
           "title": "Advanced Analytics Data",
           "description": "Gain detailed insights and analytics to track and optimize your progress.",
@@ -205,12 +223,13 @@
           "description": "Personalize your app with a variety of custom themes and color options.",
           "icon": "paint-brush"
         },
-        {
-          "title": "Offline Access",
-          "description": "Access your habits and data even without an active internet connection.",
-          "icon": "wifi"
-        },
-        {
+        
+          {
+            "title": "Reminders",
+            "description": "Keep each other accountable! Receive alerts when your partner completes tasks.",
+            "icon": "bell"
+          },
+          {
           "title": "Priority Support",
           "description": "Receive priority support and assistance for any issues or inquiries.",
           "icon": "headphones"
@@ -250,6 +269,8 @@
       "notes":"Notes",
       "noNote":"No Note Found !",
       "addNote":"Start by Adding New Note",
+      "notesInfo": "Upgrade to get Unlimited Notes",
+
       "write":{
           "header": {
             "save": "Save"

@@ -129,7 +129,7 @@ useEffect(() => {
       const language = langOption ? langOption.label : 'Unknown';
       setSelectedLanguageLabel(language);
     }).catch(error => {
-      console.error('Error retrieving language:', error);
+      //('Error retrieving language:', error);
     });
   }, [selectedLanguage]);
   
@@ -157,7 +157,7 @@ useEffect(() => {
         message: `Download our app from the App Store: ${appStoreUrl} \n Or from Google Play Store: ${playStoreUrl}`,
       });
     } catch (error) {
-      console.error(error.message);
+      //(error.message);
     }
   };
 
@@ -177,7 +177,7 @@ useEffect(() => {
   
       await Linking.openURL(reviewUrl);
     } catch (error) {
-      console.error(error.message);
+      //(error.message);
     }
   };
   return (
@@ -248,31 +248,53 @@ useEffect(() => {
                 />
           </View>
         </View>
-      {/* Subscription Section */}
-      <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
+     {/* Subscription Section */}
+    <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
       <Text style={styles.sectionTitle}>{i18n.t('settings.subscription.sectionTitle')}</Text>
 
       <View style={styles.subscriptionContainer}>
-        <Text style={styles.linkText}>Current Plan: {user.premium ? 'Premium' : 'Free plan'}</Text>
-        {user.premium && <Text style={styles.linkText}>Subscription Type: {user.subscription_type} </Text>}
-        {user.premium && user.valid_till && (
-        <Text style={styles.linkText}>Valid Till: {formatDate(user.valid_till)}</Text>
+        <Text style={styles.linkText}>{i18n.t('settings.subscription.currentPlan')} {user.premium ? i18n.t('settings.subscription.premium') : i18n.t('settings.subscription.freePlan')}</Text>
+        {user.mypremium && (
+          <>
+            {user.premium && user.subscription_type && (
+              <Text style={styles.linkText}>
+                {i18n.t('settings.subscription.subscriptionType')}: {user.subscription_type === 'Monthly' ? i18n.t('settings.subscription.monthly') : i18n.t('settings.subscription.yearly')}
+              </Text>
+            )}
+
+            {user.premium && user.valid_till && (
+              <Text style={styles.linkText}>{i18n.t('settings.subscription.validTill')}: {formatDate(user.valid_till)}</Text>
+            )}
+            
+            {user.premium && user.auto_renew_status && (
+              <Text style={styles.linkText}>{i18n.t('settings.subscription.autoRenews')}: {user.auto_renew_status}</Text>
+            )}
+
+            {!user.premium && (
+              <TouchableOpacity onPress={updateSubscription} style={styles.subscriptionButton}>
+                <Text style={[styles.linkText, { textDecorationLine: 'underline' }]}>{i18n.t('settings.subscription.reactivateSubscription')}</Text>
+              </TouchableOpacity>
+            )}
+
+            {user.premium && (
+              <TouchableOpacity style={styles.subscriptionButton}>
+                <Text style={[styles.linkText, { marginTop: 10 }]}>{i18n.t('settings.subscription.manageSubscription')}</Text>
+              </TouchableOpacity>
+            )}
+
+            {user.premium && (
+              <Text style={[styles.linkText, { color: 'grey', marginTop: 5, fontSize: 14 }]}>
+                {i18n.t('settings.subscription.manageSubscriptionsInfo')}
+              </Text>
+            )}
+          </>
         )}
-        { user.premium && user.auto_renew_status && <Text> Auto Renews : {user.auto_renew_status}</Text>}
-        {!user.premium && (
-          <TouchableOpacity onPress={updateSubscription} style={styles.subscriptionButton}>
-                <Text style={[styles.linkText, { textDecorationLine: 'underline'}]}>Reactivate Subscription</Text>
-          </TouchableOpacity>
-        )}
-        {user.premium && (
-          <TouchableOpacity style={styles.subscriptionButton}>
-            <Text style={styles.linkText}></Text>
-            <Text style={[styles.linkText,{marginTop:10}]}>Manage Subscription</Text>
-          </TouchableOpacity>
-        )}
-        {!user.premium && (
-          <Text style={[styles.linkText,{color:'grey',marginTop:5,fontSize:14}]}>To manage user subscriptions, go to Settings{ '> '}Subscriptions { '> '} Habts Us</Text>
-        )}
+          {!user.mypremium && user.premium && (
+            <Text style={styles.linkText}>    
+            {i18n.t('settings.subscription.partnerManagement')}
+            </Text>
+
+          )}
       </View>
     </View>
 

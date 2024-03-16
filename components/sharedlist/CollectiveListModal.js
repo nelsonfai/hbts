@@ -135,10 +135,10 @@ const AddSharedListModal = ({ visible, onClose, userHasTeam, callBack, updateLis
         setRefresh({ refreshHabits: false, refreshList: true, refreshSummary: false,refreshNotes:false });
       } else {
         const errorData = await response.json();
-        console.error('Error adding/shared list:', errorData);
+        //('Error adding/shared list:', errorData);
       }
     } catch (error) {
-      console.error('Error adding/shared list:', error.message);
+      //('Error adding/shared list:', error.message);
     }
   };
 

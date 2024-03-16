@@ -17,9 +17,9 @@ import { API_BASE_URL } from "../../appConstants";
 import EmptyNotesPage from "../../components/emptyPage";
 import NetInfo from "@react-native-community/netinfo";
 import { cancelAllHabitNotifications } from "../../services/notificationServices"
-
+import fetchPermission from "../../services/userinfo";
 const Habits = () => {
-  const { user } = useUser();
+  const { user,setUser } = useUser();
   const {i18n,locale} = useContext(I18nContext)
   const swipeableRefs = {};
   const [subscribeModal ,setSubscribeModal] = useState(false)
@@ -117,14 +117,28 @@ const Habits = () => {
     const options = { month: 'short', year: 'numeric' };
     const translateDate = new Date(inputDate).toLocaleDateString(locale, options);
   }
-  const AddHabit = () => {
-    router.push({
-      pathname: `/AddHabit`,
-      params: {
-        mood: 'create'
-      }
-    });
+
+
+  const AddHabit = async () => {
+    try {
+      const isPremium = await fetchPermission(setUser);
+      console.log(isPremium,limit)
+  if (!isPremium  && limit) {
+        setSubscribeModal(true);
+      } else {
+      router.push({
+                pathname: `/AddHabit`,
+          params: {
+            mood: 'create'
+          }
+        });      }
+   } catch (error) {
+     // //('Error fetching user permissions:', error);
+    }
   };
+
+
+
 
   const UpdateHabit = (habit) => {
     currentSwipeable(habit.habit.id)
@@ -201,7 +215,7 @@ const Habits = () => {
         ]
       );
     } catch (error) {
-      console.error("Error deleting habit:", error.message);
+      //("Error deleting habit:", error.message);
 
     }
   };
@@ -238,7 +252,7 @@ const Habits = () => {
       setRefresh({ refreshHabits: false, refreshList: false, refreshSummary: true,refreshNotes:false });
       fetchHabits();
     } catch (error) {
-      console.error("Error marking habit as done:", error.message);
+      //("Error marking habit as done:", error.message);
     }
   };
 
@@ -375,7 +389,7 @@ const Habits = () => {
     </ScrollView>
   )}
 
-  <SubscriptionModal isVisible={subscribeModal} onClose={() => setSubscribeModal(false)} />
+  <SubscriptionModal isVisible={subscribeModal} onClose={() => setSubscribeModal(false)}  info={i18n.t('habits.habitInfo')}/>
 </View>
 
     </SafeAreaView>
