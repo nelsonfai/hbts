@@ -2,6 +2,31 @@
   "common": {
     "error": "Error"
   },
+  "auth": {
+    "loginWithEmail": "Login with Email",
+    "signUpWithEmail": "Sign up with Email",
+    "emailLabel": "Email",
+    "emailPlaceholder": "email@address.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Password",
+    "emailRequired": "Email is required.",
+    "validEmail": "Please enter a valid email address.",
+    "passwordRequired": "Password is required.",
+    "signin": "Sign in",
+    "signup": "Sign up",
+    "haveAccount": "Already have an account? ",
+    "noAccount": "Don't have an account? ",
+    "incorrectCredentials": "Incorrect Email or Password",
+    "signupError": "An error occurred during signup"
+  },
+  "onboarding": {
+    "sharedListTitle": "Shared List",
+    "sharedListText": "Simplify your to-dos and stay in sync with your partner through shared lists for seamless collaboration",
+    "habitTrackerTitle": "Habit Tracker",
+    "habitTrackerText": "Cultivate shared habits and goals, reinforcing accountability and wellness in your relationship",
+    "sharedNotesTitle": "Shared Notes",
+    "sharedNotesText": "Enhance communication and create a shared digital space for notes, fostering intimacy and connection between you and your partner."
+  },
   "home": {
     "title": "Home",
     "greetings": "How are you Today?",
@@ -63,6 +88,12 @@
     "descriptionPlaceholder":"Description(optional)",
     "sharepartnerText":"Pair with partner to share this",
     "selectDays":"Select Days of the Week:",
+    "habitIconModal": {
+      "selectIconOrEmoji": "Select an Icon or Emoji",
+      "showEmojis": "Show Emojis",
+      "showIcons": "Show Icons",
+      "close": "Close"
+    },
     "selectName":{
       "errorNone":"Please enter a habit name",
       "errorLimit":"Habit name should not exceed 60 characters."

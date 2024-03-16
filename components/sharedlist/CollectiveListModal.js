@@ -195,13 +195,13 @@ const AddSharedListModal = ({ visible, onClose, userHasTeam, callBack, updateLis
               <Switch
                 value={newSharedList.isShared}
                 onValueChange={(value) => setNewSharedList({ ...newSharedList, isShared: value })}
-                trackColor={{ false: COLORS.lightGray, true: COLORS.primary }}
+                trackColor={{ false:'white', true: 'black' }}
                 thumbColor={newSharedList.isShared ? COLORS.white : COLORS.lightGray}
                 disabled={!userHasTeam}
               />
             </View>
             {!userHasTeam && (
-              <View style={{ marginBottom: 10 }}>
+              <View style={{ marginBottom: 10 ,marginTop:10}}>
                 <Text style={{ color: 'grey' }}>{i18n.t('sharedListModal.createJoinTeam')}</Text>
                 <TouchableOpacity
                   style={{

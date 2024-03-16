@@ -5,31 +5,34 @@ import { COLORS, SIZES } from '../../constants';
 import Couple from './svg/couple';
 import List from './svg/list';
 import Habit from './svg/habit';
-const slides = [
-  {
-    key: 'slide1',
-    title: 'Shared List',
-    svgComponent: List,
-    text: 'Simplify your to-dos and stay in sync with your partner through shared lists for seamless collaboration',
-    id:''
-  },
-  {
-    key: 'slide2',
-    title: 'Habit Tracker',
-    svgComponent: Habit,
-    text: 'Cultivate shared habits and goals, reinforcing accountability and wellness in your relationship',
-    id:'habit'
-  },
-  {
-    key: 'slide3',
-    title: ' Shared Notes',
-    svgComponent: Couple,
-    text: 'Enhance communication and create a shared digital space for notes, fostering intimacy and connection between you and your partner.',
-    id:''
-  },
-];
 
-const OnboardingScreen = () => {
+
+
+const OnboardingScreen = ({ i18n}) => { // Added navigation prop
+
+  const slides = [
+    {
+      key: 'slide1',
+      title: i18n.t('onboarding.sharedListTitle'), // Translate the title
+      svgComponent: List,
+      text: i18n.t('onboarding.sharedListText'), // Translate the text
+      id:'',
+    },
+    {
+      key: 'slide2',
+      title: i18n.t('onboarding.habitTrackerTitle'), // Translate the title
+      svgComponent: Habit,
+      text: i18n.t('onboarding.habitTrackerText'), // Translate the text
+      id:'habit',
+    },
+    {
+      key: 'slide3',
+      title: i18n.t('onboarding.sharedNotesTitle'), // Translate the title
+      svgComponent: Couple,
+      text: i18n.t('onboarding.sharedNotesText'), // Translate the text
+      id:'',
+    },
+  ];
   const renderItem = ({ item }) => (
     <View style={styles.slide}>
       <View style= {{ width: item.id === 'habit' ? 150 : 200, height: item.id === 'habit' ? 150 : 200,marginBottom:item.id ==='habit' ? 12:0}}>
@@ -82,12 +85,12 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
     marginTop: 10,
     fontWeight: 'bold',
-    fontSize:18
+    fontSize: 18,
   },
   TextBlock: {
     textAlign: 'center',
-    fontSize:16,
-    padding:15
+    fontSize: 16,
+    padding: 15,
   },
 });
 

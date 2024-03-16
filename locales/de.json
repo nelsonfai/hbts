@@ -2,6 +2,31 @@
   "common": {
     "error": "Fehler"
   },
+  "auth": {
+    "loginWithEmail": "Mit E-Mail anmelden",
+    "signUpWithEmail": "Mit E-Mail registrieren",
+    "emailLabel": "Email",
+    "emailPlaceholder": "E-Mail-Adresse",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "Passwort",
+    "emailRequired": "E-Mail ist erforderlich.",
+    "validEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+    "passwordRequired": "Passwort ist erforderlich.",
+    "signin": "Anmelden",
+    "signup": "Registrieren",
+    "haveAccount": "Haben Sie bereits ein Konto? ",
+    "noAccount": "Haben Sie kein Konto? ",
+    "incorrectCredentials": "Falsche E-Mail oder Passwort",
+    "signupError": "Beim Registrieren ist ein Fehler aufgetreten"
+  },
+  "onboarding": {
+    "sharedListTitle": "Geteilte Liste",
+    "sharedListText": "Vereinfachen Sie Ihre Aufgaben und bleiben Sie über gemeinsame Listen synchronisiert, um nahtlose Zusammenarbeit zu ermöglichen",
+    "habitTrackerTitle": "Gewohnheiten-Tracker",
+    "habitTrackerText": "Fördern Sie gemeinsame Gewohnheiten und Ziele und stärken Sie die Verantwortlichkeit und das Wohlbefinden in Ihrer Beziehung",
+    "sharedNotesTitle": "Geteilte Notizen",
+    "sharedNotesText": "Verbessern Sie die Kommunikation und schaffen Sie einen gemeinsamen digitalen Raum für Notizen, um die Intimität und Verbindung zwischen Ihnen und Ihrem Partner zu fördern."
+  },
   "home": {
     "title": "Zuhause",
     "greetings": "Wie geht es Ihnen heute?",
@@ -54,7 +79,7 @@
       "deleteButton": "Löschen"
   }
 },
-  
+
     "editHabit": {
       "updateTitle": "Gewohnheit aktualisieren",
       "addTitle": "Gewohnheit erstellen",
@@ -67,6 +92,12 @@
       "descriptionPlaceholder": "Beschreibung (optional)",
       "sharepartnerText": "Mit Partner verbinden, um dies zu teilen",
       "selectDays": "Wochentage auswählen:",
+      "habitIconModal": {
+        "selectIconOrEmoji": "Wählen Sie ein Symbol oder Emoji aus",
+        "showEmojis": "Emojis anzeigen",
+        "showIcons": "Symbole anzeigen",
+        "close": "Schließen"
+      },
       "selectName": {
         "errorNone": "Bitte geben Sie einen Gewohnheitsnamen ein",
         "errorLimit": "Der Gewohnheitsname sollte 60 Zeichen nicht überschreiten."

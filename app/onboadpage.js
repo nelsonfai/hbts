@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useContext } from "react";
 import { View, Text, StyleSheet, Dimensions,TouchableOpacity } from 'react-native';
 import { Stack,useRouter } from "expo-router";
 import OnboardingScreen from '../components/onboarding/onboarding';
 const { height } = Dimensions.get('window');
+import I18nContext from "../context/i18nProvider";
 
 
 const Index = () => {
 const router = useRouter()
+const {i18n,locale} = useContext(I18nContext)
+console.log(locale)
 
 const gotoSignup = () => {
   router.replace('(auth)/signup');
@@ -23,17 +26,17 @@ const gotoLogin = () => {+
           }}
         />
         <View style={styles.carousel}>
-          <OnboardingScreen />
+          <OnboardingScreen  i18n ={i18n}/>
           </View>
 
         <View style={styles.loginButtons}>
           {/* Your Login Buttons Component */}
         <TouchableOpacity style={styles.loginButton} onPress={gotoLogin}>
-            <Text style={{ color: 'white' }}>Login with Email</Text>
-          </TouchableOpacity>
+            <Text style={{ color: 'white' }}>{i18n.t('auth.loginWithEmail')}</Text>
+        </TouchableOpacity>
 
           <TouchableOpacity style={styles.loginButton} onPress={gotoSignup}>
-            <Text style={{ color: 'white' }}>Sign up with Email</Text>
+            <Text style={{ color: 'white' }}>{i18n.t('auth.signUpWithEmail')}</Text>
           </TouchableOpacity>
         </View>
 

@@ -553,16 +553,19 @@ const renderDayOfMonthPicker = () => {
                         <Switch
                             value={isshared}
                             onValueChange={handleSwitchChange}
-                            thumbColor={Platform.OS === 'android' ? 'white' : undefined}
+                            trackColor={{ false:'white', true: 'black' }} 
+                            disabled={!user.hasTeam}
                             />
                         </View>
+
+            
                           <Text style={{ fontSize: 14, color: 'grey', marginBottom: 20 }}>
-                        {i18n.t('editHabit.sharepartnerText')}
+                        {i18n.t('editHabit.sharepartnerText')} 
                       </Text>
                     </View>
                   )}
         </View>
-        <HabitIconModal isVisible= {iconModalShow}  onClose={()=> setIconModalShow(false)} icon={habitIcon} confirmSelection={(value)=> {{setHabitIcon(value)} setIconModalShow(false)}}/>
+        <HabitIconModal isVisible= {iconModalShow}  onClose={()=> setIconModalShow(false)} icon={habitIcon} confirmSelection={(value)=> {{setHabitIcon(value)} setIconModalShow(false)}} i18n={i18n}/>
       </ScrollView>
       <View style={styles.buttonContainer}>
       <TouchableOpacity

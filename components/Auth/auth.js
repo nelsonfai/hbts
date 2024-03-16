@@ -15,9 +15,9 @@ import { useRouter, Stack } from 'expo-router';
 import * as Notifications from 'expo-notifications';
 import MyHabitIcon from '../Habits/habitIcon';
 import { API_BASE_URL } from '../../appConstants';
- import { SyncReminders } from '../../services/syncReminder';
+import { SyncReminders } from '../../services/syncReminder';
 
-export default function Auth({ authType, authTitle }) {
+export default function Auth({ authType, authTitle, i18n }) {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,16 +34,17 @@ export default function Auth({ authType, authTitle }) {
       }
     });   
   };
+  
   const validateFields = () => {
     let isValid = true;
     // Validate email
     if (!email.trim()) {
-      setEmailError('Email is required.');
+      setEmailError(i18n.t('auth.emailRequired'));
       isValid = false;
     } else {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        setEmailError('Please enter a valid email address.');
+        setEmailError(i18n.t('auth.validEmail'));
         isValid = false;
       } else {
         setEmailError('');
@@ -51,7 +52,7 @@ export default function Auth({ authType, authTitle }) {
     }
     // Validate password
     if (!password.trim()) {
-      setPasswordError('Password is required.');
+      setPasswordError(i18n.t('auth.passwordRequired'));
       isValid = false;
     } else {
       setPasswordError('');
@@ -63,13 +64,13 @@ export default function Auth({ authType, authTitle }) {
     if (!validateFields()) {
       return;
     }
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
 
     setLoading(true);
     const logINUrl = `${API_BASE_URL}/login/`;
     try {
-      expo_token = await AsyncStorageService.getItem('expo_token')
-      console.log('Auth',expo_token)
+      expo_token = await AsyncStorageService.getItem('expo_token');
       const response = await fetch(logINUrl, {
         method: 'POST',
         headers: {
@@ -84,22 +85,20 @@ export default function Auth({ authType, authTitle }) {
       const responseData = await response.json();
       if (!response.ok) {
         throw new Error(responseData.detail || 'Unknown error');
-      }
-      else{
+      } else {
         await AsyncStorageService.setItem('token', responseData.token);
-        console.log('Token gotten',responseData.token)
-        SyncReminders(responseData.token)
+        SyncReminders(responseData.token);
         router.replace({
           pathname:'/',
         });
       }
     } catch (error) {
-      setAuthError('Incorrect Email or Password ');
+      setAuthError(i18n.t('auth.incorrectCredentials'));
     }
     setLoading(false);
   }
 
-async function signUpWithEmail() {
+  async function signUpWithEmail() {
     if (!validateFields()) {
       return;
     }
@@ -108,9 +107,7 @@ async function signUpWithEmail() {
     const signupUrl = `${API_BASE_URL}/signup/`;
 
     try {
-      expo_token = await AsyncStorageService.getItem('expo_token')
-      console.log('Auth sign up',expo_token)
-
+      expo_token = await AsyncStorageService.getItem('expo_token');
       const response = await fetch(signupUrl, {
         method: 'POST',
         headers: {
@@ -131,14 +128,10 @@ async function signUpWithEmail() {
       await AsyncStorageService.setItem('token', responseData.token);
       gotoProfile();
     } catch (error) {
-      setAuthError('An error occurred during signup');
+      setAuthError(i18n.t('auth.signupError'));
     }
     setLoading(false);
   }
-
-
-
-
 
   return (
     <SafeAreaView style={styles.container2}>
@@ -156,28 +149,22 @@ async function signUpWithEmail() {
                 <MyHabitIcon iconName='arrow-left' size={35}  colorValue={'grey'}/>
               </TouchableOpacity>
             ),
-
           }}
         />
         <Text style={{padding:10,fontSize:20,fontWeight:'bold',color:'grey',marginBottom:40}}> </Text>
-        <View
-          style={[
-            styles.verticallySpaced,
-          ]}
-        >
+        <View style={[styles.verticallySpaced]}>
           <Input
-          label='Email'
+            label={i18n.t('auth.emailLabel')}
             leftIcon={{ type: 'font-awesome', name: 'envelope' }}
             onChangeText={(text) => setEmail(text)}
             value={email}
-            placeholder="email@address.com"
+            placeholder={i18n.t('auth.emailPlaceholder')}
             autoCapitalize={'none'}
             inputContainerStyle={{
               borderBottomWidth: 0,
               backgroundColor: '#f6f6f5',
               paddingVertical: 5,
               paddingHorizontal: 12,
-
               marginTop: 8,
               borderRadius: 10,
             }}
@@ -185,19 +172,14 @@ async function signUpWithEmail() {
         </View>
         {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
-        <View
-          style={[
-            styles.verticallySpaced,
-            styles.mt20,
-          ]}
-        >
+        <View style={[styles.verticallySpaced, styles.mt20]}>
           <Input
-          label='Password'
+            label={i18n.t('auth.passwordLabel')}
             leftIcon={{ type: 'font-awesome', name: 'lock' }}
             onChangeText={(text) => setPassword(text)}
             value={password}
             secureTextEntry={true}
-            placeholder="Password"
+            placeholder={i18n.t('auth.passwordPlaceholder')}
             autoCapitalize={'none'}
             inputContainerStyle={{
               borderBottomWidth: 0,
@@ -206,20 +188,14 @@ async function signUpWithEmail() {
               paddingHorizontal: 12,
               marginTop: 8,
               borderRadius: 10,
-
             }}
           />
         </View>
         {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
-        <View
-          style={[
-            styles.verticallySpaced,
-            styles.mt20,
-          ]}
-        >
+        <View style={[styles.verticallySpaced, styles.mt20]}>
           <Button
             buttonStyle={styles.button}
-            title={authType === 'signup' ? 'Sign up' : 'Sign in'}
+            title={authType === 'signup' ? i18n.t('auth.signup') : i18n.t('auth.signin')}
             disabled={loading}
             onPress={() => (authType === 'signup' ? signUpWithEmail() : signInWithEmail())}
           />
@@ -229,11 +205,11 @@ async function signUpWithEmail() {
         {/* Login/Sign-up links */}
         <View style={styles.linkContainer}>
           <Text style={styles.linkText}>
-            {authType === 'signup' ? 'Already have an account? ' : "Don't have an account? "}
+            {authType === 'signup' ? i18n.t('auth.haveAccount') : i18n.t('auth.noAccount')}
           </Text>
           <TouchableOpacity onPress={() => router.replace(authType === 'signup' ? '/login' : '/signup')}>
             <Text style={[styles.linkText, { color: 'black' }]}>
-              {authType === 'signup' ? 'Login' : 'Sign up'}
+              {authType === 'signup' ? i18n.t('auth.signin') : i18n.t('auth.signup')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -257,11 +233,10 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    fontSize: 12,
+    fontSize: 14,
     paddingHorizontal:10,
     marginTop:-15,
     marginBottom:20
-
   },
   linkContainer: {
     flexDirection: 'row',

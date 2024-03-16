@@ -4,7 +4,7 @@ import MyHabitIcon from './habitIcon';
 import HabitIcon from './habitIcon';
 import EmojiSelector from 'react-native-emoji-selector';
 
-const HabitIconModal = ({ isVisible, onClose, confirmSelection,icon }) => {
+const HabitIconModal = ({ isVisible, onClose, confirmSelection,icon,i18n }) => {
   const fontAwesomeIcons = [
 'hourglass',
     'bicycle',
@@ -111,11 +111,11 @@ const HabitIconModal = ({ isVisible, onClose, confirmSelection,icon }) => {
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center' ,paddingBottom:10,marginBottom:20,borderBottomWidth:2,borderColor:'whitesmoke'}}>
-            <Text style={styles.modalTitle}>Select an Icon or Emoji</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center' ,paddingBottom:10,marginBottom:20,borderBottomWidth:2,borderColor:'whitesmoke',gap:10,flexWrap:'wrap'}}>
+            <Text style={styles.modalTitle}>{i18n.t('editHabit.habitIconModal.selectIconOrEmoji')}</Text>
             <TouchableOpacity style={styles.toggleButton} onPress={toggleIcons}>
             <Text style={styles.toggleButtonText}>
-              {showIcons ? 'Show Emojis' : 'Show Icons'}
+            {showIcons ? i18n.t('editHabit.habitIconModal.showEmojis') : i18n.t('editHabit.habitIconModal.showIcons')}
             </Text>
           </TouchableOpacity>
           </View>
@@ -137,7 +137,7 @@ const HabitIconModal = ({ isVisible, onClose, confirmSelection,icon }) => {
           )}
 
           <TouchableOpacity style={styles.closeButton} onPress={() => onClose()}>
-            <Text style={styles.closeButtonText}>Close</Text>
+          <Text style={styles.closeButtonText}>{i18n.t('editHabit.habitIconModal.close')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -174,6 +174,7 @@ const styles = StyleSheet.create({
   },
   toggleButtonText: {
     fontWeight: 'bold',
+  
   },
   closeButton: {
     marginTop: 20,

@@ -1,4 +1,3 @@
-// i18n.js
 import * as Localization from 'expo-localization';
 import { I18nManager } from 'react-native';
 import { I18n } from 'i18n-js';
@@ -12,17 +11,16 @@ const translations = {
 };
 
 const i18n = new I18n(translations);
-const defaultLocale = 'de';
+const defaultLocale = 'en';
 
 // Function to set the language dynamically
 export const setLocale = async (locale) => {
   if (translations[locale]) {
     i18n.locale = locale;
-    console.log('we went locale',locale)
-
-await AsyncStorageService.setItem('lang',locale); // Save selected language in AsyncStorage 
+    console.log('Selected locale:', locale);
+    await AsyncStorageService.setItem('lang', locale); // Save selected language in AsyncStorage 
   } else {
-    console.log('we went default')
+    console.log('Default locale:', defaultLocale);
     i18n.locale = defaultLocale;
   }
 };
@@ -30,14 +28,16 @@ await AsyncStorageService.setItem('lang',locale); // Save selected language in A
 // Function to initialize language
 export const initializeLanguage = async () => {
   const savedLanguage = await AsyncStorageService.getItem('lang');
-  i18n.locale = savedLanguage || Localization.locale;
+  const systemLanguage = Localization.locale.split('-')[0]; // Get the system language
+  const languageToUse = savedLanguage || systemLanguage || defaultLocale; // Use saved language, system language, or default
+
+  i18n.locale = languageToUse;
   i18n.enableFallback = true;
 
-  I18nManager.forceRTL(false); 
+  I18nManager.forceRTL(false);
 };
 
 initializeLanguage();
 const t = (key, options) => i18n.t(key, options);
 
 export default i18n;
-;
