@@ -74,12 +74,11 @@ export function useNotificationService() {
     }
 
     if (finalStatus !== 'granted') {
-      // alert('Failed to get push token for push notification!');
       return;
     }
     // Learn more about projectId:
-    // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
-    token = (await Notifications.getExpoPushTokenAsync({ projectId: '03fd8121-c6f6-4b26-bc03-a707801104b5' })).data;
+    // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid dbd43c58-ce80-45ff-a1f2-6d6c3b6bb569
+    token = (await Notifications.getExpoPushTokenAsync({ projectId: 'dbd43c58-ce80-45ff-a1f2-6d6c3b6bb569' })).data;
     console.log(token);
   } else {
     alert('Must use a physical device for Push Notifications');
@@ -87,9 +86,6 @@ export function useNotificationService() {
 
   return token;
 }
-
-
-
 
 export async function schedulePushNotification(habitName, habitDescription = null,time, weekdays = null, identifier,frequency,specificDaysOfMonth = null,) {
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -107,7 +103,7 @@ export async function schedulePushNotification(habitName, habitDescription = nul
   const notifications = [];
 
  if (frequency === 'monthly' && specificDaysOfMonth) {
-  const daysOfMonthArray = specificDaysOfMonth.split(',').map(Number); // Convert string to array of integers
+  const daysOfMonthArray = specificDaysOfMonth.split(',').map(Number); 
   console.log('array',daysOfMonthArray)
   daysOfMonthArray.forEach(dayOfMonth => {
     const triggerOptions = {
@@ -120,7 +116,7 @@ export async function schedulePushNotification(habitName, habitDescription = nul
     const id = Notifications.scheduleNotificationAsync({
       content: notificationContent,
       trigger: triggerOptions,
-      identifier: identifier + '_' + dayOfMonth, // Ensure unique identifier for each day of month
+      identifier: identifier + '_' + dayOfMonth, 
     });
     
     notifications.push(id);

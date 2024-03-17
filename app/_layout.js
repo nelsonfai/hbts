@@ -26,7 +26,6 @@ const Layout = () => {
           <RefreshProvider>
             <SummaryProvider>
               <SwipeableProvider>
-              <StatusBar barStyle="dark-content"  />
                 <Stack initialRouteName="home">
                 <Stack.Screen
                     options={{

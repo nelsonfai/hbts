@@ -27,6 +27,7 @@ export const GlassfyProvider = ({ children }) => {
   const connectUser = async (consumerid) =>{
     try{
       await Glassfy.connectCustomSubscriber(consumerid);
+
     }
     catch (error) {
       //('Error initializing')
