@@ -18,6 +18,7 @@
     "axios": "^1.6.2",
     "deprecated-react-native-prop-types": "^5.0.0",
     "expo": "^49.0.21",
+    "expo-cli": "^6.3.10",
     "expo-clipboard": "~4.3.1",
     "expo-constants": "~14.4.2",
     "expo-dev-client": "~2.4.13",

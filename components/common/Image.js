@@ -23,14 +23,12 @@ const ProfileImage = ({ mainImageUri, width = 200, height = 200, handlePress, na
       {mainImageUri ? (
         <Image
           source={{ uri: mainImageUri }}
-          defaultSource={defaultImageSource}
           style={{ ...styles.image, width, height, borderRadius }}
         />
-      ) : name ? (
-        renderDefaultImage()
       ) : (
         <Image
           source={defaultImageSource}
+          onError={() => {}}
           style={{ ...styles.image, width, height, borderRadius }}
         />
       )}
